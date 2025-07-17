@@ -1,12 +1,101 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>My Private YouTube Playlist</title>
-  </head>
-  <body>
-    <h1>My YouTube Playlist</h1>
-    <ul>
-      <!--<li><a href="https://www.youtube.com/live/ZRhe1FZbLGY?t=1489&end=1776" target="_blank">空っぽなら、踊ろうぜ</a></li>-->
-    </ul>
-  </body>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>リンクからYouTube区間再生</title>
+  <style>
+    iframe {
+      width: 560px;
+      height: 315px;
+      display: block;
+      margin: 20px auto;
+    }
+    .video-links {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">YouTubeリンクから自動区間再生</h2>
+
+<div class="video-links">
+  <!-- 再生したいリンク（開始秒数と終了秒数はURLパラメータで指定） -->
+  <a href="https://www.youtube.com/live/ZRhe1FZbLGY?&start=1489&end=1776">動画1</a><br>
+  <a href="https://www.youtube.com/live/ZRhe1FZbLGY?&start=1489&end=1776">動画2</a><br>
+</div>
+
+<iframe id="player" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+<script>
+  // すべてのリンクを取得してパース
+  const links = document.querySelectorAll('.video-links a');
+  const playlist = [];
+
+  links.forEach(link => {
+    const url = new URL(link.href);
+    const id = url.searchParams.get("v");
+    const start = parseInt(url.searchParams.get("start") || 0);
+    const end = parseInt(url.searchParams.get("end") || 0);
+    if (id && start && end) {
+      playlist.push({ id, start, end });
+    }
+  });
+
+  let currentIndex = 0;
+  let ytPlayer;
+  let checkInterval;
+
+  // YouTube API 読み込み
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+
+  window.onYouTubeIframeAPIReady = function () {
+    ytPlayer = new YT.Player('player', {
+      height: '315',
+      width: '560',
+      events: {
+        'onReady': () => playVideoAtIndex(currentIndex),
+        'onStateChange': onPlayerStateChange
+      }
+    });
+  };
+
+  function playVideoAtIndex(index) {
+    const video = playlist[index];
+    ytPlayer.loadVideoById({
+      videoId: video.id,
+      startSeconds: video.start
+    });
+
+    // 区間監視
+    clearInterval(checkInterval);
+    checkInterval = setInterval(() => {
+      const currentTime = ytPlayer.getCurrentTime();
+      if (currentTime >= video.end) {
+        nextVideo();
+      }
+    }, 500);
+  }
+
+  function onPlayerStateChange(event) {
+    if (event.data === YT.PlayerState.ENDED) {
+      nextVideo();
+    }
+  }
+
+  function nextVideo() {
+    clearInterval(checkInterval);
+    currentIndex++;
+    if (currentIndex < playlist.length) {
+      playVideoAtIndex(currentIndex);
+    } else {
+      console.log("すべての動画を再生しました");
+    }
+  }
+</script>
+
+</body>
 </html>
