@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>YouTube 区間再生リンク順プレイヤー</title>
+  <title>YouTube 区間再生クリック開始</title>
   <style>
     iframe {
       width: 560px;
@@ -15,16 +14,20 @@
       text-align: center;
       margin-bottom: 20px;
     }
+    .video-links a {
+      cursor: pointer;
+      display: block;
+      margin: 5px;
+    }
   </style>
 </head>
 <body>
 
-<h2 style="text-align:center;">YouTubeリンク順 区間再生</h2>
+<h2 style="text-align:center;">リンククリックで開始 - 区間再生</h2>
 
-<div class="video-links">
-  <!-- 再生したいYouTubeリンク（start=秒, end=秒を必ずURLに付ける） -->
-  <a href="https://www.youtube.com/watch?v=ZRhe1FZbLGY&start=1489&end=1774">動画1</a><br>
-  <a href="https://www.youtube.com/watch?v=ZRhe1FZbLGY&start=1489&end=1774">動画2</a><br>
+<div class="video-links" id="video-links">
+  <a href="https://www.youtube.com/watch?v=ZRhe1FZbLGY&start=1489&end=1495">動画1</a>
+  <a href="https://www.youtube.com/watch?v=ZRhe1FZbLGY&start=1489&end=1495">動画2</a>
 </div>
 
 <iframe id="player" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
@@ -46,22 +49,32 @@
   let currentIndex = 0;
   let ytPlayer;
   let intervalId;
+  let hasStarted = false;
 
   // YouTube API 読み込み
   const tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
   document.body.appendChild(tag);
 
-  // API準備完了
+  // プレイヤー準備
   window.onYouTubeIframeAPIReady = function () {
     ytPlayer = new YT.Player('player', {
       height: '315',
       width: '560',
-      events: {
-        'onReady': () => playVideo(currentIndex)
-      }
+      events: {}
     });
   };
+
+  // 1本目クリックで再生開始
+  document.getElementById('video-links').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    if (hasStarted) return;
+
+    hasStarted = true;
+    currentIndex = 0;
+    playVideo(currentIndex);
+  });
 
   function playVideo(index) {
     const video = playlist[index];
@@ -72,7 +85,6 @@
       startSeconds: video.start
     });
 
-    // 区間を監視
     clearInterval(intervalId);
     intervalId = setInterval(() => {
       const time = ytPlayer.getCurrentTime();
@@ -80,7 +92,7 @@
         clearInterval(intervalId);
         nextVideo();
       }
-    }, 300); // 0.3秒ごとにチェック
+    }, 300);
   }
 
   function nextVideo() {
@@ -88,7 +100,7 @@
     if (currentIndex < playlist.length) {
       playVideo(currentIndex);
     } else {
-      console.log("再生完了！");
+      console.log("すべての動画を再生しました");
     }
   }
 </script>
