@@ -2,14 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>YouTube 区間再生クリック開始</title>
+  <title>ミニプレイヤーでYouTube区間再生</title>
   <style>
-    iframe {
-      width: 560px;
-      height: 315px;
-      display: block;
-      margin: 20px auto;
-    }
     .video-links {
       text-align: center;
       margin-bottom: 20px;
@@ -18,12 +12,27 @@
       cursor: pointer;
       display: block;
       margin: 5px;
+      text-decoration: underline;
+      color: blue;
+    }
+
+    /* 🎬 ミニプレイヤースタイル */
+    #player {
+      width: 300px;
+      height: 170px;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      border-radius: 8px;
+      display: none; /* 初期非表示 */
     }
   </style>
 </head>
 <body>
 
-<h2 style="text-align:center;">リンククリックで開始 - 区間再生</h2>
+<h2 style="text-align:center;">クリックでミニプレイヤー開始</h2>
 
 <div class="video-links" id="video-links">
   <a href="https://www.youtube.com/watch?v=ZRhe1FZbLGY&start=1489&end=1495">動画1</a>
@@ -49,30 +58,36 @@
   let currentIndex = 0;
   let ytPlayer;
   let intervalId;
+  let playerReady = false;
   let hasStarted = false;
 
-  // YouTube API 読み込み
+  // YouTube API読み込み
   const tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
   document.body.appendChild(tag);
 
-  // プレイヤー準備
+  // プレイヤー初期化
   window.onYouTubeIframeAPIReady = function () {
     ytPlayer = new YT.Player('player', {
-      height: '315',
-      width: '560',
-      events: {}
+      height: '170',
+      width: '300',
+      events: {
+        'onReady': function () {
+          playerReady = true;
+          console.log("プレイヤー準備OK");
+        }
+      }
     });
   };
 
-  // 1本目クリックで再生開始
+  // クリックで再生開始
   document.getElementById('video-links').addEventListener('click', function (e) {
     e.preventDefault();
 
-    if (hasStarted) return;
+    if (hasStarted || !playerReady) return;
 
     hasStarted = true;
-    currentIndex = 0;
+    document.getElementById('player').style.display = 'block'; // プレイヤー表示
     playVideo(currentIndex);
   });
 
@@ -100,7 +115,9 @@
     if (currentIndex < playlist.length) {
       playVideo(currentIndex);
     } else {
-      console.log("すべての動画を再生しました");
+      console.log("🎉 全ての動画の再生が完了しました");
+      // プレイヤーを非表示にするならここで：
+      // document.getElementById('player').style.display = 'none';
     }
   }
 </script>
