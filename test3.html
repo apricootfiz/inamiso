@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube 区間再生（縦レイアウト）</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    #mainTitle {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    #playlist {
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+
+    .item {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #ccc;
+      font-size: 13px;
+    }
+
+    .item.active {
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+    }
+
+    .label {
+      padding: 8px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #666;
+      background-color: #f9f9f9;
+      border-top: 1px solid #ccc;
+    }
+
+    #player {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2 id="mainTitle">🎬 再生リスト（区間付き）</h2>
+  <div id="playlist"></div>
+  <div id="player"></div>
+
+  <script>
+    const videoSegments = [
+      { type: 'label', title: '【Birthday 3D LIVE】Fall for me💙【＃夕陽リリ生誕LIVE2024/にじさんじ】' },
+      { videoId: 'ZRhe1FZbLGY', start: 1489, end: 1774, title: '空っぽなら、踊ろうぜ / Guiano×理芽' },
+      { type: 'label', title: '【KARAOKE￤歌枠】DAMカラオケで100点取れるまで帰れません？！LET'S GET 100 SCORE！！【NIJISANJI EN | Meloco Kyoran】' },
+      { videoId: '6x_sX1nAV5Q', start: 1527, end: 1858, title: '星のうつわ / スキマスイッチ' },
+      { videoId: '6x_sX1nAV5Q', start: 3719, end: 4028, title: 'カブトムシ / aiko' },
+    ];
+
+    let player;
+    let currentIndex = null;
+    let checkInterval;
+
+    function renderPlaylist() {
+      const playlistEl = document.getElementById('playlist');
+      playlistEl.innerHTML = '';
+      videoSegments.forEach((segment, index) => {
+        const item = document.createElement('div');
+        if (segment.type === 'label') {
+          item.textContent = segment.title;
+          item.className = 'label';
+        } else {
+          item.className = 'item';
+          item.textContent = segment.title;
+          item.onclick = () => {
+            currentIndex = index;
+            loadAndPlayCurrentVideo();
+          };
+        }
+        playlistEl.appendChild(item);
+      });
+    }
+
+    function loadAndPlayCurrentVideo() {
+      if (currentIndex === null) return;
+      const segment = videoSegments[currentIndex];
+      if (!segment || segment.type !== 'video') return;
+
+      updateActiveItem();
+
+      if (player) {
+        player.loadVideoById({
+          videoId: segment.videoId,
+          startSeconds: segment.start
+        });
+        player.unMute();
+        player.playVideo();
+      }
+
+      clearInterval(checkInterval);
+      checkInterval = setInterval(() => {
+        const currentTime = player.getCurrentTime();
+        if (currentTime >= segment.end) {
+          nextVideo();
+        }
+      }, 500);
+    }
+
+    function nextVideo() {
+      clearInterval(checkInterval);
+      currentIndex++;
+      while (currentIndex < videoSegments.length && videoSegments[currentIndex].type !== 'video') {
+        currentIndex++;
+      }
+      if (currentIndex < videoSegments.length) {
+        loadAndPlayCurrentVideo();
+      } else {
+        currentIndex = null;
+        updateActiveItem();
+      }
+    }
+
+    function updateActiveItem() {
+      const items = document.querySelectorAll('.item');
+      let videoIndex = 0;
+      videoSegments.forEach((segment, idx) => {
+        if (segment.type === 'video') {
+          const item = items[videoIndex];
+          item.classList.toggle('active', idx === currentIndex);
+          videoIndex++;
+        }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        nextVideo();
+      }
+    }
+
+    function onYouTubeIframeAPIReady() {
+      renderPlaylist();
+      player = new YT.Player('player', {
+        height: '360',
+        width: '100%',
+        videoId: '', // 最初は空
+        events: {
+          onStateChange: onPlayerStateChange
+        }
+      });
+    }
+  </script>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
