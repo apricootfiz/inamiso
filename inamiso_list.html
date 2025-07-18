@@ -2,125 +2,93 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>ミニプレイヤーでYouTube区間再生</title>
+  <title>YouTube 区間連続再生</title>
   <style>
-    .video-links {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .video-links a {
-      cursor: pointer;
-      display: block;
-      margin: 5px;
-      text-decoration: underline;
-      color: blue;
-    }
-
-    /* 🎬 ミニプレイヤースタイル */
-    #player {
-      width: 300px;
-      height: 170px;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 9999;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      border-radius: 8px;
-      display: none; /* 初期非表示 */
-    }
+    body { font-family: sans-serif; padding: 20px; }
   </style>
 </head>
 <body>
+  <h2>YouTube 区間再生＋自動切り替え</h2>
+  <div id="player"></div>
 
-<h2 style="text-align:center;">クリックでミニプレイヤー開始</h2>
+  <script>
+    // ✅ 再生リスト（動画ID、開始秒、終了秒）
+    const videoSegments = [
+      { videoId: 'ZRhe1FZbLGY', start: 1489, end: 1774 },
+      { videoId: 'GV9sHBUiKCs?si=CzVyFAYFlpVdwGUU', start: 10, end: 40 },
+    ];
 
-<div class="video-links" id="video-links">
-  <a href="https://www.youtube.com/watch?v=ZRhe1FZbLGY&start=1489&end=1495">動画1</a>
-  <a href="https://www.youtube.com/watch?v=ZRhe1FZbLGY&start=1489&end=1495">動画2</a>
-</div>
+    let player;
+    let currentIndex = 0;
+    let checkInterval;
 
-<iframe id="player" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
-<script>
-  const links = document.querySelectorAll('.video-links a');
-  const playlist = [];
-
-  links.forEach(link => {
-    const url = new URL(link.href);
-    const id = url.searchParams.get("v");
-    const start = parseInt(url.searchParams.get("start")) || 0;
-    const end = parseInt(url.searchParams.get("end")) || 0;
-    if (id && end > start) {
-      playlist.push({ id, start, end });
+    // ✅ YouTube API読み込み後に呼ばれる
+    function onYouTubeIframeAPIReady() {
+      loadCurrentVideo();
     }
-  });
 
-  let currentIndex = 0;
-  let ytPlayer;
-  let intervalId;
-  let playerReady = false;
-  let hasStarted = false;
+    // ✅ 現在の動画を読み込む
+    function loadCurrentVideo() {
+      const segment = videoSegments[currentIndex];
+      if (!segment) return;
 
-  // YouTube API読み込み
-  const tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.body.appendChild(tag);
-
-  // プレイヤー初期化
-  window.onYouTubeIframeAPIReady = function () {
-    ytPlayer = new YT.Player('player', {
-      height: '170',
-      width: '300',
-      events: {
-        'onReady': function () {
-          playerReady = true;
-          console.log("プレイヤー準備OK");
-        }
+      if (player) {
+        player.loadVideoById({
+          videoId: segment.videoId,
+          startSeconds: segment.start,
+        });
+      } else {
+        player = new YT.Player('player', {
+          height: '360',
+          width: '640',
+          videoId: segment.videoId,
+          playerVars: {
+            autoplay: 1,
+            start: segment.start,
+            mute: 1,
+          },
+          events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange
+          }
+        });
       }
-    });
-  };
 
-  // クリックで再生開始
-  document.getElementById('video-links').addEventListener('click', function (e) {
-    e.preventDefault();
+      // ✅ 区間終了の監視開始
+      clearInterval(checkInterval);
+      checkInterval = setInterval(() => {
+        const currentTime = player.getCurrentTime();
+        if (currentTime >= segment.end) {
+          nextVideo();
+        }
+      }, 500);
+    }
 
-    if (hasStarted || !playerReady) return;
+    // ✅ プレイヤー準備完了時
+    function onPlayerReady(event) {
+      event.target.playVideo();
+    }
 
-    hasStarted = true;
-    document.getElementById('player').style.display = 'block'; // プレイヤー表示
-    playVideo(currentIndex);
-  });
-
-  function playVideo(index) {
-    const video = playlist[index];
-    if (!video) return;
-
-    ytPlayer.loadVideoById({
-      videoId: video.id,
-      startSeconds: video.start
-    });
-
-    clearInterval(intervalId);
-    intervalId = setInterval(() => {
-      const time = ytPlayer.getCurrentTime();
-      if (time >= video.end) {
-        clearInterval(intervalId);
+    // ✅ 状態変化
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
         nextVideo();
       }
-    }, 300);
-  }
-
-  function nextVideo() {
-    currentIndex++;
-    if (currentIndex < playlist.length) {
-      playVideo(currentIndex);
-    } else {
-      console.log("🎉 全ての動画の再生が完了しました");
-      // プレイヤーを非表示にするならここで：
-      // document.getElementById('player').style.display = 'none';
     }
-  }
-</script>
 
+    // ✅ 次の動画へ進む
+    function nextVideo() {
+      clearInterval(checkInterval);
+      currentIndex++;
+      if (currentIndex < videoSegments.length) {
+        loadCurrentVideo();
+      } else {
+        console.log("全ての動画再生が完了しました。");
+      }
+    }
+  </script>
+
+  <!-- ✅ YouTube IFrame API の読み込み -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
