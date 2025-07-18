@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube 区間再生＋リスト操作</title>
+  <style>
+    body {
+      display: flex;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    #playlist {
+      width: 250px;
+      margin-right: 20px;
+    }
+    .item {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #ccc;
+    }
+    .item.active {
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+    }
+    #player {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="playlist"></div>
+  <div id="player"></div>
+
+  <script>
+    // ✅ 再生リスト：動画ID、再生開始/終了、表示タイトル
+    const videoSegments = [
+      { videoId: 'ZRhe1FZbLGY', start: 1489, end: 1774, title: '空っぽなら、歌おうぜ' },
+      { videoId: '6x_sX1nAV5Q', start: 1527, end: 1858, title: '星のうつわ' },
+    ];
+
+    let player;
+    let currentIndex = 0;
+    let checkInterval;
+
+    // ✅ プレイリストをHTMLに描画
+    function renderPlaylist() {
+      const playlistEl = document.getElementById('playlist');
+      playlistEl.innerHTML = '';
+      videoSegments.forEach((segment, index) => {
+        const item = document.createElement('div');
+        item.className = 'item' + (index === currentIndex ? ' active' : '');
+        item.textContent = segment.title;
+        item.onclick = () => {
+          currentIndex = index;
+          loadCurrentVideo();
+        };
+        playlistEl.appendChild(item);
+      });
+    }
+
+    // ✅ 現在の動画を読み込む
+    function loadCurrentVideo() {
+      const segment = videoSegments[currentIndex];
+      if (!segment) return;
+
+      updateActiveItem();
+
+      if (player) {
+        player.loadVideoById({
+          videoId: segment.videoId,
+          startSeconds: segment.start
+        });
+      } else {
+        player = new YT.Player('player', {
+          height: '360',
+          width: '640',
+          videoId: segment.videoId,
+          playerVars: {
+            autoplay: 1,
+            start: segment.start,
+            mute: 1
+          },
+          events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange
+          }
+        });
+      }
+
+      clearInterval(checkInterval);
+      checkInterval = setInterval(() => {
+        const currentTime = player.getCurrentTime();
+        if (currentTime >= segment.end) {
+          nextVideo();
+        }
+      }, 500);
+    }
+
+    // ✅ 再生中のリストアイテムをハイライト
+    function updateActiveItem() {
+      const items = document.querySelectorAll('.item');
+      items.forEach((item, idx) => {
+        item.classList.toggle('active', idx === currentIndex);
+      });
+    }
+
+    // ✅ 次の動画へ
+    function nextVideo() {
+      clearInterval(checkInterval);
+      currentIndex++;
+      if (currentIndex < videoSegments.length) {
+        loadCurrentVideo();
+      } else {
+        console.log('全ての再生が完了しました。');
+      }
+    }
+
+    // ✅ プレイヤー準備完了時
+    function onPlayerReady(event) {
+      event.target.playVideo();
+    }
+
+    // ✅ 状態変化
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        nextVideo();
+      }
+    }
+
+    // ✅ YouTube APIが準備できたら呼ばれる
+    function onYouTubeIframeAPIReady() {
+      renderPlaylist();
+      loadCurrentVideo();
+    }
+  </script>
+
+  <!-- ✅ YouTube IFrame API 読み込み -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
