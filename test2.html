@@ -114,4 +114,22 @@
     }
 
     // ✅ YouTube API準備完了時
-    function onYouTubeIfr
+    function onYouTubeIframeAPIReady() {
+      renderPlaylist();
+      // 最初は何も再生しない。空の初期状態でプレイヤー生成。
+      player = new YT.Player('player', {
+        height: '360',
+        width: '640',
+        videoId: '', // 空動画（初期）
+        events: {
+          onStateChange: onPlayerStateChange
+        }
+      });
+    }
+  </script>
+
+  <!-- ✅ YouTube IFrame API 読み込み -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
+
