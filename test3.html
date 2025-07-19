@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>YouTube 区間再生（縦レイアウト）</title>
+  <title>INAMISONG</title>
   <style>
     body {
       font-family: sans-serif;
@@ -15,7 +15,12 @@
       font-size: 18px;
       margin-bottom: 10px;
     }
-
+    
+    #memo {
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    
     #playlist {
       border: 1px solid #ddd;
       margin-bottom: 20px;
@@ -49,23 +54,27 @@
   </style>
 </head>
 <body>
-  <h2 id="mainTitle">伊波ライSONG</h2><br><br>
-  <p>
-    <ul>
-      <li>【Birthday 3D LIVE】Fall for me💙【＃夕陽リリ生誕LIVE2024/にじさんじ】</li>
-      <li>2つめの項目</li>
-      <li>3つめの項目</li>
-    </ul>
-  </p><br>
+  <h2 id="mainTitle">♪INAMISONG</h2><br>
+  <div id="memo">
+    <p>
+      ・2024/01/21<br>
+      【Birthday 3D LIVE】Fall for me💙【＃夕陽リリ生誕LIVE2024/にじさんじ】<br>
+      https://www.youtube.com/live/ZRhe1FZbLGY?si=kdiqGsrygp46PGH7<br><br>
+      ・2024/06/03<br>
+      【KARAOKE￤歌枠】DAMカラオケで100点取れるまで帰れません？！LET'S GET 100 SCORE！！【NIJISANJI EN | Meloco Kyoran】<br>
+      https://www.youtube.com/live/6x_sX1nAV5Q?si=DRgb0xm9WAIMwfGH<br>
+  
+    </p>
+  </div><br>
   <div id="playlist"></div>
   <div id="player"></div>
 
   <script>
     const videoSegments = [
-      { type: 'label', title: '-- 誕生日ライブ --' },
+      { type: 'label', title: '-- 2024/01/21 --' },
       { type: 'video', videoId: 'ZRhe1FZbLGY', start: 1489, end: 1774, title: '空っぽなら、踊ろうぜ / Guiano×理芽' },
       { type: 'label', title: '-- カラオケ --' },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 1527, end: 1858, title: '星のうつわ / スキマスイッチ' },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 1527, end: 1857, title: '星のうつわ / スキマスイッチ' },
       { type: 'video', videoId: '6x_sX1nAV5Q', start: 3719, end: 4028, title: 'カブトムシ / aiko' },
     ];
 
