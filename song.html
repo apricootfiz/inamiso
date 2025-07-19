@@ -65,6 +65,11 @@
 
   <script>
     const videoSegments = [
+      { type: 'label', title: '-- 2023/10/28 --' },
+      { type: 'video', videoId: '5ESXILcf1j4', start: 24387, end: 24610, title: 'ドリームレス・ドリームス / はるまきごはん' },
+      { type: 'video', videoId: '5ESXILcf1j4', start: 25305, end: 25499, title: 'アノニマスファンフアレ / ツミキ' },
+      { type: 'video', videoId: '5ESXILcf1j4', start: 24387, end: 26219, title: '喰らいながら / 獅子志司' },
+      { type: 'video', videoId: '5ESXILcf1j4', start: 27031, end: 27246, title: 'ジャンキーナイトタウンオーケストラ / すりぃ' },
       { type: 'label', title: '-- 2023/11/05 --' },
       { type: 'video', videoId: 'X82XuhJWX9M', start: 254, end: 460, title: '死ぬな！ / こっちのけんと' },
       { type: 'video', videoId: 'X82XuhJWX9M', start: 616, end: 847, title: '愛情と矛先 / Mrs. GREEN APPLE' },
@@ -83,12 +88,12 @@
       { type: 'video', videoId: 'O7yLcJUqQgM', start: 72, end: 278, title: '死ぬな！ / こっちのけんと' },
       { type: 'video', videoId: 'O7yLcJUqQgM', start: 1130, end: 1322, title: '偽物人間40号 / shimon' },      
       { type: 'video', videoId: 'O7yLcJUqQgM', start: 1780, end: 2001, title: 'エンヴィキャットウォーク / トーマ / こっちのけんと' },
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: , end: , title: '勿忘 / Awesome City Club' }, 
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: , end: , title: '波に名前をつけること、僕らの呼吸に終わりがあること。 / キタニタツヤ' },
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: , end: , title: 'レディーレ / 須田景凪' }, 
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: , end: , title: '点描の唄 / Mrs. GREEN APPLE' }, 
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: , end: , title: '絶え間なく藍色 / 獅子志司' }, 
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: , end: , title: '君じゃなきゃダメみたい / 大石昌良' }, 
+      { type: 'video', videoId: 'O7yLcJUqQgM', start: 2480, end: 2720, title: '勿忘 / Awesome City Club' }, 
+      { type: 'video', videoId: 'O7yLcJUqQgM', start: 2860, end: 3135, title: '波に名前をつけること、僕らの呼吸に終わりがあること。 / キタニタツヤ' },
+      { type: 'video', videoId: 'O7yLcJUqQgM', start: 4629, end: 4859, title: 'レディーレ / 須田景凪' }, 
+      { type: 'video', videoId: 'O7yLcJUqQgM', start: 5377, end: 5676, title: '点描の唄 / Mrs. GREEN APPLE' }, 
+      { type: 'video', videoId: 'O7yLcJUqQgM', start: 5934, end: 6151, title: '絶え間なく藍色 / 獅子志司' }, 
+      { type: 'video', videoId: 'O7yLcJUqQgM', start: 7091, end: 7323, title: '君じゃなきゃダメみたい / 大石昌良' }, 
       { type: 'label', title: '-- 2024/06/03 --' },
       { type: 'video', videoId: '6x_sX1nAV5Q', start: 1527, end: 1857, title: '星のうつわ / スキマスイッチ' },
       { type: 'video', videoId: '6x_sX1nAV5Q', start: 3719, end: 4028, title: 'カブトムシ / aiko' },
@@ -99,7 +104,10 @@
       { type: 'video', videoId: '6x_sX1nAV5Q', start: 11766, end: 12068, title: 'ボクノート / スキマスイッチ' },
       { type: 'video', videoId: '6x_sX1nAV5Q', start: 12992, end: 13203, title: 'SNOBBISM / Neru' },   
       { type: 'video', videoId: '6x_sX1nAV5Q', start: 14161, end: 14467, title: '奏 / スキマスイッチ ' },   
-      { type: 'label', title: '--  2024/12/27 -- いぬいなみ' },
+      { type: 'label', title: '-- 2024/06/28 -- ざぶぅん' },
+      { type: 'video', videoId: '8GPkeAkKYhA', start: 2640, end: 2928, title: 'とても素敵な六月でした / Eight' },
+      { type: 'label', title: '-- 2024/10/10 --' },
+      { type: 'label', title: '-- 2024/12/27 -- いぬいなみ' },
       { type: 'video', videoId: 'OEq1o-uScok', start: 695, end: 1010, title: '鱗 / 秦基博' },
       { type: 'video', videoId: 'OEq1o-uScok', start: 1082, end: 1281, title: '欲望に満ちた青年団 / ONE OK ROCK' },
       { type: 'video', videoId: 'OEq1o-uScok', start: 1387, end: 1677, title: 'Wherever you are / ONE OK ROCK' },
@@ -245,6 +253,9 @@
 
   <div id="memo">
     <p>
+      ・2023/10/28<br>
+      【歌枠】100曲歌いきるまでスタジオから帰れません‼【にじさんじ | 緑仙】<br>
+      https://www.youtube.com/live/5ESXILcf1j4?si=AMW8-eimxl8L9-vi<br><br>  
       ・2023/11/05<br>
       【#アジカラ】ジャンル縛りなし歌枠🎵SINGING STREAM【にじさんじ/レヴィ・エリファ】<br>
       https://www.youtube.com/live/X82XuhJWX9M?si=5qsc9FEOXPrun1g3<br><br>      
@@ -257,9 +268,15 @@
       ・2024/06/03<br>
       【KARAOKE￤歌枠】DAMカラオケで100点取れるまで帰れません？！LET'S GET 100 SCORE！！【NIJISANJI EN | Meloco Kyoran】<br>
       https://www.youtube.com/live/6x_sX1nAV5Q?si=DRgb0xm9WAIMwfGH<br><br>
+      ・2024/06/28<br>
+      【歌枠】誕生日カウントダウンライブ！生バンドやで！全員集合！【にじさんじ/緋八マナ】<br>
+      https://www.youtube.com/live/8GPkeAkKYhA?si=IJzt0e3kciWFWP0v<br><br>
+      ・2024/10/10<br>
+      【歌枠】誕生日カウントダウンライブ！生バンドやで！全員集合！【にじさんじ/緋八マナ】<br>
+      https://www.youtube.com/live/8GPkeAkKYhA?si=IJzt0e3kciWFWP0v<br><br>
       ・2024/12/27<br>
-      【コラボ歌枠】好きな曲を好きなだけ歌います！！！！！【戌亥とこ/伊波ライ/にじさんじ】<br>
-      https://www.youtube.com/live/OEq1o-uScok?si=oYpybc8N9-WuLmbu<br><br>
+      ざぶぅん<br>
+      <br><br>
       ・2025/05/24<br>
       【歌枠】そろそろ歌いたくなってきた頃合いです #いぬいなみ 【戌亥とこ/伊波ライ/にじさんじ】<br>
       https://www.youtube.com/live/mCITW9_7uOw?si=HNCBwt0tNofoaF3s<br><br>
