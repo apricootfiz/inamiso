@@ -56,6 +56,11 @@
     #player {
       margin-top: 20px;
     }
+
+    .item.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }    
   </style>
 </head>
 <body>
@@ -139,10 +144,16 @@
           checkbox.checked = segment.skip;
           checkbox.onchange = (e) => {
             segment.skip = e.target.checked;
+            if (segment.skip) {
+              item.classList.add('disabled');
+            } else {
+              item.classList.remove('disabled');
+            }
           };
 
           item.onclick = (e) => {
             if (e.target.tagName === 'INPUT') return;
+            if (segment.skip) return; // ← スキップ指定されていたらクリック無効
             currentIndex = index;
             loadAndPlayCurrentVideo();
           };
