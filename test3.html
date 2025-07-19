@@ -15,12 +15,12 @@
       font-size: 18px;
       margin-bottom: 10px;
     }
-    
+
     #memo {
       font-size: 10px;
       margin-bottom: 10px;
     }
-    
+
     #playlist {
       border: 1px solid #ddd;
       margin-bottom: 20px;
@@ -46,93 +46,87 @@
       color: #666;
       background-color: #f9f9f9;
       border-top: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .groupContainer.hidden {
+      display: none;
     }
 
     #player {
       margin-top: 20px;
     }
-    
-    .hidden {
-      display: none;
-    }
-      
   </style>
 </head>
 <body>
   <h2 id="mainTitle">♪INAMISONG</h2><br>
- 
+  <div id="memo">※再生スキップしたい場合はチェック</div>
   <div id="playlist"></div>
-  <div id="memo">
-     ※再生スキップしたい場合はチェック
-  </div> 
   <div id="player"></div>
 
   <script>
     const videoSegments = [
       { type: 'label', title: '-- 2024/01/21 --' },
-      { type: 'video', videoId: 'ZRhe1FZbLGY', start: 1489, end: 1774, title: '空っぽなら、踊ろうぜ / Guiano×理芽' , skip: false },
+      { type: 'video', videoId: 'ZRhe1FZbLGY', start: 1489, end: 1774, title: '空っぽなら、踊ろうぜ / Guiano×理芽', skip: false },
       { type: 'label', title: '-- 2024/06/03 --' },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 1527, end: 1857, title: '星のうつわ / スキマスイッチ' , skip: false },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 3719, end: 4028, title: 'カブトムシ / aiko' , skip: false },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 6195, end: 6497, title: '眠り姫 / SEKAI NO OWARI' , skip: false },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 7459, end: 7737, title: '変わらないもの / 奥華子' , skip: false },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 9482, end: 9780, title: '奏 / スキマスイッチ' , skip: false },   
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 10430, end: 10514, title: 'ハム太郎とっとこうた' , skip: false },   
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 11766, end: 12068, title: 'ボクノート / スキマスイッチ' , skip: false },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 12992, end: 13203, title: 'SNOBBISM / Neru' , skip: false },   
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 14161, end: 14467, title: '奏 / スキマスイッチ ' , skip: false },   
-      { type: 'label', title: '--  2024/12/27 -- いぬいなみ' },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 695, end: 1010, title: '鱗 / 秦基博 (戌亥とこ)' , skip: false },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 1082, end: 1281, title: '欲望に満ちた青年団 / ONE OK ROCK' , skip: false },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 1387, end: 1677, title: 'Wherever you are / ONE OK ROCK (戌亥とこ)' , skip: false },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 1760, end: 1960, title: 'ノーダウト / Official髭男dism' , skip: false },    
-      { type: 'video', videoId: 'OEq1o-uScok', start: 2115, end: 2389, title: 'アンノウン・マザーグース / wowaka' , skip: false },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 2593, end: 2727, title: '酔いどれ知らず / Kanaria' , skip: false },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 2885, end: 3192, title: '夜明けと蛍 / n-buna' , skip: false },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 3270, end: 3472, title: '独りんぼエンヴィー / koyori/電ポルP' , skip: false },
-      { type: 'label', title: '--  2025/05/24 -- いぬいなみ' },
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 582, title: '雨とカプチーノ / ヨルシカ' , skip: false },
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 916, title: 'Rain / 秦基博' , skip: false },    
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 1334, title: '琥珀色の街、上海蟹の朝 / くるり' , skip: false },
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 1750, title: '長く短い祭 / 椎名林檎' , skip: false },   
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 2102, title: 'ハレンチ / ちゃんみな' , skip: false },    
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 2444, title: '夜撫でるメノウ / Ayase' , skip: false },
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 2756, title: '恋愛裁判 / 40㍍P' , skip: false },   
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 3314, title: 'W●RK / millennium parade × 椎名林檎' , skip: false },   
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 3709, title: 'アカツキの詩 / スキマスイッチ' , skip: false },   
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 4052, title: '朝を呑む / バルーン' , skip: false },   
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 4374, title: 'ドレミファロンド / 40㍍P' , skip: false },         
-      
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 1527, end: 1857, title: '星のうつわ / スキマスイッチ', skip: false },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 3719, end: 4028, title: 'カブトムシ / aiko', skip: false },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 6195, end: 6497, title: '眠り姫 / SEKAI NO OWARI', skip: false },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 7459, end: 7737, title: '変わらないもの / 奥華子', skip: false },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 9482, end: 9780, title: '奏 / スキマスイッチ', skip: false },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 10430, end: 10514, title: 'ハム太郎とっとこうた', skip: false },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 11766, end: 12068, title: 'ボクノート / スキマスイッチ', skip: false },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 12992, end: 13203, title: 'SNOBBISM / Neru', skip: false },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 14161, end: 14467, title: '奏 / スキマスイッチ', skip: false },
+      { type: 'label', title: '-- 2024/12/27 -- いぬいなみ' },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 695, end: 1010, title: '鱗 / 秦基博 (戌亥とこ)', skip: false },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 1082, end: 1281, title: '欲望に満ちた青年団 / ONE OK ROCK', skip: false },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 1387, end: 1677, title: 'Wherever you are / ONE OK ROCK (戌亥とこ)', skip: false },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 1760, end: 1960, title: 'ノーダウト / Official髭男dism', skip: false },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 2115, end: 2389, title: 'アンノウン・マザーグース / wowaka', skip: false },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 2593, end: 2727, title: '酔いどれ知らず / Kanaria', skip: false },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 2885, end: 3192, title: '夜明けと蛍 / n-buna', skip: false },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 3270, end: 3472, title: '独りんぼエンヴィー / koyori/電ポルP', skip: false },
+      { type: 'label', title: '-- 2025/05/24 -- いぬいなみ' },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 582, title: '雨とカプチーノ / ヨルシカ', skip: false },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 916, title: 'Rain / 秦基博', skip: false },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 1334, title: '琥珀色の街、上海蟹の朝 / くるり', skip: false },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 1750, title: '長く短い祭 / 椎名林檎', skip: false },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 2102, title: 'ハレンチ / ちゃんみな', skip: false },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 2444, title: '夜撫でるメノウ / Ayase', skip: false },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 2756, title: '恋愛裁判 / 40㍍P', skip: false },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 3314, title: 'W●RK / millennium parade × 椎名林檎', skip: false },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 3709, title: 'アカツキの詩 / スキマスイッチ', skip: false },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 4052, title: '朝を呑む / バルーン', skip: false },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 4374, title: 'ドレミファロンド / 40㍍P', skip: false },
     ];
 
     let player;
     let currentIndex = null;
     let checkInterval;
-    
+
     function renderPlaylist() {
       const playlistEl = document.getElementById('playlist');
       playlistEl.innerHTML = '';
-    
       let currentGroup = null;
-    
+
       videoSegments.forEach((segment, index) => {
         if (segment.type === 'label') {
           const labelEl = document.createElement('div');
           labelEl.textContent = segment.title;
           labelEl.className = 'label';
-    
+
           const groupContainer = document.createElement('div');
           groupContainer.className = 'groupContainer';
-    
-          // 折りたたみトグル
+
           labelEl.onclick = () => {
             groupContainer.classList.toggle('hidden');
           };
-    
+
           playlistEl.appendChild(labelEl);
           playlistEl.appendChild(groupContainer);
           currentGroup = groupContainer;
-    
+
         } else if (segment.type === 'video') {
           const item = document.createElement('div');
           item.className = 'item';
@@ -140,19 +134,19 @@
             <input type="checkbox" class="video-skip-toggle" data-index="${index}" />
             <span>${segment.title}</span>
           `;
-    
+
           const checkbox = item.querySelector('.video-skip-toggle');
           checkbox.checked = segment.skip;
           checkbox.onchange = (e) => {
             segment.skip = e.target.checked;
           };
-    
+
           item.onclick = (e) => {
             if (e.target.tagName === 'INPUT') return;
             currentIndex = index;
             loadAndPlayCurrentVideo();
           };
-    
+
           if (currentGroup) {
             currentGroup.appendChild(item);
           } else {
@@ -160,6 +154,47 @@
           }
         }
       });
+    }
+
+    function loadAndPlayCurrentVideo() {
+      if (currentIndex === null || !videoSegments[currentIndex]) return;
+
+      const segment = videoSegments[currentIndex];
+      if (segment.skip) {
+        nextVideo();
+        return;
+      }
+
+      player.loadVideoById({
+        videoId: segment.videoId,
+        startSeconds: segment.start,
+        endSeconds: segment.end
+      });
+
+      document.querySelectorAll('.item').forEach((el, i) => {
+        el.classList.toggle('active', i === currentIndex);
+      });
+
+      clearInterval(checkInterval);
+      checkInterval = setInterval(() => {
+        const currentTime = player.getCurrentTime();
+        if (currentTime >= segment.end) {
+          nextVideo();
+        }
+      }, 1000);
+    }
+
+    function nextVideo() {
+      let next = currentIndex + 1;
+      while (next < videoSegments.length) {
+        if (videoSegments[next].type === 'video' && !videoSegments[next].skip) {
+          currentIndex = next;
+          loadAndPlayCurrentVideo();
+          return;
+        }
+        next++;
+      }
+      clearInterval(checkInterval);
     }
 
     function onPlayerStateChange(event) {
@@ -174,6 +209,9 @@
         height: '360',
         width: '100%',
         videoId: '',
+        playerVars: {
+          autoplay: 1
+        },
         events: {
           onStateChange: onPlayerStateChange
         }
@@ -182,24 +220,5 @@
   </script>
 
   <script src="https://www.youtube.com/iframe_api"></script>
-
-  <div id="memo">
-    <p>
-      ・2024/01/21<br>
-      【Birthday 3D LIVE】Fall for me💙【＃夕陽リリ生誕LIVE2024/にじさんじ】<br>
-      https://www.youtube.com/live/ZRhe1FZbLGY?si=kdiqGsrygp46PGH7<br><br>
-      ・2024/06/03<br>
-      【KARAOKE￤歌枠】DAMカラオケで100点取れるまで帰れません？！LET'S GET 100 SCORE！！【NIJISANJI EN | Meloco Kyoran】<br>
-      https://www.youtube.com/live/6x_sX1nAV5Q?si=DRgb0xm9WAIMwfGH<br><br>
-      ・2024/12/27<br>
-      【コラボ歌枠】好きな曲を好きなだけ歌います！！！！！【戌亥とこ/伊波ライ/にじさんじ】<br>
-      https://www.youtube.com/live/OEq1o-uScok?si=oYpybc8N9-WuLmbu<br><br>
-      ・2025/05/24<br>
-      【歌枠】そろそろ歌いたくなってきた頃合いです #いぬいなみ 【戌亥とこ/伊波ライ/にじさんじ】<br>
-      https://www.youtube.com/live/mCITW9_7uOw?si=HNCBwt0tNofoaF3s<br>
-    
-    </p>
-  </div><br>
-  
 </body>
 </html>
