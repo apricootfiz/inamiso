@@ -17,7 +17,7 @@
     }
     
     #memo {
-      font-size: 15px;
+      font-size: 12px;
       margin-bottom: 10px;
     }
     
@@ -55,17 +55,7 @@
 </head>
 <body>
   <h2 id="mainTitle">♪INAMISONG</h2><br>
-  <div id="memo">
-    <p>
-      ・2024/01/21<br>
-      【Birthday 3D LIVE】Fall for me💙【＃夕陽リリ生誕LIVE2024/にじさんじ】<br>
-      https://www.youtube.com/live/ZRhe1FZbLGY?si=kdiqGsrygp46PGH7<br><br>
-      ・2024/06/03<br>
-      【KARAOKE￤歌枠】DAMカラオケで100点取れるまで帰れません？！LET'S GET 100 SCORE！！【NIJISANJI EN | Meloco Kyoran】<br>
-      https://www.youtube.com/live/6x_sX1nAV5Q?si=DRgb0xm9WAIMwfGH<br>
-  
-    </p>
-  </div><br>
+
   <div id="playlist"></div>
   <div id="player"></div>
 
@@ -73,9 +63,38 @@
     const videoSegments = [
       { type: 'label', title: '-- 2024/01/21 --' },
       { type: 'video', videoId: 'ZRhe1FZbLGY', start: 1489, end: 1774, title: '空っぽなら、踊ろうぜ / Guiano×理芽' },
-      { type: 'label', title: '-- カラオケ --' },
+      { type: 'label', title: '-- 2024/06/03 --' },
       { type: 'video', videoId: '6x_sX1nAV5Q', start: 1527, end: 1857, title: '星のうつわ / スキマスイッチ' },
       { type: 'video', videoId: '6x_sX1nAV5Q', start: 3719, end: 4028, title: 'カブトムシ / aiko' },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 6195, end: 6497, title: '眠り姫 / SEKAI NO OWARI' },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 7459, end: 7737, title: '変わらないもの / 奥華子' },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 9482, end: 9780, title: '奏 / スキマスイッチ' },   
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 10430, end: 10514, title: 'ハム太郎とっとこうた' },   
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 11766, end: 12068, title: 'ボクノート / スキマスイッチ' },
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 12992, end: 13203, title: 'SNOBBISM / Neru' },   
+      { type: 'video', videoId: '6x_sX1nAV5Q', start: 14161, end: 14467, title: '奏 / スキマスイッチ ' },   
+      { type: 'label', title: '--  2024/12/27 -- いぬいなみ' },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 695, end: 1010, title: '鱗 / 秦基博 (戌亥とこ)' },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 1082, end: 1281, title: '欲望に満ちた青年団 / ONE OK ROCK' },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 1387, end: 1677, title: 'Wherever you are / ONE OK ROCK (戌亥とこ)' },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 1760, end: 1960, title: 'ノーダウト / Official髭男dism' },    
+      { type: 'video', videoId: 'OEq1o-uScok', start: 2115, end: 2389, title: 'アンノウン・マザーグース / wowaka' },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 2593, end: 2727, title: '酔いどれ知らず / Kanaria' },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 2885, end: 3192, title: '夜明けと蛍 / n-buna' },
+      { type: 'video', videoId: 'OEq1o-uScok', start: 3270, end: 3472, title: '独りんぼエンヴィー / koyori/電ポルP' },
+      { type: 'label', title: '--  2025/05/24 -- いぬいなみ' },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 582, title: '雨とカプチーノ / ヨルシカ' },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 916, title: 'Rain / 秦基博' },    
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 1334, title: '琥珀色の街、上海蟹の朝 / くるり' },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 1750, title: '長く短い祭 / 椎名林檎' },   
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 2102, title: 'ハレンチ / ちゃんみな' },    
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 2444, title: '夜撫でるメノウ / Ayase' },
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 2756, title: '恋愛裁判 / 40㍍P' },   
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 3314, title: 'W●RK / millennium parade × 椎名林檎' },   
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 3709, title: 'アカツキの詩 / スキマスイッチ' },   
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 4052, title: '朝を呑む / バルーン' },   
+      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 4374, title: 'ドレミファロンド / 40㍍P' },         
+      
     ];
 
     let player;
@@ -173,5 +192,24 @@
   </script>
 
   <script src="https://www.youtube.com/iframe_api"></script>
+
+  <div id="memo">
+    <p>
+      ・2024/01/21<br>
+      【Birthday 3D LIVE】Fall for me💙【＃夕陽リリ生誕LIVE2024/にじさんじ】<br>
+      https://www.youtube.com/live/ZRhe1FZbLGY?si=kdiqGsrygp46PGH7<br><br>
+      ・2024/06/03<br>
+      【KARAOKE￤歌枠】DAMカラオケで100点取れるまで帰れません？！LET'S GET 100 SCORE！！【NIJISANJI EN | Meloco Kyoran】<br>
+      https://www.youtube.com/live/6x_sX1nAV5Q?si=DRgb0xm9WAIMwfGH<br>
+      ・2024/12/27<br>
+      【コラボ歌枠】好きな曲を好きなだけ歌います！！！！！【戌亥とこ/伊波ライ/にじさんじ】<br>
+      https://www.youtube.com/live/OEq1o-uScok?si=oYpybc8N9-WuLmbu<br>
+      ・2025/05/24<br>
+      【歌枠】そろそろ歌いたくなってきた頃合いです #いぬいなみ 【戌亥とこ/伊波ライ/にじさんじ】<br>
+      https://www.youtube.com/live/mCITW9_7uOw?si=HNCBwt0tNofoaF3s<br>
+    
+    </p>
+  </div><br>
+  
 </body>
 </html>
