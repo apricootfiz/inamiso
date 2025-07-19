@@ -51,6 +51,10 @@
     #player {
       margin-top: 20px;
     }
+
+    .hidden {
+      display: none;
+    }    
   </style>
 </head>
 <body>
@@ -104,11 +108,30 @@
     function renderPlaylist() {
       const playlistEl = document.getElementById('playlist');
       playlistEl.innerHTML = '';
+    
+      let currentGroup = null;
+    
       videoSegments.forEach((segment, index) => {
         const item = document.createElement('div');
+    
         if (segment.type === 'label') {
           item.textContent = segment.title;
           item.className = 'label';
+          item.style.cursor = 'pointer';
+    
+          // 折りたたみ対象の container を作成
+          const groupContainer = document.createElement('div');
+          groupContainer.className = 'groupContainer';
+    
+          // 折りたたみ状態の管理
+          item.onclick = () => {
+            groupContainer.classList.toggle('hidden');
+          };
+    
+          playlistEl.appendChild(item);
+          playlistEl.appendChild(groupContainer);
+          currentGroup = groupContainer;
+    
         } else {
           item.className = 'item';
           item.textContent = segment.title;
@@ -116,11 +139,16 @@
             currentIndex = index;
             loadAndPlayCurrentVideo();
           };
+          if (currentGroup) {
+            currentGroup.appendChild(item);
+          } else {
+            playlistEl.appendChild(item); // ラベルがない場合用
+          }
         }
-        playlistEl.appendChild(item);
       });
     }
 
+    
     function loadAndPlayCurrentVideo() {
       if (currentIndex === null) return;
       const segment = videoSegments[currentIndex];
@@ -200,13 +228,13 @@
       https://www.youtube.com/live/ZRhe1FZbLGY?si=kdiqGsrygp46PGH7<br><br>
       ・2024/06/03<br>
       【KARAOKE￤歌枠】DAMカラオケで100点取れるまで帰れません？！LET'S GET 100 SCORE！！【NIJISANJI EN | Meloco Kyoran】<br>
-      https://www.youtube.com/live/6x_sX1nAV5Q?si=DRgb0xm9WAIMwfGH<br>
+      https://www.youtube.com/live/6x_sX1nAV5Q?si=DRgb0xm9WAIMwfGH<br><br>
       ・2024/12/27<br>
       【コラボ歌枠】好きな曲を好きなだけ歌います！！！！！【戌亥とこ/伊波ライ/にじさんじ】<br>
-      https://www.youtube.com/live/OEq1o-uScok?si=oYpybc8N9-WuLmbu<br>
+      https://www.youtube.com/live/OEq1o-uScok?si=oYpybc8N9-WuLmbu<br><br>
       ・2025/05/24<br>
       【歌枠】そろそろ歌いたくなってきた頃合いです #いぬいなみ 【戌亥とこ/伊波ライ/にじさんじ】<br>
-      https://www.youtube.com/live/mCITW9_7uOw?si=HNCBwt0tNofoaF3s<br>
+      https://www.youtube.com/live/mCITW9_7uOw?si=HNCBwt0tNofoaF3s<br><br>
     
     </p>
   </div><br>
