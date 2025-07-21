@@ -7,17 +7,17 @@
     body {
       font-family: sans-serif;
       padding: 20px;
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
     }
 
     #mainTitle {
-      font-size: 18px;
+      font-size: 20px;
       margin-bottom: 10px;
     }
     
     #memo {
-      font-size: 12px;
+      font-size: 10px;
       margin-bottom: 10px;
     }
     
@@ -58,13 +58,94 @@
   </style>
 </head>
 <body>
-  <h2 id="mainTitle">♪INAMISONG</h2><br>
-
+  <h2 id="mainTitle">♪INAMISONG</h2>
+  <hr size="3" noshade>
+    <div id="memo">
+      <p>個人の範疇で歌を楽しむための再生リスト<br>
+        ※全てアーカイブ時間指定</p>
+    </div>
   <div id="playlist"></div>
   <div id="player"></div>
 
   <script>
     const videoSegments = [
+      { type: 'label', title: '▼ 2023/05/06 【祝！収益化！】うお～～！！初めての歌配信だあぁぁぁぁ！！！【伊波ライ / にじさんじ】' },
+      { type: 'video', videoId: 'abmZQaIQDgo', start: 116, end: 394, title: '全力少年 / スキマスイッチ' },
+      { type: 'video', videoId: 'abmZQaIQDgo', start: 630, end: 809, title: 'アスノヨゾラ哨戒班 / Orangestar' },     
+      { type: 'video', videoId: 'abmZQaIQDgo', start: 1186, end: 1409, title: '真赤 / My Hair is Bad' },     
+      { type: 'video', videoId: 'abmZQaIQDgo', start: 2026, end: 2319, title: 'アイネクライネ / 米津玄師' },     
+      { type: 'video', videoId: 'abmZQaIQDgo', start: 2786, end: 3128, title: '君の知らない物語 / Supercell' },   
+
+      { type: 'label', title: '▼ 2023/05/19 【歌枠】ボーカロイド限定歌枠！！！！！！！！【伊波ライ / にじさんじ】' },
+      { type: 'video', videoId: 'aNgrKs4iKLA', start: 264, end: 496, title: 'シャルル / バルーン' },
+      { type: 'video', videoId: 'aNgrKs4iKLA', start: 757, end: 962, title: 'ドーナツホール / ハチ' },
+      { type: 'video', videoId: 'aNgrKs4iKLA', start: 1686, end: 1920, title: 'ロウワー / ぬゆり' },
+      { type: 'video', videoId: 'aNgrKs4iKLA', start: 2495, end: 2801, title: '夜明けと蛍 / ヨルシカ' },
+      { type: 'video', videoId: 'aNgrKs4iKLA', start: 3130, end: 3294, title: 'テレキャスタービーボーイ / すりぃ' },
+      
+      { type: 'label', title: '▼ 2023/06/16 【歌枠】"ほぼ"バラード限定歌枠ですよ～～！！【伊波ライ / にじさんじ】' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 137, end: 410, title: '猫 / DiSH' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 549, end: 910, title: 'たばこ / コレサワ' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 1192, end: 1448, title: 'からくりピエロ / 40mP' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 1744, end: 2045, title: '別の人の彼女になったよ / Wacci' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 2167, end: 2488, title: '眠り姫 / SEKAI NO OWARI' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 2716, end: 2994, title: '変わらないもの / 奥華子' },
+
+      { type: 'label', title: '▼ 2023/06/25 【歌枠】みんなから貰ったリクエスト曲を歌っていくよ～！！【伊波ライ / にじさんじ】' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 109, end: 320, title: 'StaRt / Mrs. GREEN APPLE' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 695, end: 910, title: '丸の内サディスティック / 椎名林檎' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 1470, end: 1804, title: 'ボクノート / スキマスイッチ' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 2416, end: 2674, title: 'いつか結婚しても / My Hair is Bad' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 2919, end: 3164, title: 'Lovers / sumika' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 3388, end: 3644, title: 'ファンサ / mona' },
+
+      { type: 'label', title: '▼ 2023/07/09 【歌枠】アニソン限定で歌っていくよ～～～！！【伊波ライ / にじさんじ】' },
+      { type: 'video', videoId: 'tPLcW-Y39G4', start: 293, end: 529, title: 'ピースサイン / 米津玄師' },
+      { type: 'video', videoId: 'tPLcW-Y39G4', start: 1251, end: 1478, title: 'Re:Re: / ASIAN KUNG-FU GENERATION' },
+      { type: 'video', videoId: 'tPLcW-Y39G4', start: 1768, end: 2073, title: '逆夢 / King Gnu' },
+      { type: 'video', videoId: 'tPLcW-Y39G4', start: 2497, end: 2785, title: 'RPG / SEKAI NO OWARI' },
+      { type: 'video', videoId: 'tPLcW-Y39G4', start: 3050, end: 3330, title: '創世のアクエリオン / AKINO' },
+      
+      { type: 'label', title: '▼ 2023/07/23 【 歌枠 】伊波がカラオケでめっちゃ歌う曲を歌う枠～～～！！！！【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: '7ynYCHj13wI', start: 328, end: 610, title: 'ドライフラワー / 優里' },
+      { type: 'video', videoId: '7ynYCHj13wI', start: 798, end: 992, title: '春愁 / Mrs. GREEN APPLE' },
+      { type: 'video', videoId: '7ynYCHj13wI', start: 1371, end: 1631, title: 'オドループ / フレデリック' },
+      { type: 'video', videoId: '7ynYCHj13wI', start: 1909, end: 2117, title: '欲望に満ちた青年団 / ONE OK ROCK' },
+      { type: 'video', videoId: '7ynYCHj13wI', start: 2641, end: 2942, title: '奏 / スキマスイッチ' },      
+      { type: 'video', videoId: '7ynYCHj13wI', start: 3132, end: 3444, title: 'ひまわりの約束 / 秦基博' },
+
+      { type: 'label', title: '▼ 2023/07/30 【 歌枠 】夏だ！伊波だ！！歌枠だ！！！！夏曲限定歌配信！！！！！！【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 159, end: 359, title: 'ただ君に晴れ / ヨルシカ' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 750, end: 1032, title: '少女レイ / みきとP' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 1407, end: 1716, title: 'カブトムシ / aiko' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 2220, end: 2559, title: 'HANABI / Mr.Children' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 2740, end: 2952, title: 'ロマンチシズム / Mrs. GREEN APPLE' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 3076, end: 3363, title: '若者のすべて / フジファブリック' },   
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 3448, end: 3664, title: 'ロマンチシズム / Mrs. GREEN APPLE' },
+
+      { type: 'label', title: '▼ 2023/08/11 【 歌枠 】夏の歌枠！！！！！第二弾！！！！！！！！【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 161, end: 498, title: 'HANABI / Mr.Children' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 707, end: 955, title: '花に亡霊 / ヨルシカ' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 1324, end: 1515, title: 'いかないで / 想太' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 1848, end: 2150, title: 'ハナミズキ / 一青窈' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 2277, end: 2560, title: '花火 / aiko' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 2771, end: 3009, title: 'イケナイ太陽 / ORANGE RANGE' },
+
+      { type: 'label', title: '▼ 2023/08/28 【 生演奏 】伊波ライ 1st Session Live !!!!!!!!!!!!!!!!【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: 'WL5rE9BgzUo', start: 140, end: 397, title: '気づけよBaby / THE ORAL CIGARETTES' },
+      { type: 'video', videoId: 'WL5rE9BgzUo', start: 399, end: 632, title: 'カゲロウデイズ / じん' },
+      { type: 'video', videoId: 'WL5rE9BgzUo', start: 724, end: 1051, title: '夏の半券 / みきとP' },
+      { type: 'video', videoId: 'WL5rE9BgzUo', start: 1179, end: 1415, title: '青い春 / SUPER BEAVER' },
+      
+      { type: 'label', title: '▼ 2023/09/09 【 歌枠 】ボカロボカロボカロボカロボカロボカロ【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 159, end: 386, title: 'ブリキノダンス / 日向電工' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 622, end: 884, title: '命に嫌われている。 / カンザキイオリ' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 1031, end: 1239, title: 'ラブカ？ / 柊キライ' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 1477, end: 1681, title: 'コールボーイ / syudou' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 1853, end: 2053, title: '独りんぼエンヴィー / koyori（電ポルP）' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 2401, end: 2571, title: 'グッバイ宣言 / Chinozo' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 3049, end: 3273, title: '恋愛裁判 / 40mP' },
+      
       { type: 'label', title: '▼ 2023/09/23 【重大告知アリ！】ざぶぅん夏のオフ歌枠！【にじさんじ/緋八マナ with 伊波ライ】' },
       { type: 'video', videoId: 'JNfoPxPa-nQ', start: 68, end: 303, title: 'Stand by you / Official髭男dism' },
       { type: 'video', videoId: 'JNfoPxPa-nQ', start: 576, end: 837, title: 'サウダージ / ポルノグラフィティ' },     
@@ -75,103 +156,30 @@
       { type: 'video', videoId: 'JNfoPxPa-nQ', start: 2757, end: 2961, title: '怪物 / YOASOBI' },      
       { type: 'video', videoId: 'JNfoPxPa-nQ', start: 3088, end: 3363, title: 'God Knows... / 涼宮ハルヒの憂鬱' },
       { type: 'video', videoId: 'JNfoPxPa-nQ', start: 3588, end: 3828, title: 'LOSER / 米津玄師' },
-      
-      { type: 'label', title: '▼ 2023/10/01 【にじさんじカラオケ大会】先輩、一緒にカラオケ行きませんか？？？？【 緑仙 / ましろ爻 / 渡会雲雀 / 伊波ライ 】' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 419, end: 637, title: 'メランコリーキッチン / 米津玄師' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 757, end: 985, title: '1/3の純情な感情 / SIAM SHADE' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 1107, end: 1343, title: '砂の惑星 / ハチ' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 1497, end: 1691, title: 'ジャガーノート / 夏代孝明' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 2080, end: 2393, title: 'レイメイ / さユり' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 2518, end: 2704, title: '一途 / King Gnu' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 2948, end: 3234, title: 'ヨンジュウナナ / みきとP' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 3406, end: 3650, title: 'だから僕は音楽を辞めた / ヨルシカ' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 3738, end: 3938, title: '青春コンプレックス / 結束バンド' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 4188, end: 4419, title: 'バイオレンス / 女王蜂' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 4555, end: 4762, title: '死ぬな！ / こっちのけんと' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 4813, end: 5077, title: '夢遊病者は此岸にて / こんにちは谷田さん' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 5183, end: 5397, title: 'NIGHT DANCER / Imase' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 5467, end: 5652, title: 'ラブカ？ / 柊キライ' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 5723, end: 5997, title: 'Sincerely / 唐沢美帆' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 6182, end: 6381, title: '閃光 / Alexandros' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 6541, end: 6781, title: 'ラストダンス / Eve' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 6846, end: 7093, title: '光るなら / Goose house' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 7178, end: 7467, title: 'Vinyl / King Gnu' },
-      { type: 'video', videoId: 'dgBABPXRj_4', start: 7593, end: 7876, title: 'バッド・ダンスホール / ぱなまん' },
-      
-      { type: 'label', title: '▼ 2023/10/28 【歌枠】100曲歌いきるまでスタジオから帰れません‼【にじさんじ | 緑仙】' },
-      { type: 'video', videoId: '5ESXILcf1j4', start: 24387, end: 24610, title: 'ドリームレス・ドリームス / はるまきごはん' },
-      { type: 'video', videoId: '5ESXILcf1j4', start: 25305, end: 25499, title: 'アノニマスファンフアレ / ツミキ' },
-      { type: 'video', videoId: '5ESXILcf1j4', start: 24387, end: 26219, title: '喰らいながら / 獅子志司' },
-      { type: 'video', videoId: '5ESXILcf1j4', start: 27031, end: 27246, title: 'ジャンキーナイトタウンオーケストラ / すりぃ' },
-      
-      { type: 'label', title: '▼ 2023/11/05 【#アジカラ】ジャンル縛りなし歌枠🎵SINGING STREAM【にじさんじ/レヴィ・エリファ】' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 254, end: 460, title: '死ぬな！ / こっちのけんと' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 616, end: 847, title: '愛情と矛先 / Mrs. GREEN APPLE' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 1711, end: 1907, title: 'マトリョシカ / 米津玄師' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 2407, end: 2709, title: '点描の唄 / Mrs. GREEN APPLE' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 3664, end: 3854, title: '君色に染まる / TOKOTOKO' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 4933, end: 5170, title: 'ドラマツルギー / Eve' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 5345, end: 5543, title: 'ブリキノダンス / Ado' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 5648, end: 5868, title: 'エンヴィキャットウォーク / トーマ' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 6765, end: 6938, title: 'ルーマー / ポリスピカデリー' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 7059, end: 7257, title: 'ノーダウト / Official髭男dism' },
-      { type: 'video', videoId: 'X82XuhJWX9M', start: 8260, end: 8468, title: '君じゃなきゃダメみたい / 大石昌良' },  
-      
+
+      { type: 'label', title: '▼ 2023/10/23 【 #伊波ライ誕生日ライブ2023 】誕生したのでバンドライブをします。【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 219, end: 448, title: '月陽-ツキアカリ- / みきとP' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 671, end: 921, title: 'Lovers / sumika' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 1154, end: 1427, title: '秒針を噛む / ずっと真夜中でいいのに。' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 1774, end: 2107, title: 'ステラ / じん' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 2263, end: 2550, title: 'それがあなたの幸せとしても / Heavenz' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 2771, end: 2990, title: 'スターマーカー / KANA-BOON' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 3497, end: 3803, title: 'ワールド・ランプシェード / BuzzG' },
+
+      { type: 'label', title: '▼ 2023/11/03 【 ピアノ弾き語り歌枠 】ピアニスト弦月先輩、ボーカリスト伊波。【 弦月藤士郎 / 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 147, end: 516, title: 'アヤノの幸福理論 / じん' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 866, end: 1169, title: '地球をあげる / はるまきごはん' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 1517, end: 1861, title: 'rain stops,good-bye / におP' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 2437, end: 2719, title: 'ラプンツェル / ナブナ' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 2928, end: 3242, title: 'ピエロ / KEI' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 3456, end: 3726, title: '心做し / 蝶々P' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 3945, end: 4238, title: '青 / 164' },
+
       { type: 'label', title: '▼ 2024/01/21 【Birthday 3D LIVE】Fall for me💙【＃夕陽リリ生誕LIVE2024/にじさんじ】' },
       { type: 'video', videoId: 'ZRhe1FZbLGY', start: 1489, end: 1774, title: '空っぽなら、踊ろうぜ / Guiano×理芽' },
       
-      { type: 'label', title: '▼ 2024/02/09 【#アジカラ】ジャンル縛りなし歌枠PART2🎵SINGING STREAM【にじさんじ/レヴィ・エリファ】' },
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: 72, end: 278, title: '死ぬな！ / こっちのけんと' },
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: 1130, end: 1324, title: '偽物人間40号 / shimon' },      
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: 1780, end: 2001, title: 'エンヴィキャットウォーク / トーマ / こっちのけんと' },
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: 2480, end: 2721, title: '勿忘 / Awesome City Club' }, 
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: 2860, end: 3135, title: '波に名前をつけること、僕らの呼吸に終わりがあること。 / キタニタツヤ' },
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: 4629, end: 4859, title: 'レディーレ / 須田景凪' }, 
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: 5377, end: 5676, title: '点描の唄 / Mrs. GREEN APPLE' }, 
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: 5934, end: 6151, title: '絶え間なく藍色 / 獅子志司' }, 
-      { type: 'video', videoId: 'O7yLcJUqQgM', start: 7091, end: 7323, title: '君じゃなきゃダメみたい / 大石昌良' }, 
-      
-      { type: 'label', title: '▼ 2024/06/03 【KARAOKE￤歌枠】DAMカラオケで100点取れるまで帰れません？！LETS GET 100 SCORE！！【NIJISANJI EN | Meloco Kyoran】' },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 1527, end: 1857, title: '星のうつわ / スキマスイッチ' },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 3719, end: 4028, title: 'カブトムシ / aiko' },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 6195, end: 6497, title: '眠り姫 / SEKAI NO OWARI' },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 7459, end: 7737, title: '変わらないもの / 奥華子' },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 9482, end: 9780, title: '奏 / スキマスイッチ' },   
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 10430, end: 10514, title: 'ハム太郎とっとこうた' },   
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 11766, end: 12068, title: 'ボクノート / スキマスイッチ' },
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 12992, end: 13203, title: 'SNOBBISM / Neru' },   
-      { type: 'video', videoId: '6x_sX1nAV5Q', start: 14161, end: 14467, title: '奏 / スキマスイッチ ' },   
-      
       { type: 'label', title: '▼ 2024/06/28 【歌枠】誕生日カウントダウンライブ！生バンドやで！全員集合！【にじさんじ/緋八マナ】' },
       { type: 'video', videoId: '8GPkeAkKYhA', start: 2640, end: 2928, title: 'とても素敵な六月でした / Eight' },
-
-      { type: 'label', title: '▼ 2024/12/27 【コラボ歌枠】好きな曲を好きなだけ歌います！！！！！【戌亥とこ/伊波ライ/にじさんじ】' },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 695, end: 1010, title: '鱗 / 秦基博' },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 1082, end: 1281, title: '欲望に満ちた青年団 / ONE OK ROCK' },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 1387, end: 1677, title: 'Wherever you are / ONE OK ROCK' },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 1760, end: 1960, title: 'ノーダウト / Official髭男dism' },    
-      { type: 'video', videoId: 'OEq1o-uScok', start: 2115, end: 2389, title: 'アンノウン・マザーグース / wowaka' },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 2593, end: 2727, title: '酔いどれ知らず / Kanaria' },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 2885, end: 3192, title: '夜明けと蛍 / n-buna' },
-      { type: 'video', videoId: 'OEq1o-uScok', start: 3270, end: 3472, title: '独りんぼエンヴィー / koyori/電ポルP' },
-      
-      { type: 'label', title: '▼ 2025/05/24 【歌枠】そろそろ歌いたくなってきた頃合いです #いぬいなみ 【戌亥とこ/伊波ライ/にじさんじ】' },
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 310, end: 582, title: '雨とカプチーノ / ヨルシカ' },
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 653, end: 916, title: 'Rain / 秦基博' },    
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 1025, end: 1334, title: '琥珀色の街、上海蟹の朝 / くるり' },
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 1489, end: 1750, title: '長く短い祭 / 椎名林檎' },   
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 1902, end: 2102, title: 'ハレンチ / ちゃんみな' },    
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 2175, end: 2444, title: '夜撫でるメノウ / Ayase' },
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 2534, end: 2756, title: '恋愛裁判 / 40㍍P' },   
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 3110, end: 3314, title: 'W●RK / millennium parade × 椎名林檎' },   
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 3444, end: 3709, title: 'アカツキの詩 / スキマスイッチ' },   
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 3773, end: 4052, title: '朝を呑む / バルーン' },   
-      { type: 'video', videoId: 'mCITW9_7uOw', start: 4178, end: 4374, title: 'ドレミファロンド / 40㍍P' },   
-      
-      { type: 'label', title: '▼ 2025/03/02 【#にじホロ調律チャレンジ】チーム対抗カラオケスコア予想バトル！！！！【律可/ホロスターズ】' },
-      { type: 'video', videoId: 'cUw1OEtmexQ', start: 1051, end: 1317, title: 'プロトディスコ / ぬゆり' },      
-      { type: 'video', videoId: 'cUw1OEtmexQ', start: 6295, end: 6534, title: 'ウィーアー！ / ワンピース' },      
-      { type: 'video', videoId: 'cUw1OEtmexQ', start: 10597, end: 10818, title: '怪獣の花唄 / Vaundy' },          
     ];
 
     let player;
@@ -296,48 +304,6 @@
   </script>
 
   <script src="https://www.youtube.com/iframe_api"></script>
-
-  <div id="memo">
-    <p>
-  
-      ・2023/09/23<br>
-      【重大告知アリ！】ざぶぅん夏のオフ歌枠！【にじさんじ/緋八マナ with 伊波ライ】<br>
-      https://www.youtube.com/live/JNfoPxPa-nQ?si=3_5t4AOKRpzTKdoB<br><br>  
-      ・2023/10/01<br>
-      【にじさんじカラオケ大会】先輩、一緒にカラオケ行きませんか？？？？【 緑仙 / ましろ爻 / 渡会雲雀 / 伊波ライ 】<br>
-      https://www.youtube.com/live/dgBABPXRj_4?si=KkZ74iCGb-1uzfj5<br><br>        
-      ・2023/10/28<br>
-      【歌枠】100曲歌いきるまでスタジオから帰れません‼【にじさんじ | 緑仙】<br>
-      https://www.youtube.com/live/5ESXILcf1j4?si=AMW8-eimxl8L9-vi<br><br>  
-      ・2023/11/05<br>
-      【#アジカラ】ジャンル縛りなし歌枠🎵SINGING STREAM【にじさんじ/レヴィ・エリファ】<br>
-      https://www.youtube.com/live/X82XuhJWX9M?si=5qsc9FEOXPrun1g3<br><br>      
-      ・2024/01/21<br>
-      【Birthday 3D LIVE】Fall for me💙【＃夕陽リリ生誕LIVE2024/にじさんじ】<br>
-      https://www.youtube.com/live/ZRhe1FZbLGY?si=kdiqGsrygp46PGH7<br><br>
-      ・2024/02/09<br>
-      【#アジカラ】ジャンル縛りなし歌枠PART2🎵SINGING STREAM【にじさんじ/レヴィ・エリファ】<br>
-      https://www.youtube.com/live/O7yLcJUqQgM?si=TpcfLo2rBQtpW_3D<br><br>      
-      ・2024/06/03<br>
-      【KARAOKE￤歌枠】DAMカラオケで100点取れるまで帰れません？！LET'S GET 100 SCORE！！【NIJISANJI EN | Meloco Kyoran】<br>
-      https://www.youtube.com/live/6x_sX1nAV5Q?si=DRgb0xm9WAIMwfGH<br><br>
-      ・2024/06/28<br>
-      【歌枠】誕生日カウントダウンライブ！生バンドやで！全員集合！【にじさんじ/緋八マナ】<br>
-      https://www.youtube.com/live/8GPkeAkKYhA?si=IJzt0e3kciWFWP0v<br><br>
-      ・2024/10/10<br>
-      ざぶぅん<br>
-      https://www.youtube.com/<br><br>
-      ・2024/12/27<br>
-      【コラボ歌枠】好きな曲を好きなだけ歌います！！！！！【戌亥とこ/伊波ライ/にじさんじ】<br>
-      https://www.youtube.com/live/OEq1o-uScok?si=oYpybc8N9-WuLmbu<br><br>
-      ・2025/05/24<br>
-      【歌枠】そろそろ歌いたくなってきた頃合いです #いぬいなみ 【戌亥とこ/伊波ライ/にじさんじ】<br>
-      https://www.youtube.com/live/mCITW9_7uOw?si=HNCBwt0tNofoaF3s<br><br>
-      ・2025/03/02<br>
-      【#にじホロ調律チャレンジ】チーム対抗カラオケスコア予想バトル！！！！【律可/ホロスターズ】<br>
-      https://www.youtube.com/live/cUw1OEtmexQ?si=YnqJyRri-bYbYHLp<br><br>    
-    </p>
-  </div><br>
   
 </body>
 </html>
