@@ -78,12 +78,9 @@ function extractVideoId(url) {
    日付正規化
 ================================ */
 function normalizeDate(dateStr) {
-  return dateStr
-    .trim()
-    .replace(/\//g, "-")
-    .split("-")
-    .map((v, i) => (i === 0 ? v : v.padStart(2, "0")))
-    .join("-");
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr.trim();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 /* ===============================
@@ -187,3 +184,4 @@ function renderCalendar(dayMap) {
 
 </body>
 </html>
+
