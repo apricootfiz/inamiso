@@ -15,8 +15,8 @@
     .day {
       border: 1px solid #ccc;
       padding: 6px;
-      font-size: 12px;
       min-height: 120px;
+      font-size: 12px;
     }
     .day img {
       width: 100%;
@@ -38,14 +38,26 @@ const sheetUrl =
   "https://docs.google.com/spreadsheets/d/1fnYlyOuVm6bl21crPuUXCmWE6jQuxjeAfl-T0z-PhcA/gviz/tq?tqx=out:csv";
 
 /* ===============================
-   YouTube動画ID抽出（ライブ対応）
+   動画ID抽出（ライブ / クエリ対応・決定版）
 ================================ */
 function extractVideoId(url) {
   if (!url) return null;
-  const match = url.match(
-    /(?:youtube\.com\/(?:watch\?v=|live\/)|youtu\.be\/)([0-9A-Za-z_-]{11})/
-  );
-  return match ? match[1] : null;
+
+  try {
+    url = decodeURIComponent(url);
+  } catch (e) {}
+
+  const patterns = [
+    /youtube\.com\/watch\?v=([0-9A-Za-z_-]{11})/,
+    /youtube\.com\/live\/([0-9A-Za-z_-]{11})/,
+    /youtu\.be\/([0-9A-Za-z_-]{11})/
+  ];
+
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
 }
 
 /* ===============================
@@ -62,7 +74,7 @@ function normalizeDate(dateStr) {
 }
 
 /* ===============================
-   CSV取得
+   CSV取得 & パース（安全版）
 ================================ */
 fetch(sheetUrl)
   .then(res => res.text())
@@ -71,22 +83,26 @@ fetch(sheetUrl)
     const videoMap = {};
 
     lines.forEach(line => {
-      if (!line) return;
+      if (!line.trim()) return;
 
-      const [dateRaw, urlRaw] = line.split(",");
-      if (!urlRaw) return;
-    
-      const cleanUrl = urlRaw.replace(/^"|"$/g, "").trim();
-      const videoId = extractVideoId(cleanUrl);
+      // CSV安全処理（ダブルクォート除去）
+      const cols = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+      if (!cols || cols.length < 2) return;
+
+      const dateRaw = cols[0].replace(/^"|"$/g, "");
+      const urlRaw  = cols[1].replace(/^"|"$/g, "").trim();
+
+      const videoId = extractVideoId(urlRaw);
       if (!videoId) return;
-    
+
       const date = normalizeDate(dateRaw);
-      videoMap[date] = videoId;      
+      videoMap[date] = videoId;
     });
 
-    console.log("videoMap:", videoMap);
+    console.log("videoMap（確認用）:", videoMap);
     renderCalendar(videoMap);
-  });
+  })
+  .catch(err => console.error(err));
 
 /* ===============================
    カレンダー描画
@@ -102,11 +118,12 @@ function renderCalendar(videoMap) {
     div.innerHTML = `<strong>${day}</strong>`;
 
     if (videoMap[dateStr]) {
-      const videoId = videoMap[dateStr];
+      const id = videoMap[dateStr];
       const img = document.createElement("img");
-      img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      img.src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+      img.alt = "YouTube thumbnail";
       img.onclick = () => {
-        window.open(`https://www.youtube.com/watch?v=${videoId}`, "_blank");
+        window.open(`https://www.youtube.com/watch?v=${id}`, "_blank");
       };
       div.appendChild(img);
     }
@@ -118,4 +135,3 @@ function renderCalendar(videoMap) {
 
 </body>
 </html>
-
