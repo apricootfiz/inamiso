@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>INAMISONG</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      background-color: #FFF;
+    }
+
+    #mainTitle {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    
+    #memo {
+      font-size: 10px;
+      margin-bottom: 10px;
+    }
+    
+    #playlist {
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+
+    .item {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #ccc;
+      font-size: 13px;
+    }
+
+    .item.active {
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+    }
+
+    .label {
+      padding: 8px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #666;
+      background-color: #f9f9f9;
+      border-top: 1px solid #ccc;
+    }
+
+    #player {
+      margin-top: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }    
+  </style>
+</head>
+<body>
+  <h2 id="mainTitle">♪INAMISONG</h2>
+  <hr size="3" noshade>
+    <div id="memo">
+      <p>個人の範疇で歌を楽しむための再生リスト<br>
+        ※全てアーカイブ時間指定</p>
+    </div>
+  <div id="playlist"></div>
+  <div id="player"></div>
+
+  <script>
+    const videoSegments = [
+      { type: 'label', title: '▼ 2023/05/06 【祝！収益化！】うお～～！！初めての歌配信だあぁぁぁぁ！！！【伊波ライ / にじさんじ】' },
+      { type: 'video', videoId: 'abmZQaIQDgo', start: 116, end: 394, title: '全力少年 / スキマスイッチ' },
+      { type: 'video', videoId: 'abmZQaIQDgo', start: 630, end: 809, title: 'アスノヨゾラ哨戒班 / Orangestar' },     
+      { type: 'video', videoId: 'abmZQaIQDgo', start: 1186, end: 1409, title: '真赤 / My Hair is Bad' },     
+      { type: 'video', videoId: 'abmZQaIQDgo', start: 2026, end: 2319, title: 'アイネクライネ / 米津玄師' },     
+      { type: 'video', videoId: 'abmZQaIQDgo', start: 2786, end: 3128, title: '君の知らない物語 / Supercell' },   
+
+      { type: 'label', title: '▼ 2023/05/19 【歌枠】ボーカロイド限定歌枠！！！！！！！！【伊波ライ / にじさんじ】' },
+      { type: 'video', videoId: 'aNgrKs4iKLA', start: 264, end: 496, title: 'シャルル / バルーン' },
+      { type: 'video', videoId: 'aNgrKs4iKLA', start: 757, end: 962, title: 'ドーナツホール / ハチ' },
+      { type: 'video', videoId: 'aNgrKs4iKLA', start: 1686, end: 1920, title: 'ロウワー / ぬゆり' },
+      { type: 'video', videoId: 'aNgrKs4iKLA', start: 2495, end: 2801, title: '夜明けと蛍 / ヨルシカ' },
+      { type: 'video', videoId: 'aNgrKs4iKLA', start: 3130, end: 3294, title: 'テレキャスタービーボーイ / すりぃ' },
+      
+      { type: 'label', title: '▼ 2023/06/16 【歌枠】"ほぼ"バラード限定歌枠ですよ～～！！【伊波ライ / にじさんじ】' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 137, end: 410, title: '猫 / DiSH' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 549, end: 910, title: 'たばこ / コレサワ' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 1192, end: 1448, title: 'からくりピエロ / 40mP' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 1744, end: 2045, title: '別の人の彼女になったよ / Wacci' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 2167, end: 2488, title: '眠り姫 / SEKAI NO OWARI' },
+      { type: 'video', videoId: 'og9RAdqoibE', start: 2716, end: 2994, title: '変わらないもの / 奥華子' },
+
+      { type: 'label', title: '▼ 2023/06/25 【歌枠】みんなから貰ったリクエスト曲を歌っていくよ～！！【伊波ライ / にじさんじ】' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 109, end: 320, title: 'StaRt / Mrs. GREEN APPLE' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 695, end: 910, title: '丸の内サディスティック / 椎名林檎' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 1470, end: 1804, title: 'ボクノート / スキマスイッチ' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 2416, end: 2674, title: 'いつか結婚しても / My Hair is Bad' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 2919, end: 3164, title: 'Lovers / sumika' },
+      { type: 'video', videoId: '2SPEfidEBVc', start: 3388, end: 3644, title: 'ファンサ / mona' },
+
+      { type: 'label', title: '▼ 2023/07/09 【歌枠】アニソン限定で歌っていくよ～～～！！【伊波ライ / にじさんじ】' },
+      { type: 'video', videoId: 'tPLcW-Y39G4', start: 293, end: 529, title: 'ピースサイン / 米津玄師' },
+      { type: 'video', videoId: 'tPLcW-Y39G4', start: 1251, end: 1478, title: 'Re:Re: / ASIAN KUNG-FU GENERATION' },
+      { type: 'video', videoId: 'tPLcW-Y39G4', start: 1768, end: 2073, title: '逆夢 / King Gnu' },
+      { type: 'video', videoId: 'tPLcW-Y39G4', start: 2497, end: 2785, title: 'RPG / SEKAI NO OWARI' },
+      { type: 'video', videoId: 'tPLcW-Y39G4', start: 3050, end: 3330, title: '創世のアクエリオン / AKINO' },
+      
+      { type: 'label', title: '▼ 2023/07/23 【 歌枠 】伊波がカラオケでめっちゃ歌う曲を歌う枠～～～！！！！【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: '7ynYCHj13wI', start: 328, end: 610, title: 'ドライフラワー / 優里' },
+      { type: 'video', videoId: '7ynYCHj13wI', start: 798, end: 992, title: '春愁 / Mrs. GREEN APPLE' },
+      { type: 'video', videoId: '7ynYCHj13wI', start: 1371, end: 1631, title: 'オドループ / フレデリック' },
+      { type: 'video', videoId: '7ynYCHj13wI', start: 1909, end: 2117, title: '欲望に満ちた青年団 / ONE OK ROCK' },
+      { type: 'video', videoId: '7ynYCHj13wI', start: 2641, end: 2942, title: '奏 / スキマスイッチ' },      
+      { type: 'video', videoId: '7ynYCHj13wI', start: 3132, end: 3444, title: 'ひまわりの約束 / 秦基博' },
+
+      { type: 'label', title: '▼ 2023/07/30 【 歌枠 】夏だ！伊波だ！！歌枠だ！！！！夏曲限定歌配信！！！！！！【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 159, end: 359, title: 'ただ君に晴れ / ヨルシカ' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 750, end: 1032, title: '少女レイ / みきとP' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 1407, end: 1716, title: 'カブトムシ / aiko' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 2220, end: 2559, title: 'HANABI / Mr.Children' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 2740, end: 2952, title: 'ロマンチシズム / Mrs. GREEN APPLE' },
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 3076, end: 3363, title: '若者のすべて / フジファブリック' },   
+      { type: 'video', videoId: '0uiSYqu0Wzw', start: 3448, end: 3664, title: 'ロマンチシズム / Mrs. GREEN APPLE' },
+
+      { type: 'label', title: '▼ 2023/08/11 【 歌枠 】夏の歌枠！！！！！第二弾！！！！！！！！【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 161, end: 498, title: 'HANABI / Mr.Children' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 707, end: 955, title: '花に亡霊 / ヨルシカ' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 1324, end: 1515, title: 'いかないで / 想太' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 1848, end: 2150, title: 'ハナミズキ / 一青窈' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 2277, end: 2560, title: '花火 / aiko' },
+      { type: 'video', videoId: 'D8_bWlafdPc', start: 2771, end: 3009, title: 'イケナイ太陽 / ORANGE RANGE' },
+
+      { type: 'label', title: '▼ 2023/08/28 【 生演奏 】伊波ライ 1st Session Live !!!!!!!!!!!!!!!!【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: 'WL5rE9BgzUo', start: 140, end: 397, title: '気づけよBaby / THE ORAL CIGARETTES' },
+      { type: 'video', videoId: 'WL5rE9BgzUo', start: 399, end: 632, title: 'カゲロウデイズ / じん' },
+      { type: 'video', videoId: 'WL5rE9BgzUo', start: 724, end: 1051, title: '夏の半券 / みきとP' },
+      { type: 'video', videoId: 'WL5rE9BgzUo', start: 1179, end: 1415, title: '青い春 / SUPER BEAVER' },
+      
+      { type: 'label', title: '▼ 2023/09/09 【 歌枠 】ボカロボカロボカロボカロボカロボカロ【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 159, end: 386, title: 'ブリキノダンス / 日向電工' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 622, end: 884, title: '命に嫌われている。 / カンザキイオリ' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 1031, end: 1239, title: 'ラブカ？ / 柊キライ' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 1477, end: 1681, title: 'コールボーイ / syudou' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 1853, end: 2053, title: '独りんぼエンヴィー / koyori（電ポルP）' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 2401, end: 2571, title: 'グッバイ宣言 / Chinozo' },
+      { type: 'video', videoId: 'eKdJzWrx4Y8', start: 3049, end: 3273, title: '恋愛裁判 / 40mP' },
+      
+      { type: 'label', title: '▼ 2023/09/23 【重大告知アリ！】ざぶぅん夏のオフ歌枠！【にじさんじ/緋八マナ with 伊波ライ】' },
+      { type: 'video', videoId: 'JNfoPxPa-nQ', start: 68, end: 303, title: 'Stand by you / Official髭男dism' },
+      { type: 'video', videoId: 'JNfoPxPa-nQ', start: 576, end: 837, title: 'サウダージ / ポルノグラフィティ' },     
+      { type: 'video', videoId: 'JNfoPxPa-nQ', start: 970, end: 1246, title: 'ギラギラ / Ado' },
+      { type: 'video', videoId: 'JNfoPxPa-nQ', start: 1425, end: 1659, title: '愛を伝えたいだとか / あいみょん' },
+      { type: 'video', videoId: 'JNfoPxPa-nQ', start: 1930, end: 2226, title: '夜明けと蛍 / n-buna' },
+      { type: 'video', videoId: 'JNfoPxPa-nQ', start: 2381, end: 2631, title: '群青 / YOASOBI' },
+      { type: 'video', videoId: 'JNfoPxPa-nQ', start: 2757, end: 2961, title: '怪物 / YOASOBI' },      
+      { type: 'video', videoId: 'JNfoPxPa-nQ', start: 3088, end: 3363, title: 'God Knows... / 涼宮ハルヒの憂鬱' },
+      { type: 'video', videoId: 'JNfoPxPa-nQ', start: 3588, end: 3828, title: 'LOSER / 米津玄師' },
+
+      { type: 'label', title: '▼ 2023/10/23 【 #伊波ライ誕生日ライブ2023 】誕生したのでバンドライブをします。【 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 219, end: 448, title: '月陽-ツキアカリ- / みきとP' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 671, end: 921, title: 'Lovers / sumika' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 1154, end: 1427, title: '秒針を噛む / ずっと真夜中でいいのに。' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 1774, end: 2107, title: 'ステラ / じん' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 2263, end: 2550, title: 'それがあなたの幸せとしても / Heavenz' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 2771, end: 2990, title: 'スターマーカー / KANA-BOON' },
+      { type: 'video', videoId: 'p1Q2-vq-hy0', start: 3497, end: 3803, title: 'ワールド・ランプシェード / BuzzG' },
+
+      { type: 'label', title: '▼ 2023/11/03 【 ピアノ弾き語り歌枠 】ピアニスト弦月先輩、ボーカリスト伊波。【 弦月藤士郎 / 伊波ライ / にじさんじ 】' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 147, end: 516, title: 'アヤノの幸福理論 / じん' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 866, end: 1169, title: '地球をあげる / はるまきごはん' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 1517, end: 1861, title: 'rain stops,good-bye / におP' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 2437, end: 2719, title: 'ラプンツェル / ナブナ' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 2928, end: 3242, title: 'ピエロ / KEI' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 3456, end: 3726, title: '心做し / 蝶々P' },
+      { type: 'video', videoId: 'XwI3P-QZQzc', start: 3945, end: 4238, title: '青 / 164' },
+
+      { type: 'label', title: '▼ 2024/01/21 【Birthday 3D LIVE】Fall for me💙【＃夕陽リリ生誕LIVE2024/にじさんじ】' },
+      { type: 'video', videoId: 'ZRhe1FZbLGY', start: 1489, end: 1774, title: '空っぽなら、踊ろうぜ / Guiano×理芽' },
+      
+      { type: 'label', title: '▼ 2024/06/28 【歌枠】誕生日カウントダウンライブ！生バンドやで！全員集合！【にじさんじ/緋八マナ】' },
+      { type: 'video', videoId: '8GPkeAkKYhA', start: 2640, end: 2928, title: 'とても素敵な六月でした / Eight' },
+    ];
+
+    let player;
+    let currentIndex = null;
+    let checkInterval;
+
+    function renderPlaylist() {
+      const playlistEl = document.getElementById('playlist');
+      playlistEl.innerHTML = '';
+    
+      let currentGroup = null;
+    
+      videoSegments.forEach((segment, index) => {
+        const item = document.createElement('div');
+    
+        if (segment.type === 'label') {
+          item.textContent = segment.title;
+          item.className = 'label';
+          item.style.cursor = 'pointer';
+    
+          // 折りたたみ対象の container を作成
+          const groupContainer = document.createElement('div');
+          groupContainer.className = 'groupContainer';
+
+          //  初期状態で非表示にする
+          groupContainer.classList.add('hidden');
+          
+          // 折りたたみ状態の管理
+          item.onclick = () => {
+            groupContainer.classList.toggle('hidden');
+          };
+    
+          playlistEl.appendChild(item);
+          playlistEl.appendChild(groupContainer);
+          currentGroup = groupContainer;
+    
+        } else {
+          item.className = 'item';
+          item.textContent = segment.title;
+          item.onclick = () => {
+            currentIndex = index;
+            loadAndPlayCurrentVideo();
+          };
+          if (currentGroup) {
+            currentGroup.appendChild(item);
+          } else {
+            playlistEl.appendChild(item); // ラベルがない場合用
+          }
+        }
+      });
+    }
+
+    
+    function loadAndPlayCurrentVideo() {
+      if (currentIndex === null) return;
+      const segment = videoSegments[currentIndex];
+      if (!segment || segment.type !== 'video') return;
+
+      updateActiveItem();
+
+      if (player) {
+        player.loadVideoById({
+          videoId: segment.videoId,
+          startSeconds: segment.start
+        });
+        player.unMute();
+        player.playVideo();
+      }
+
+      clearInterval(checkInterval);
+      checkInterval = setInterval(() => {
+        const currentTime = player.getCurrentTime();
+        if (currentTime >= segment.end) {
+          nextVideo();
+        }
+      }, 500);
+    }
+
+    function nextVideo() {
+      clearInterval(checkInterval);
+      currentIndex++;
+      while (currentIndex < videoSegments.length && videoSegments[currentIndex].type !== 'video') {
+        currentIndex++;
+      }
+      if (currentIndex < videoSegments.length) {
+        loadAndPlayCurrentVideo();
+      } else {
+        currentIndex = null;
+        updateActiveItem();
+      }
+    }
+
+    function updateActiveItem() {
+      const items = document.querySelectorAll('.item');
+      let videoIndex = 0;
+      videoSegments.forEach((segment, idx) => {
+        if (segment.type === 'video') {
+          const item = items[videoIndex];
+          item.classList.toggle('active', idx === currentIndex);
+          videoIndex++;
+        }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.ENDED) {
+        nextVideo();
+      }
+    }
+
+    function onYouTubeIframeAPIReady() {
+      renderPlaylist();
+      player = new YT.Player('player', {
+        height: '480',
+        width: '100%',
+        videoId: '', // 最初は空
+        events: {
+          onStateChange: onPlayerStateChange
+        }
+      });
+    }
+  </script>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  
+</body>
+</html>
