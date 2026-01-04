@@ -72,13 +72,16 @@ fetch(sheetUrl)
 
     lines.forEach(line => {
       if (!line) return;
-      const [dateRaw, url] = line.split(",");
-      const videoId = extractVideoId(url);
 
+      const [dateRaw, urlRaw] = line.split(",");
+      if (!urlRaw) return;
+    
+      const cleanUrl = urlRaw.replace(/^"|"$/g, "").trim();
+      const videoId = extractVideoId(cleanUrl);
       if (!videoId) return;
-
+    
       const date = normalizeDate(dateRaw);
-      videoMap[date] = videoId;
+      videoMap[date] = videoId;      
     });
 
     console.log("videoMap:", videoMap);
@@ -115,3 +118,4 @@ function renderCalendar(videoMap) {
 
 </body>
 </html>
+
