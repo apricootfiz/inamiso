@@ -54,3 +54,64 @@ function extractVideoId(url) {
 ================================ */
 function normalizeDate(dateStr) {
   return dateStr
+    .trim()
+    .replace(/\//g, "-")
+    .split("-")
+    .map((v, i) => (i === 0 ? v : v.padStart(2, "0")))
+    .join("-");
+}
+
+/* ===============================
+   CSV取得
+================================ */
+fetch(sheetUrl)
+  .then(res => res.text())
+  .then(csv => {
+    const lines = csv.split(/\r?\n/).slice(1);
+    const videoMap = {};
+
+    lines.forEach(line => {
+      if (!line) return;
+      const [dateRaw, url] = line.split(",");
+      const videoId = extractVideoId(url);
+
+      if (!videoId) return;
+
+      const date = normalizeDate(dateRaw);
+      videoMap[date] = videoId;
+    });
+
+    console.log("videoMap:", videoMap);
+    renderCalendar(videoMap);
+  });
+
+/* ===============================
+   カレンダー描画
+================================ */
+function renderCalendar(videoMap) {
+  const calendar = document.getElementById("calendar");
+
+  for (let day = 1; day <= 31; day++) {
+    const dateStr = `2026-01-${String(day).padStart(2, "0")}`;
+
+    const div = document.createElement("div");
+    div.className = "day";
+    div.innerHTML = `<strong>${day}</strong>`;
+
+    if (videoMap[dateStr]) {
+      const videoId = videoMap[dateStr];
+      const img = document.createElement("img");
+      img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      img.onclick = () => {
+        window.open(`https://www.youtube.com/watch?v=${videoId}`, "_blank");
+      };
+      div.appendChild(img);
+    }
+
+    calendar.appendChild(div);
+  }
+}
+</script>
+
+</body>
+</html>
