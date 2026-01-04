@@ -155,7 +155,7 @@ function renderCalendar(dayMap) {
         commentBox.className = "comments";
         comments.forEach(text => {
           const p = document.createElement("div");
-          p.textContent = text;
+          p.textContent = "・" + text;
           commentBox.appendChild(p);
         });
         div.appendChild(commentBox);
@@ -185,5 +185,6 @@ function renderCalendar(dayMap) {
 
 </body>
 </html>
+
 
 
