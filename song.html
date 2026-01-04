@@ -15,27 +15,14 @@
     .day {
       border: 1px solid #ccc;
       padding: 6px;
+      min-height: 120px;
       font-size: 12px;
-      min-height: 140px;
     }
     .day img {
       width: 100%;
-      margin-top: 6px;
+      margin-top: 4px;
       cursor: pointer;
     }
-    .comments {
-      margin-top: 6px;
-      font-size: 11px;
-      color: #555;
-    }
-    .thumbs {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 4px;
-      margin-top: 6px;
-    }
-    .sun { background: #fff5f5; }
-    .sat { background: #f5f9ff; }
   </style>
 </head>
 <body>
@@ -47,19 +34,18 @@
 /* ===============================
    設定
 ================================ */
-const year = 2026;
-const month = 0; // 0 = 1月
-const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
-
 const sheetUrl =
   "https://docs.google.com/spreadsheets/d/1fnYlyOuVm6bl21crPuUXCmWE6jQuxjeAfl-T0z-PhcA/gviz/tq?tqx=out:csv";
 
 /* ===============================
-   YouTube動画ID抽出（完全対応）
+   動画ID抽出（ライブ / クエリ対応・決定版）
 ================================ */
 function extractVideoId(url) {
   if (!url) return null;
-  try { url = decodeURIComponent(url); } catch (e) {}
+
+  try {
+    url = decodeURIComponent(url);
+  } catch (e) {}
 
   const patterns = [
     /youtube\.com\/watch\?v=([0-9A-Za-z_-]{11})/,
@@ -76,6 +62,7 @@ function extractVideoId(url) {
 
 /* ===============================
    日付正規化
+   2026/1/3 → 2026-01-03
 ================================ */
 function normalizeDate(dateStr) {
   return dateStr
@@ -87,97 +74,58 @@ function normalizeDate(dateStr) {
 }
 
 /* ===============================
-   CSV取得 & パース
+   CSV取得 & パース（安全版）
 ================================ */
 fetch(sheetUrl)
   .then(res => res.text())
   .then(csv => {
     const lines = csv.split(/\r?\n/).slice(1);
-    const dayMap = {};
+    const videoMap = {};
 
     lines.forEach(line => {
       if (!line.trim()) return;
 
-      const commaIndex = line.indexOf(",");
-      if (commaIndex === -1) return;
+      // CSV安全処理（ダブルクォート除去）
+      const cols = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+      if (!cols || cols.length < 2) return;
 
-      const dateRaw = line.slice(0, commaIndex);
-      const valueRaw = line
-        .slice(commaIndex + 1)
-        .replace(/^"|"$/g, "")
-        .trim();
+      const dateRaw = cols[0].replace(/^"|"$/g, "");
+      const urlRaw  = cols[1].replace(/^"|"$/g, "").trim();
+
+      const videoId = extractVideoId(urlRaw);
+      if (!videoId) return;
 
       const date = normalizeDate(dateRaw);
-
-      if (!dayMap[date]) {
-        dayMap[date] = { videos: [], comments: [] };
-      }
-
-      // http / https 判定
-      if (/^https?:\/\//i.test(valueRaw)) {
-        const videoId = extractVideoId(valueRaw);
-        if (videoId) {
-          dayMap[date].videos.push(videoId);
-        } else {
-          dayMap[date].comments.push(valueRaw);
-        }
-      } else {
-        dayMap[date].comments.push(valueRaw);
-      }
+      videoMap[date] = videoId;
     });
 
-    console.log("dayMap:", dayMap);
-    renderCalendar(dayMap);
-  });
+    console.log("videoMap（確認用）:", videoMap);
+    renderCalendar(videoMap);
+  })
+  .catch(err => console.error(err));
 
 /* ===============================
    カレンダー描画
 ================================ */
-function renderCalendar(dayMap) {
+function renderCalendar(videoMap) {
   const calendar = document.getElementById("calendar");
 
   for (let day = 1; day <= 31; day++) {
-    const dateObj = new Date(year, month, day);
-    const weekDay = weekDays[dateObj.getDay()];
-    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const dateStr = `2026-01-${String(day).padStart(2, "0")}`;
 
     const div = document.createElement("div");
     div.className = "day";
+    div.innerHTML = `<strong>${day}</strong>`;
 
-    if (weekDay === "日") div.classList.add("sun");
-    if (weekDay === "土") div.classList.add("sat");
-
-    div.innerHTML = `<strong>${day}（${weekDay}）</strong>`;
-
-    if (dayMap[dateStr]) {
-      const { videos, comments } = dayMap[dateStr];
-
-      if (videos.length) {
-        const thumbs = document.createElement("div");
-        thumbs.className = "thumbs";
-
-        videos.forEach(videoId => {
-          const img = document.createElement("img");
-          img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-          img.onclick = () => {
-            window.open(`https://www.youtube.com/watch?v=${videoId}`, "_blank");
-          };
-          thumbs.appendChild(img);
-        });
-
-        div.appendChild(thumbs);
-      }
-
-      if (comments.length) {
-        const commentBox = document.createElement("div");
-        commentBox.className = "comments";
-        comments.forEach(text => {
-          const p = document.createElement("div");
-          p.textContent = text;
-          commentBox.appendChild(p);
-        });
-        div.appendChild(commentBox);
-      }
+    if (videoMap[dateStr]) {
+      const id = videoMap[dateStr];
+      const img = document.createElement("img");
+      img.src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+      img.alt = "YouTube thumbnail";
+      img.onclick = () => {
+        window.open(`https://www.youtube.com/watch?v=${id}`, "_blank");
+      };
+      div.appendChild(img);
     }
 
     calendar.appendChild(div);
