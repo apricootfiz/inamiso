@@ -149,6 +149,18 @@ function renderCalendar(dayMap) {
     if (dayMap[dateStr]) {
       const { videos, comments } = dayMap[dateStr];
 
+
+      if (comments.length) {
+        const commentBox = document.createElement("div");
+        commentBox.className = "comments";
+        comments.forEach(text => {
+          const p = document.createElement("div");
+          p.textContent = text;
+          commentBox.appendChild(p);
+        });
+        div.appendChild(commentBox);
+      }
+
       if (videos.length) {
         const thumbs = document.createElement("div");
         thumbs.className = "thumbs";
@@ -163,18 +175,7 @@ function renderCalendar(dayMap) {
         });
 
         div.appendChild(thumbs);
-      }
-
-      if (comments.length) {
-        const commentBox = document.createElement("div");
-        commentBox.className = "comments";
-        comments.forEach(text => {
-          const p = document.createElement("div");
-          p.textContent = text;
-          commentBox.appendChild(p);
-        });
-        div.appendChild(commentBox);
-      }
+      }      
     }
 
     calendar.appendChild(div);
@@ -184,4 +185,5 @@ function renderCalendar(dayMap) {
 
 </body>
 </html>
+
 
