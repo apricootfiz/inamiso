@@ -40,6 +40,19 @@
     }
     .sun { background: #fff5f5; }
     .sat { background: #f5f9ff; }
+
+    @media (max-width: 768px) {
+      .calendar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .calendar {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -187,6 +200,7 @@ function renderCalendar(dayMap) {
 
 </body>
 </html>
+
 
 
 
