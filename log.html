@@ -113,14 +113,11 @@ fetch(sheetUrl)
     lines.forEach(line => {
       if (!line.trim()) return;
 
-      const commaIndex = line.indexOf(",");
-      if (commaIndex === -1) return;
-
-      const dateRaw = line.slice(0, commaIndex);
-      const valueRaw = line
-        .slice(commaIndex + 1)
-        .replace(/^"|"$/g, "")
-        .trim();
+      const cols = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+      if (!cols || cols.length < 2) return;
+      
+      const dateRaw  = cols[0].replace(/^"|"$/g, "").trim();
+      const valueRaw = cols[1].replace(/^"|"$/g, "").trim();
 
       const date = normalizeDate(dateRaw);
 
@@ -201,6 +198,7 @@ function renderCalendar(dayMap) {
 
 </body>
 </html>
+
 
 
 
