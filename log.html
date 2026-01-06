@@ -110,33 +110,37 @@ fetch(sheetUrl)
     const lines = csv.split(/\r?\n/).slice(1);
     const dayMap = {};
 
-    lines.forEach(line => {
-      if (!line.trim()) return;
-
-      const cols = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
-      if (!cols || cols.length < 2) return;
-      
-      const dateRaw  = cols[0].replace(/^"|"$/g, "").trim();
-      const valueRaw = cols[1].replace(/^"|"$/g, "").trim();
-
-      const date = normalizeDate(dateRaw);
-
-      if (!dayMap[date]) {
-        dayMap[date] = { videos: [], comments: [] };
+  lines.forEach(line => {
+    if (!line.trim()) return;
+  
+    const cols = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+    if (!cols || cols.length < 1) return;
+  
+    const dateRaw    = (cols[0] || "").replace(/^"|"$/g, "").trim();
+    const commentRaw = (cols[1] || "").replace(/^"|"$/g, "").trim();
+    const urlRaw     = (cols[2] || "").replace(/^"|"$/g, "").trim();
+  
+    if (!dateRaw) return;
+  
+    const date = normalizeDate(dateRaw);
+  
+    if (!dayMap[date]) {
+      dayMap[date] = { videos: [], comments: [] };
+    }
+  
+    // コメント列（B列）
+    if (commentRaw) {
+      dayMap[date].comments.push(commentRaw);
+    }
+  
+    // URL列（C列）
+    if (urlRaw && /^https?:\/\//i.test(urlRaw)) {
+      const videoId = extractVideoId(urlRaw);
+      if (videoId) {
+        dayMap[date].videos.push(videoId);
       }
-
-      // http / https 判定
-      if (/^https?:\/\//i.test(valueRaw)) {
-        const videoId = extractVideoId(valueRaw);
-        if (videoId) {
-          dayMap[date].videos.push(videoId);
-        } else {
-          dayMap[date].comments.push(valueRaw);
-        }
-      } else {
-        dayMap[date].comments.push(valueRaw);
-      }
-    });
+    }
+  });    
 
     console.log("dayMap:", dayMap);
     renderCalendar(dayMap);
@@ -198,6 +202,7 @@ function renderCalendar(dayMap) {
 
 </body>
 </html>
+
 
 
 
