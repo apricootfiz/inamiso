@@ -102,22 +102,44 @@ body {
 
 
 /* ===============================
-   フッター（トップへ戻る）
+   フッターナビ（前月｜トップ｜次月）
 ================================ */
 .footer {
-  margin-top: 16px;     /* カレンダーとの距離 */
-  text-align: center;  /* 中央寄せ */
+  margin: 20px 0;
+  text-align: center;
 }
 
-.back-link {
-  font-size: 11px;        /* 小さめ文字 */
-  color: #000;            /* 黒字固定 */
-  text-decoration: none; /* 下線なし */
+.footer-nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
 }
 
-/* クリック後・ホバー後も色を変えない */
-.back-link:visited,
-.back-link:hover,
-.back-link:active {
+/* ナビリンク共通 */
+.nav-link {
+  font-size: 11px;
+  color: #000;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* 状態が変わっても色を固定 */
+.nav-link:visited,
+.nav-link:hover,
+.nav-link:active {
   color: #000;
 }
+
+/* 前月・次月は最初は非表示（存在確認後に表示） */
+#prevLink,
+#nextLink {
+  visibility: hidden;
+}
+
+/* スマホでは少し詰める */
+@media (max-width: 480px) {
+  .footer-nav {
+    gap: 10px;
+  }
+}
+
