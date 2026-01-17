@@ -163,3 +163,50 @@ function renderCalendar(dayMap) {
     calendar.appendChild(div);
   }
 }
+
+
+/* ===============================
+   前月・次月リンク生成（配列判定版）
+================================ */
+
+// 存在する月リスト（YYYY-MM）
+const availableMonths = [
+  "2026-01"
+];
+
+const prevLink = document.getElementById("prevLink");
+const nextLink = document.getElementById("nextLink");
+
+// 現在の月キー
+const currentKey =
+  `${year}-${String(month + 1).padStart(2, "0")}`;
+
+// 前月・次月のキーを計算する関数
+function getMonthKey(offset) {
+  const d = new Date(year, month + offset, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+// 前月
+if (prevLink) {
+  const prevKey = getMonthKey(-1);
+
+  if (availableMonths.includes(prevKey)) {
+    prevLink.href = `../${prevKey.slice(5)}/`;
+    prevLink.style.visibility = "visible";
+  } else {
+    prevLink.style.display = "none";
+  }
+}
+
+// 次月
+if (nextLink) {
+  const nextKey = getMonthKey(1);
+
+  if (availableMonths.includes(nextKey)) {
+    nextLink.href = `../${nextKey.slice(5)}/`;
+    nextLink.style.visibility = "visible";
+  } else {
+    nextLink.style.display = "none";
+  }
+}
