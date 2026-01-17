@@ -1,63 +1,123 @@
+/* ===============================
+   全体設定
+   - 基本フォントを指定
+================================ */
 body {
   font-family: sans-serif;
 }
 
+
+/* ===============================
+   カレンダー全体
+   - 7列（曜日分）のグリッド
+================================ */
 .calendar {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(7, 1fr); /* 日〜土 */
+  gap: 8px; /* 日付セル間の余白 */
 }
 
+
+/* ===============================
+   各日付セル
+================================ */
 .day {
-  border: 1px solid #ccc;
-  padding: 6px;
-  font-size: 12px;
-  min-height: 140px;
+  border: 1px solid #ccc; /* 枠線 */
+  padding: 6px;           /* 内側余白 */
+  font-size: 12px;        /* 基本文字サイズ */
+  min-height: 140px;      /* サムネ・コメント用の最低高さ */
 }
 
+
+/* ===============================
+   サムネイル画像
+   - 16:9を維持
+   - 黒背景で余白対策
+================================ */
 .day img {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  aspect-ratio: 16 / 9;   /* YouTube比率 */
+  object-fit: cover;     /* 画像をトリミングして埋める */
   display: block;
-  background: #000;
-  cursor: pointer;
+  background: #000;      /* 余白が出た場合の背景 */
+  cursor: pointer;       /* クリック可能を示す */
 }
 
+
+/* ===============================
+   コメントエリア
+================================ */
 .comments {
-  min-height: 2.6em;
-  margin-top: 6px;
-  font-size: 11px;
-  color: #555;
+  min-height: 2.6em;     /* コメントが無くても高さ確保 */
+  margin-top: 6px;       /* 上の要素との間隔 */
+  font-size: 11px;       /* サブ情報なので小さめ */
+  color: #555;           /* 薄めの文字色 */
 }
 
 .comments div {
-  line-height: 1.3em;
+  line-height: 1.3em;    /* 行間を詰めて一覧性を上げる */
 }
 
+
+/* ===============================
+   サムネ一覧（複数動画対応）
+================================ */
 .thumbs {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(2, 1fr); /* 2列表示 */
+  gap: 4px;             /* サムネ間の余白 */
   margin-top: 6px;
 }
 
+
+/* ===============================
+   曜日別背景色
+================================ */
 .sun {
-  background: #fff5f5;
+  background: #fff5f5;  /* 日曜：薄い赤 */
 }
 
 .sat {
-  background: #f5f9ff;
+  background: #f5f9ff;  /* 土曜：薄い青 */
 }
 
+
+/* ===============================
+   レスポンシブ対応
+================================ */
+
+/* タブレット以下 */
 @media (max-width: 768px) {
   .calendar {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* 縦長対策 */
   }
 }
 
+/* スマホ */
 @media (max-width: 480px) {
   .calendar {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* 1列表示 */
   }
+}
+
+
+/* ===============================
+   フッター（トップへ戻る）
+================================ */
+.footer {
+  margin-top: 16px;     /* カレンダーとの距離 */
+  text-align: center;  /* 中央寄せ */
+}
+
+.back-link {
+  font-size: 11px;        /* 小さめ文字 */
+  color: #000;            /* 黒字固定 */
+  text-decoration: none; /* 下線なし */
+}
+
+/* クリック後・ホバー後も色を変えない */
+.back-link:visited,
+.back-link:hover,
+.back-link:active {
+  color: #000;
 }
