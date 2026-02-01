@@ -145,19 +145,25 @@ function renderCalendar(dayMap) {
         div.appendChild(commentBox);
       }
 
+
       if (videos.length) {
-        const thumbs = document.createElement("div");
-        thumbs.className = "thumbs";
+	  const thumbs = document.createElement("div");
+	  thumbs.className = "thumbs";
 
-        videos.forEach(v => {
-          const img = document.createElement("img");
-          img.src = `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
-          img.onclick = () => window.open(v.url, "_blank");
-          thumbs.appendChild(img);
-        });
+		  // ★ サムネが1枚だけならクラス付与
+		  if (videos.length === 1) {
+		    thumbs.classList.add("single");
+		  }
 
-        div.appendChild(thumbs);
-      }
+		  videos.forEach(v => {
+		    const img = document.createElement("img");
+		    img.src = `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
+		    img.onclick = () => window.open(v.url, "_blank");
+		    thumbs.appendChild(img);
+		  });
+
+		  div.appendChild(thumbs);
+		}
     }
 
     calendar.appendChild(div);
