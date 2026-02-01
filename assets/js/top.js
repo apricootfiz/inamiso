@@ -5,37 +5,40 @@ const availableMonths = [
 ];
 
 const monthList = document.getElementById("monthList");
-if (!monthList) return;
 
-// 年ごとにまとめる
-const byYear = {};
-availableMonths.forEach(key => {
-  const [y, m] = key.split("-");
-  if (!byYear[y]) byYear[y] = [];
-  byYear[y].push(m);
-});
+if (monthList) {
 
-// 年→月の順で表示
-Object.keys(byYear).sort().forEach(year => {
-  const yearLi = document.createElement("li");
-  yearLi.className = "year-item";
-  yearLi.innerHTML = `<span class="year">${year}年</span>`;
-
-  const ul = document.createElement("ul");
-  ul.className = "month-list";
-
-  byYear[year].sort().forEach(month => {
-    const li = document.createElement("li");
-    li.className = "month-item";
-
-    const a = document.createElement("a");
-    a.href = `assets/calendar/${year}/${month}/`;
-    a.textContent = `${Number(month)}月`;
-
-    li.appendChild(a);
-    ul.appendChild(li);
+  // 年ごとにまとめる
+  const byYear = {};
+  availableMonths.forEach(key => {
+    const [y, m] = key.split("-");
+    if (!byYear[y]) byYear[y] = [];
+    byYear[y].push(m);
   });
 
-  yearLi.appendChild(ul);
-  monthList.appendChild(yearLi);
-});
+  // 年→月の順で表示
+  Object.keys(byYear).sort().forEach(year => {
+    const yearLi = document.createElement("li");
+    yearLi.className = "year-item";
+    yearLi.innerHTML = `<span class="year">${year}年</span>`;
+
+    const ul = document.createElement("ul");
+    ul.className = "month-list";
+
+    byYear[year].sort().forEach(month => {
+      const li = document.createElement("li");
+      li.className = "month-item";
+
+      const a = document.createElement("a");
+      a.href = `assets/calendar/${year}/${month}/`;
+      a.textContent = `${Number(month)}月`;
+
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+
+    yearLi.appendChild(ul);
+    monthList.appendChild(yearLi);
+  });
+
+}
