@@ -171,7 +171,8 @@ function renderCalendar(dayMap) {
 
 // 存在する月リスト（YYYY-MM）
 const availableMonths = [
-  "2026-01"
+  "2026-01",
+  "2026-02",
 ];
 
 const prevLink = document.getElementById("prevLink");
