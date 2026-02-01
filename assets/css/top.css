@@ -39,7 +39,6 @@ body {
 /* 年単位のリスト項目 */
 .year-item {
   margin-top: 8px;         /* 年ごとの縦間隔 */
-  font-weight: bold;       /* 年は強調表示 */
 }
 
 /* 月一覧のリスト */
@@ -98,6 +97,7 @@ body {
 .month-item a {
   color: #222;             /* 常に黒字 */
   text-decoration: none;  /* 下線なし */
+  font-weight: normal;
 }
 
 /* 押下・訪問・ホバー後も色を変えない */

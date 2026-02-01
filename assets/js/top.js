@@ -30,7 +30,7 @@ if (monthList) {
       li.className = "month-item";
 
       const a = document.createElement("a");
-      a.href = `assets/calendar/${year}/${month}/`;
+      a.href = `calendar/${year}/${month}/`;
       a.textContent = `${Number(month)}月`;
 
       li.appendChild(a);
