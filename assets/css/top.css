@@ -1,0 +1,68 @@
+/* ===============================
+   トップページ共通
+================================ */
+
+body {
+  font-family: sans-serif;
+  margin: 24px;
+  color: #222;
+}
+
+/* ===============================
+   タイトル
+================================ */
+
+.title {
+  font-size: 20px;      /* 少し小さく */
+  margin-bottom: 4px;
+}
+
+/* 概要文（タイトル下） */
+.description {
+  font-size: 12px;
+  color: #666;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+/* ===============================
+   月リンク一覧
+================================ */
+
+#monthList {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* 年表示 */
+#monthList > li {
+  margin-top: 12px;
+}
+
+/* 年ラベル */
+#monthList > li:first-child,
+#monthList > li:not(ul) {
+  font-weight: bold;
+}
+
+/* 年配下の月リスト */
+#monthList ul {
+  list-style: none;
+  padding-left: 16px;
+  margin-top: 4px;
+}
+
+/* 月リンク */
+#monthList a {
+  font-size: 14px;
+  color: #222;              /* 常に黒 */
+  text-decoration: none;   /* 下線なし */
+}
+
+/* 押下・訪問・ホバーしても色を変えない */
+#monthList a:visited,
+#monthList a:hover,
+#monthList a:active {
+  color: #222;
+  text-decoration: underline; /* ホバー時だけ下線（任意） */
+}
