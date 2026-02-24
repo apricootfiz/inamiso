@@ -8,8 +8,6 @@ const year  = Number(parts.at(-2));
 const month = Number(parts.at(-1)) - 1; // JSは0始まり
 
 const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
-
-// 月の日数（2月・うるう年対応）
 const daysInMonth = new Date(year, month + 1, 0).getDate();
 
 /* ===============================
@@ -22,7 +20,6 @@ if (titleEl) {
 
 /* ===============================
    Google Spreadsheet CSV URL
-   ※ シート名: YYYY-MM
 ================================ */
 const sheetName =
   `${year}-${String(month + 1).padStart(2, "0")}`;
@@ -132,6 +129,7 @@ function renderCalendar(dayMap) {
     if (dayMap[dateStr]) {
       const { comments, videos } = dayMap[dateStr];
 
+      /* ===== コメント表示 ===== */
       if (comments.length) {
         const commentBox = document.createElement("div");
         commentBox.className = "comments";
@@ -145,50 +143,53 @@ function renderCalendar(dayMap) {
         div.appendChild(commentBox);
       }
 
+      /* ===== メン限判定 ===== */
+      const isMembersOnly =
+        comments && comments.some(c => c.includes("メン限"));
 
-	// コメントが「メン限」か判定
-	const isMembersOnly =
-	  dayData.comments &&
-	  dayData.comments.some(c => c.includes("メン限"));
+      if (isMembersOnly) {
+        // ★ メン限画像（クリック不可）
+        const img = document.createElement("img");
+        img.src = "/assets/images/members.png";
+        img.alt = "メンバー限定";
+        img.className = "members-image";
 
-	if (isMembersOnly) {
-	  // メン限画像を表示
-	  const img = document.createElement("img");
-	  img.src = "/assets/images/IMG.jpg"; // 画像パス
-	  img.alt = "メンバー限定";
-	  img.className = "members-image";
-	  div.appendChild(img);
+        // クリックイベントを付けない＝押せない
+        // （通常サムネのような onclick は付与しない）
 
-	} else if (videos.length) {
+        div.appendChild(img);
 
-	  const thumbs = document.createElement("div");
-	  thumbs.className = "thumbs";
+      } else if (videos.length) {
 
-	  if (videos.length === 1) {
-	    thumbs.classList.add("single");
-	  }
+        const thumbs = document.createElement("div");
+        thumbs.className = "thumbs";
 
-	  videos.forEach(v => {
-	    const img = document.createElement("img");
-	    img.src = `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
-	    img.onclick = () => window.open(v.url, "_blank");
-	    thumbs.appendChild(img);
-	  });
+        if (videos.length === 1) {
+          thumbs.classList.add("single");
+        }
 
-	  div.appendChild(thumbs);
+        videos.forEach(v => {
+          const img = document.createElement("img");
+          img.src = `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
 
+          // 通常動画のみクリック可能
+          img.onclick = () => window.open(v.url, "_blank");
+
+          thumbs.appendChild(img);
+        });
+
+        div.appendChild(thumbs);
+      }
     }
 
     calendar.appendChild(div);
   }
 }
 
-
 /* ===============================
-   前月・次月リンク生成（配列判定版）
+   前月・次月リンク生成
 ================================ */
 
-// 存在する月リスト（YYYY-MM）
 const availableMonths = [
   "2026-01",
   "2026-02",
@@ -197,17 +198,11 @@ const availableMonths = [
 const prevLink = document.getElementById("prevLink");
 const nextLink = document.getElementById("nextLink");
 
-// 現在の月キー
-const currentKey =
-  `${year}-${String(month + 1).padStart(2, "0")}`;
-
-// 前月・次月のキーを計算する関数
 function getMonthKey(offset) {
   const d = new Date(year, month + offset, 1);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
-// 前月
 if (prevLink) {
   const prevKey = getMonthKey(-1);
 
@@ -219,7 +214,6 @@ if (prevLink) {
   }
 }
 
-// 次月
 if (nextLink) {
   const nextKey = getMonthKey(1);
 
