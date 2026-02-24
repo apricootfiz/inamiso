@@ -150,7 +150,7 @@ function renderCalendar(dayMap) {
       if (isMembersOnly) {
         // ★ メン限画像（クリック不可）
         const img = document.createElement("img");
-        img.src = "/assets/images/members.png";
+        img.src = "/assets/images/IMG.jpg";
         img.alt = "メンバー限定";
         img.className = "members-image";
 
