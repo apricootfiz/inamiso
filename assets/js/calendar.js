@@ -146,24 +146,37 @@ function renderCalendar(dayMap) {
       }
 
 
-      if (videos.length) {
+	// コメントが「メン限」か判定
+	const isMembersOnly =
+	  dayData.comments &&
+	  dayData.comments.some(c => c.includes("メン限"));
+
+	if (isMembersOnly) {
+	  // メン限画像を表示
+	  const img = document.createElement("img");
+	  img.src = "/assets/images/IMG.jpg"; // 画像パス
+	  img.alt = "メンバー限定";
+	  img.className = "members-image";
+	  div.appendChild(img);
+
+	} else if (videos.length) {
+
 	  const thumbs = document.createElement("div");
 	  thumbs.className = "thumbs";
 
-		  // ★ サムネが1枚だけならクラス付与
-		  if (videos.length === 1) {
-		    thumbs.classList.add("single");
-		  }
+	  if (videos.length === 1) {
+	    thumbs.classList.add("single");
+	  }
 
-		  videos.forEach(v => {
-		    const img = document.createElement("img");
-		    img.src = `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
-		    img.onclick = () => window.open(v.url, "_blank");
-		    thumbs.appendChild(img);
-		  });
+	  videos.forEach(v => {
+	    const img = document.createElement("img");
+	    img.src = `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
+	    img.onclick = () => window.open(v.url, "_blank");
+	    thumbs.appendChild(img);
+	  });
 
-		  div.appendChild(thumbs);
-		}
+	  div.appendChild(thumbs);
+
     }
 
     calendar.appendChild(div);
