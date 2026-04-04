@@ -173,13 +173,17 @@ function renderCalendar(dayMap) {
 
       // ★ 1行＝1セットで順番保持
       data.forEach(item => {
-
+      
+      // ★ タイトルと画像を包む枠（コンテナ）を作成
+      const itemContainer = document.createElement("div");
+      itemContainer.className = "schedule-item";
+      
         // タイトル（あれば表示）
         if (item.comment) {
           const comment = document.createElement("div");
           comment.className = "comment";
           comment.textContent = `${item.comment}`;
-          cell.appendChild(comment);
+          itemContainer.appendChild(comment);
         }
 
         // 動画（あれば表示）
@@ -192,8 +196,11 @@ function renderCalendar(dayMap) {
           img.src = `https://img.youtube.com/vi/${item.videoId}/hqdefault.jpg`;
 
           a.appendChild(img);
-          cell.appendChild(a);
+          itemContainer.appendChild(a);
         }
+        
+        // 最後に、枠ごと cell に追加
+        cell.appendChild(itemContainer);
       });
     }
 

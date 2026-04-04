@@ -194,3 +194,36 @@ body {
   margin-top: 4px;
   padding: 0 2px;
 }
+
+
+/* ===============================
+   タイトルと画像のセットを囲む枠
+================================ */
+/* タイトルと画像のセットを囲む枠 */
+.schedule-item {
+  border: 1px solid #eee;   /* 薄いグレーの枠線 */
+  border-radius: 4px;       /* 角を少し丸める */
+  padding: 4px;             /* 枠内の余白 */
+  margin-bottom: 8px;       /* 次のセットとの間隔 */
+  background-color: #fff;   /* 背景を白にして見やすく */
+}
+
+/* 枠内のタイトル設定 */
+.comment {
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 4px;       /* 画像との間の隙間 */
+  line-height: 1.2;
+}
+
+/* 枠内の画像設定 */
+.schedule-item img {
+  width: 100%;
+  display: block;
+  border-radius: 2px;       /* 画像の角も少し丸める */
+}
+
+/* 最後のアイテムの余白は不要 */
+.schedule-item:last-child {
+  margin-bottom: 0;
+}
