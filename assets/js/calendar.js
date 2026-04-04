@@ -1,4 +1,3 @@
-
 /* ===============================
    URLから 年・月 を取得
 ================================ */
@@ -17,15 +16,6 @@ function getMonthFromURL() {
 let currentDate = getMonthFromURL();
 
 const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
-const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-/* ===============================
-   タイトル自動設定
-================================ */
-const titleEl = document.getElementById("title");
-if (titleEl) {
-  titleEl.textContent = `${year}年${month + 1}月`;
-}
 
 /* ===============================
    Google Spreadsheet CSV URL
@@ -126,7 +116,6 @@ function renderCalendar(dayMap) {
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-
   const firstDay = new Date(year, month, 1);
   const lastDate = new Date(year, month + 1, 0).getDate();
 
@@ -189,4 +178,32 @@ function renderCalendar(dayMap) {
 
     calendar.appendChild(cell);
   }
+
+/* ===============================
+   タイトル自動設定
+================================ */
+const titleEl = document.getElementById("title");
+if (titleEl) {
+  const y = currentDate.getFullYear();
+  const m = currentDate.getMonth();
+
+  titleEl.textContent = `${y}年${m + 1}月`;
+  }
+  
+
+/* ===============================
+   翌月設定
+================================ */
+function updateTitle() {
+  const titleEl = document.getElementById("title");
+  if (!titleEl) return;
+
+  const y = currentDate.getFullYear();
+  const m = currentDate.getMonth();
+
+  titleEl.textContent = `${y}年${m + 1}月`;
+　}
+
+  
+  
 }
