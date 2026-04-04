@@ -151,11 +151,20 @@ function renderCalendar(dayMap) {
     const cell = document.createElement("div");
     cell.className = "day";
 
-    // 日付
+    // 日付表示エリアの作成
     const dateEl = document.createElement("div");
     dateEl.className = "date";
-    const w = new Date(year, month, d).getDay();
+    
+    const w = new Date(year, month, d).getDay(); // 曜日を取得 (0:日, 6:土)
     dateEl.textContent = `${d} (${week[w]})`;
+
+    // 土日の判定をして背景色用のクラスを付与
+    if (w === 0) {
+      dateEl.classList.add("sun"); // 日曜日のクラス
+    } else if (w === 6) {
+      dateEl.classList.add("sat"); // 土曜日のクラス
+    }
+    
     cell.appendChild(dateEl);
 
     const data = dayMap[dateKey];

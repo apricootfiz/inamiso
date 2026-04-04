@@ -165,3 +165,32 @@ body {
   object-fit: cover;
   display: block;
 }
+
+/* ===============================
+   日付表示エリア（区切り線を追加）
+================================ */
+.date {
+  font-weight: bold;
+  padding: 4px 8px;      /* 日付エリア内の余白 */
+  margin: -6px -6px 8px -6px; /* セルのpadding(6px)を打ち消して端まで色を塗る */
+  border-bottom: 1px solid #eee; /* タイトルとの間の区切り線 */
+}
+
+/* ===============================
+   曜日別背景色（日付エリアのみに適用）
+================================ */
+.date.sun {
+  background: #fff5f5;  /* 日曜：薄い赤 */
+
+}
+
+.date.sat {
+  background: #f5f9ff;  /* 土曜：薄い青 */
+
+}
+
+/* 既存の .comment などの余白調整（任意） */
+.comment {
+  margin-top: 4px;
+  padding: 0 2px;
+}
