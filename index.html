@@ -2,18 +2,28 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calendar</title>
   <link rel="stylesheet" href="assets/css/top.css">
+  <p class="description">
+    配信の追っかけカレンダー
+  </p>
+
+  <link rel="stylesheet" href="assets/css/calendar.css">
 </head>
 <body>
 
-<h1 class="title">Calendar</h1>
-<p class="description">
-  伊波ライのYouTube配信カレンダー
-</p>
+<h2 id="title"></h2>
+<div class="calendar" id="calendar"></div>
 
-<ul id="monthList" class="year-list"></ul>
-
-<script src="assets/js/top.js"></script>
+<footer class="footer">
+  <nav class="footer-nav">
+    <a id="prevLink" href="#" class="nav-link">← </a>
+    ◇
+    <a id="nextLink" href="#" class="nav-link"> →</a>
+  </nav>
+</footer>  
+  
+<script src="assets/js/calendar.js"></script>
 </body>
 </html>

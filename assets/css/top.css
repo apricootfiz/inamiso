@@ -20,7 +20,7 @@ body {
 
 /* タイトル下の説明文 */
 .description {
-  font-size: 12px;         /* 控えめな文字サイズ */
+  font-size: 10px;         /* 控えめな文字サイズ */
   color: #666;             /* タイトルより薄い色 */
   margin-bottom: 16px;     /* 月一覧との間隔 */
 }
