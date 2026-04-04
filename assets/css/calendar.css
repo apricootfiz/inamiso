@@ -247,9 +247,15 @@ body {
    スマホUIの調整
 ================================ */
 @media (max-width: 480px) {
+  .day {
+    min-height: auto;      /* 高さを内容に合わせる */
+    margin-bottom: 10px;   /* 日付ごとの間隔 */
+    padding: 10px;
+  }
+
+  /* 予定がない日は日付だけ表示してさらにコンパクトに */
   .day:not(:has(.schedule-item)) {
-    padding: 5px 0;          /* スマホではさらに高さを詰める */
-    border-bottom: 1px solid #eee;
+    padding: 5px 10px;
   }
 }
 
