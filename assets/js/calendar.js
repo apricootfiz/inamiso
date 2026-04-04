@@ -2,6 +2,7 @@
    URLから 年・月 を取得
 ================================ */
 function getMonthFromURL() {
+  // ① ?month=2026-03
   const params = new URLSearchParams(window.location.search);
   const m = params.get("month");
 
@@ -10,6 +11,17 @@ function getMonthFromURL() {
     return new Date(Number(y), Number(mo) - 1, 1);
   }
 
+  // ② /calendar/2026/03/
+  const parts = location.pathname.split("/").filter(Boolean);
+
+  const year  = Number(parts.at(-2));
+  const month = Number(parts.at(-1));
+
+  if (!isNaN(year) && !isNaN(month)) {
+    return new Date(year, month - 1, 1);
+  }
+
+  // ③ fallback
   return new Date();
 }
 
