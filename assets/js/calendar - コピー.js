@@ -197,15 +197,6 @@ function renderCalendar(dayMap) {
       });
     }
 
-	// 最後にナビゲーションを更新
-	  updateNavigation();
-	  
-	  // タイトルも更新[cite: 1]
-	  const titleEl = document.getElementById("title");
-	  if (titleEl) {
-	    titleEl.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`;
-	  }
-
     calendar.appendChild(cell);
   }
 
@@ -232,38 +223,8 @@ function updateTitle() {
   const m = currentDate.getMonth();
 
   titleEl.textContent = `${y}年${m + 1}月`;
-  }
+　}
+
   
-
-/* ===============================
-   前月・翌月リンクの更新
-================================ */
-function updateNavigation() {
-  const prevLink = document.getElementById("prevLink");
-  const nextLink = document.getElementById("nextLink");
-
-  if (!prevLink || !nextLink) return;
-
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-
-  // 前月の計算
-  const prevDate = new Date(year, month - 1, 1);
-  const prevY = prevDate.getFullYear();
-  const prevM = String(prevDate.getMonth() + 1).padStart(2, "0");
-  // ?month=YYYY-MM 形式のパラメータを設定
-  prevLink.href = `?month=${prevY}-${prevM}`;
-  prevLink.textContent = `← ${prevY}年${prevM}月`;
-  prevLink.style.visibility = "visible"; // 非表示設定を解除
-
-  // 翌月の計算
-  const nextDate = new Date(year, month + 1, 1);
-  const nextY = nextDate.getFullYear();
-  const nextM = String(nextDate.getMonth() + 1).padStart(2, "0");
-  nextLink.href = `?month=${nextY}-${nextM}`;
-  nextLink.textContent = `${nextY}年${nextM}月 →`;
-  nextLink.style.visibility = "visible"; // 非表示設定を解除[cite: 2]
-  }
-
-
+  
 }
