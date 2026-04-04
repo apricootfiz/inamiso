@@ -229,27 +229,21 @@ body {
 }
 
 /* ===============================
-   予定がない日はグレー表示
-=============================== */
-/* .schedule-item を含まない .day をグレーにする */
-.day:not(:has(.schedule-item)) {
-  background-color: #f9f9f9; /* 薄いグレー */
-  color: #bbb;              /* 文字色も薄くする */
-  overflow: hidden;
-}
-
-/* 予定がない日の日付エリアも少し透過させる */
-.day:not(:has(.schedule-item)) .date {
-  opacity: 0.6;
-}
-
-/* ===============================
-   スマホUIの調整
+   スマホUI用に追加
 ================================ */
 @media (max-width: 480px) {
+  .day {
+    min-height: auto;      /* 高さを内容に合わせる */
+    margin-bottom: 10px;   /* 日付ごとの間隔 */
+    padding: 10px;
+  }
+
+  /* 予定がない日は日付だけ表示してさらにコンパクトに */
   .day:not(:has(.schedule-item)) {
-    padding: 5px 0;          /* スマホではさらに高さを詰める */
-    border-bottom: 1px solid #eee;
+    background: #f9f9f9;
+    color: #999;
+    padding: 5px 10px;
+    overflow: hidden;
   }
 }
 
