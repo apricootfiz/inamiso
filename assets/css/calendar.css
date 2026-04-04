@@ -4,8 +4,13 @@
 ================================ */
 body {
   font-family: sans-serif;
+  /* 背景画像の設定 */
+  background-image: url("../images/background.jpg"); /* 画像名に合わせて変更 */
+  background-size: cover;           /* 画面全体を覆う */
+  background-attachment: fixed;    /* スクロールしても背景を動かさない */
+  background-position: center;     /* 中央合わせ */
+  background-repeat: no-repeat;    /* 繰り返し禁止 */
 }
-
 
 /* ===============================
    カレンダー全体
