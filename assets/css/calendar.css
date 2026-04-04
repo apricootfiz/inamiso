@@ -232,35 +232,43 @@ body {
    スマホUI用に追加
 ================================ */
 @media (max-width: 480px) {
+  /* 1. 日付セル全体の共通設定 */
   .day {
+    display: block;        /* グリッドを解除 */
     min-height: auto;      /* 高さを内容に合わせる */
-    margin-bottom: 10px;   /* 日付ごとの間隔 */
-    padding: 10px;
+    padding: 0;            /* セル自体の余白を一旦ゼロに（内部で制御） */
+    border: none;          /* 外側の枠線を消す */
+    border-bottom: 1px solid #eee; /* 下の区切り線だけ残す */
+    margin-bottom: 0;
   }
 
-  /* 予定がない日は日付だけ表示してさらにコンパクトに */
-  .day:not(:has(.schedule-item)) {
-    background: #f9f9f9;
-    color: #999;
-    padding: 5px 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .schedule-item {
-    display: flex;         /* 横並び */
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .schedule-item a {
-    flex: 0 0 120px;      /* 画像の幅を固定 */
-  }
-
-  .comment {
-    flex: 1;              /* テキストを右側に */
-    margin-top: 0;
+  /* 2. 日付エリアの設定 */
+  .date {
+    display: block;
+    width: 100%;           /* 横幅いっぱい */
+    margin: 0;             /* ネガティブマージンをリセット */
+    padding: 8px 12px;     /* 内側の余白でサイズを調整 */
     font-size: 13px;
+    border-bottom: none;   /* スマホ時は日付の下の線は不要（アイテムがある場合のみ） */
+  }
+
+  /* 3. 土日の背景色（日付エリアのみ） */
+  /* ここで背景色を指定すれば、枠線の上に色が乗るのを防げます */
+  .date.sun { background-color: #fff5f5; color: #e53e3e; }
+  .date.sat { background-color: #f5f9ff; color: #3182ce; }
+
+  /* 4. 予定（アイテム）がある場合のエリア */
+  .schedule-item {
+    padding: 10px;         /* 予定がある時だけ余白を作る */
+    margin: 0;
+    border: none;          /* 二重枠を防ぐ */
+  }
+
+  /* 5. 予定がない日の設定（さらにコンパクトに） */
+  /* schedule-itemを持っていない .day の中の .date を調整 */
+  .day:not(:has(.schedule-item)) .date {
+    padding: 5px 12px;     /* 予定がない日は上下を狭く */
+    opacity: 0.7;          /* 少し薄くして「予定なし」感を出す */
+    background-color: transparent !important; /* 土日でも背景を透明にするなら */
   }
 }
-
