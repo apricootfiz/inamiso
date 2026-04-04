@@ -18,25 +18,15 @@ body::before {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 250px;
   z-index: -1;        /* コンテンツ（カレンダー）の背面に配置 */
 
   /* 画像の設定 */
   background-image: url("../images/background.jpg");
-  background-repeat: no-repeat;
-  background-position: center; /* 中央に配置 */
-
-  /* ==============================================
-     ★ここで「デカさ」と「薄さ」を調整します
-     ============================================== */
-  
-  /* 1. サイズを小さくする（例：元の半分の大きさにしたいなら 50%） */
-  /* cover ではなく 数値(%) や contain を使うと小さくなります */
-  background-size: 40%; 
-
-  /* 2. 薄くする（0.0 が完全透明、1.0 がクッキリ） */
-  /* 0.1 〜 0.3 くらいにすると「うっすら」して上品になります */
-  opacity: 0.2; 
+  background-repeat: repeat-x;  /* 横方向だけタイル状に並べる */
+  background-position: top; /* 中央に配置 */
+  background-size: 40%; /* サイズ */
+  opacity: 0.2;  /* 透明度 */
 }
 
 /* ===============================
