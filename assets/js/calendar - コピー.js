@@ -24,10 +24,6 @@ if (titleEl) {
 const sheetUrl =
   `https://docs.google.com/spreadsheets/d/1fnYlyOuVm6bl21crPuUXCmWE6jQuxjeAfl-T0z-PhcA/gviz/tq?tqx=out:csv`;
 
-
-
-
-
 /* ===============================
    YouTube動画ID抽出
 ================================ */
