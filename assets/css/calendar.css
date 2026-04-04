@@ -4,12 +4,39 @@
 ================================ */
 body {
   font-family: sans-serif;
-  /* 背景画像の設定 */
-  background-image: url("../images/background.jpg"); /* 画像名に合わせて変更 */
-  background-size: cover;           /* 画面全体を覆う */
-  background-attachment: fixed;    /* スクロールしても背景を動かさない */
-  background-position: center;     /* 中央合わせ */
-  background-repeat: no-repeat;    /* 繰り返し禁止 */
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 0;
+  background-color: #fff; /* 画像の隙間から見える下地の色 */
+}
+
+/* 背景画像専用のレイヤーを作る */
+body::before {
+  content: "";
+  position: fixed;    /* 画面に固定 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;        /* コンテンツ（カレンダー）の背面に配置 */
+
+  /* 画像の設定 */
+  background-image: url("../images/background.jpg");
+  background-repeat: no-repeat;
+  background-position: center; /* 中央に配置 */
+
+  /* ==============================================
+     ★ここで「デカさ」と「薄さ」を調整します
+     ============================================== */
+  
+  /* 1. サイズを小さくする（例：元の半分の大きさにしたいなら 50%） */
+  /* cover ではなく 数値(%) や contain を使うと小さくなります */
+  background-size: 40%; 
+
+  /* 2. 薄くする（0.0 が完全透明、1.0 がクッキリ） */
+  /* 0.1 〜 0.3 くらいにすると「うっすら」して上品になります */
+  opacity: 0.2; 
 }
 
 /* ===============================
