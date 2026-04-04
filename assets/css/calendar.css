@@ -247,15 +247,20 @@ body {
 }
 
 @media (max-width: 480px) {
-  .date {
-    display: inline-block;
-    padding: 2px 12px;
-    border-radius: 20px;   /* カプセル型のデザイン */
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
+  .schedule-item {
+    display: flex;         /* 横並び */
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .schedule-item a {
+    flex: 0 0 120px;      /* 画像の幅を固定 */
+  }
+
+  .comment {
+    flex: 1;              /* テキストを右側に */
+    margin-top: 0;
     font-size: 13px;
   }
-  
-  .date.sun { background: #fee2e2; border-color: #fca5a5; }
-  .date.sat { background: #dbeafe; border-color: #93c5fd; }
 }
+
