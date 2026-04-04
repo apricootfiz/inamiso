@@ -133,13 +133,6 @@ function renderCalendar(dayMap) {
 
   const startDay = firstDay.getDay();
 
-  // 空白セル
-  for (let i = 0; i < startDay; i++) {
-    const empty = document.createElement("div");
-    empty.className = "day empty";
-    calendar.appendChild(empty);
-  }
-
   const week = ["日", "月", "火", "水", "木", "金", "土"];
 
   // 日付セル

@@ -92,7 +92,8 @@ function renderMonthList(availableMonths) {
       const a = document.createElement("a");
 
       // カレンダーページへのリンク
-      a.href = `calendar/${year}/${month}/`;
+      // a.href = `calendar/${year}/${month}/`;
+      a.href = `calendar/index.html?month=${year}-${month};
 
       // 表示テキスト（01 → 1月）
       a.textContent = `${Number(month)}月`;
