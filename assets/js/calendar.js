@@ -169,7 +169,7 @@ function renderCalendar(dayMap) {
         if (item.comment) {
           const comment = document.createElement("div");
           comment.className = "comment";
-          comment.textContent = `・${item.comment}`;
+          comment.textContent = `${item.comment}`;
           cell.appendChild(comment);
         }
 
