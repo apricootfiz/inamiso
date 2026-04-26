@@ -7,6 +7,7 @@ let isPlaying = false;
 
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1fnYlyOuVm6bl21crPuUXCmWE6jQuxjeAfl-T0z-PhcA/gviz/tq?tqx=out:json&gid=2072097352";
 
+
 // ▼ 初期化 （ページ読み込み後の再生回避）
 async function loadPlaylist() {
 console.log("loadPlaylist呼ばれた"); // デバッグ用
@@ -35,6 +36,12 @@ console.log("loadPlaylist呼ばれた"); // デバッグ用
   renderList();
   loadSelection();
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM読み込み完了");
+  loadPlaylist();
+});
+
 
 // ▼ リスト表示用のグループ化
 function groupByYearAndStream(data) {
@@ -186,7 +193,7 @@ function onYouTubeIframeAPIReady() {
       autoplay: 0
     },
     events: {
-      'onReady': loadPlaylist,
+      'onReady': () => {},
       'onStateChange': onPlayerStateChange
     }
   });
