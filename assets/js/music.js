@@ -16,16 +16,19 @@ async function loadPlaylist() {
 
   const rows = json.table.rows;
 
-  playlist = rows.map((r, i) => ({
-    id: i,
-    url: (r.c?.[2]?.v || "").replace("&amp;", "&"),
-    start: Number(r.c?.[3]?.v || 0),
-    end: Number(r.c?.[4]?.v || 0),
-    song: r.c?.[5]?.v || "曲名なし",
-    artist: r.c?.[6]?.v || ""
-  }));
+	playlist = rows.map((r, i) => ({
+	  id: i,
+	  date: r.c?.[0]?.v || "",
+	  streamTitle: r.c?.[1]?.v || "",
+	  url: (r.c?.[2]?.v || "").replace("&amp;", "&"),
+	  start: Number(r.c?.[3]?.v || 0),
+	  end: Number(r.c?.[4]?.v || 0),
+	  song: r.c?.[5]?.v || "曲名なし",
+	  artist: r.c?.[6]?.v || ""
+	}));
 
   renderList();
+  loadSelection();
 }
 
 // ▼リストのグループ化
@@ -33,8 +36,8 @@ function groupByYearAndStream(data) {
   const result = {};
 
   data.forEach(item => {
-    const year = item.date.split("/")[0];
-    const stream = item.streamTitle;
+    const year = item.date ? item.date.split("/")[0] : "不明";
+    const stream = item.streamTitle || "不明";
 
     if (!result[year]) result[year] = {};
     if (!result[year][stream]) result[year][stream] = [];
