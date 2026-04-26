@@ -28,22 +28,87 @@ async function loadPlaylist() {
   renderList();
 }
 
+// ▼リストのグループ化
+function groupByYearAndStream(data) {
+  const result = {};
+
+  data.forEach(item => {
+    const year = item.date.split("/")[0];
+    const stream = item.streamTitle;
+
+    if (!result[year]) result[year] = {};
+    if (!result[year][stream]) result[year][stream] = [];
+
+    result[year][stream].push(item);
+  });
+
+  return result;
+}
+
+
 // ▼ リスト表示
 function renderList() {
   const container = document.getElementById("list");
   container.innerHTML = "";
 
-  playlist.forEach(item => {
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <label>
-        <input type="checkbox" value="${item.id}">
-        ${item.song} - ${item.artist}
-      </label>
-    `;
-    container.appendChild(div);
+  const grouped = groupByYearAndStream(playlist);
+
+  Object.keys(grouped).sort().forEach(year => {
+    const yearBlock = document.createElement("div");
+
+    const yearTitle = document.createElement("details");
+    yearTitle.innerHTML = `<summary>${year}年</summary>`;
+
+    Object.keys(grouped[year]).forEach(stream => {
+      const streamBlock = document.createElement("details");
+
+      streamBlock.innerHTML = `<summary>${stream}</summary>`;
+
+      grouped[year][stream].forEach(item => {
+        const div = document.createElement("div");
+
+        div.innerHTML = `
+          <label>
+            <input type="checkbox" value="${item.id}">
+            ${item.song} - ${item.artist}
+          </label>
+        `;
+
+        streamBlock.appendChild(div);
+      });
+
+      yearTitle.appendChild(streamBlock);
+    });
+
+    yearBlock.appendChild(yearTitle);
+    container.appendChild(yearBlock);
   });
 }
+
+
+// ▼再生リスト復元
+function loadSelection() {
+  const saved = JSON.parse(localStorage.getItem("playlistSelection") || "[]");
+
+  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    if (saved.includes(cb.value)) {
+      cb.checked = true;
+    }
+  });
+}
+
+
+// ▼再生リスト保存
+function saveSelection() {
+  const checked = [];
+
+  document.querySelectorAll("input[type=checkbox]:checked").forEach(cb => {
+    checked.push(cb.value);
+  });
+
+  localStorage.setItem("playlistSelection", JSON.stringify(checked));
+}
+
 
 // ▼ 再生開始（ここで初めて再生）
 function playSelected() {
@@ -156,3 +221,11 @@ function onPlayerStateChange(event) {
     nextVideo();
   }
 }
+
+// ▼ 再生リスト自動保存
+document.addEventListener("change", (e) => {
+  if (e.target.type === "checkbox") {
+    saveSelection();
+  }
+});
+
