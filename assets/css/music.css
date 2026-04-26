@@ -1,0 +1,24 @@
+/* ▼ グループのインデント */
+details {
+  margin-left: 10px;
+}
+
+details details {
+  margin-left: 20px;
+}
+
+details details details {
+  margin-left: 30px;
+}
+
+/* ▼ 見た目改善 */
+summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* ▼ 曲リスト */
+#list div {
+  margin-left: 10px;
+  margin-bottom: 4px;
+}

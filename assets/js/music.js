@@ -44,7 +44,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// YYYY年の切り出し
+// ▼YYYY年の切り出し
 function extractYear(date) {
   if (!date) return "不明";
 
@@ -147,6 +147,21 @@ function waitForPlayerReady(callback) {
   }, 200);
 }
 
+// ▼ 全選択ボタン
+function selectAll() {
+  document.querySelectorAll('#list input[type="checkbox"]').forEach(cb => {
+    cb.checked = true;
+  });
+  saveSelection();
+}
+
+function clearAll() {
+  document.querySelectorAll('#list input[type="checkbox"]').forEach(cb => {
+    cb.checked = false;
+  });
+  saveSelection();
+}
+
 
 // ▼ 再生開始
 function playSelected() {
@@ -188,19 +203,16 @@ function prevVideo() {
   loadVideo(currentIndex);
 }
 
-// ▼ 次へ
+// ▼ 次へボタン
 function nextVideo() {
-  if (!isPlaying) return;
+  if (!isPlaying || selectedList.length === 0) return;
 
   if (currentIndex + 1 < selectedList.length) {
     currentIndex++;
   } else if (document.getElementById("loop").checked) {
     currentIndex = 0;
   } else {
-    isPlaying = false;
-    document.getElementById("nowPlaying").innerText = "再生終了";
-    player.stopVideo();
-    return;
+    return; // ★終了させない
   }
 
   loadVideo(currentIndex);
