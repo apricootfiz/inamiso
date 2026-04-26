@@ -157,7 +157,7 @@ function renderList() {
         const div = document.createElement("div");
 
         div.innerHTML = `
-          <label>
+          <label class="target-list">
             <input type="checkbox" value="${item.id}" data-stream="${streamId}">
             ${item.song} - ${item.artist}
           </label>
