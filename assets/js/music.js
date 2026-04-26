@@ -6,7 +6,7 @@ let isPlaying = false;
 
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1fnYlyOuVm6bl21crPuUXCmWE6jQuxjeAfl-T0z-PhcA/gviz/tq?tqx=out:json&gid=2072097352";
 
-// ▼ 初期化（※ここで再生しない）
+// ▼ 初期化 （ページ読み込み後の再生回避）
 async function loadPlaylist() {
   const res = await fetch(SHEET_URL);
   const text = await res.text();
@@ -14,24 +14,27 @@ async function loadPlaylist() {
   const jsonText = text.match(/google\.visualization\.Query\.setResponse\((.*)\)/)[1];
   const json = JSON.parse(jsonText);
 
-  const rows = json.table.rows;
+  const rows = json.table.rows || [];
 
-	playlist = rows.map((r, i) => ({
-	  id: i,
-	  date: r.c?.[0]?.v || "",
-	  streamTitle: r.c?.[1]?.v || "",
-	  url: (r.c?.[2]?.v || "").replace("&amp;", "&"),
-	  start: Number(r.c?.[3]?.v || 0),
-	  end: Number(r.c?.[4]?.v || 0),
-	  song: r.c?.[5]?.v || "曲名なし",
-	  artist: r.c?.[6]?.v || ""
-	}));
+
+  playlist = rows.map((r, i) => ({
+    id: i,
+    date: r.c?.[0]?.v || "",
+    streamTitle: r.c?.[1]?.v || "",
+    url: (r.c?.[2]?.v || "").replace("&amp;", "&"),
+    start: Number(r.c?.[3]?.v || 0),
+    end: Number(r.c?.[4]?.v || 0),
+    song: r.c?.[5]?.v || "曲名なし",
+    artist: r.c?.[6]?.v || ""
+  }));
+
+  console.log("playlist:", playlist);
 
   renderList();
   loadSelection();
 }
 
-// ▼リストのグループ化
+// ▼ リスト表示用のグループ化
 function groupByYearAndStream(data) {
   const result = {};
 
@@ -48,13 +51,20 @@ function groupByYearAndStream(data) {
   return result;
 }
 
-
 // ▼ リスト表示
 function renderList() {
   const container = document.getElementById("list");
+
+  if (!container) {
+    console.error("list要素がない");
+    return;
+  }
+
   container.innerHTML = "";
 
   const grouped = groupByYearAndStream(playlist);
+
+  console.log("grouped:", grouped);
 
   Object.keys(grouped).sort().forEach(year => {
     const yearBlock = document.createElement("div");
@@ -64,7 +74,6 @@ function renderList() {
 
     Object.keys(grouped[year]).forEach(stream => {
       const streamBlock = document.createElement("details");
-
       streamBlock.innerHTML = `<summary>${stream}</summary>`;
 
       grouped[year][stream].forEach(item => {
@@ -88,8 +97,7 @@ function renderList() {
   });
 }
 
-
-// ▼再生リスト復元
+// ▼ 再生リスト復元
 function loadSelection() {
   const saved = JSON.parse(localStorage.getItem("playlistSelection") || "[]");
 
@@ -100,8 +108,7 @@ function loadSelection() {
   });
 }
 
-
-// ▼再生リスト保存
+// ▼ 再生リスト保存
 function saveSelection() {
   const checked = [];
 
@@ -112,8 +119,7 @@ function saveSelection() {
   localStorage.setItem("playlistSelection", JSON.stringify(checked));
 }
 
-
-// ▼ 再生開始（ここで初めて再生）
+// ▼ 再生開始
 function playSelected() {
   selectedList = [];
 
@@ -127,7 +133,6 @@ function playSelected() {
     return;
   }
 
-  // シャッフル
   if (document.getElementById("shuffle").checked) {
     selectedList.sort(() => Math.random() - 0.5);
   }
@@ -225,10 +230,9 @@ function onPlayerStateChange(event) {
   }
 }
 
-// ▼ 再生リスト自動保存
+// ▼ 自動保存
 document.addEventListener("change", (e) => {
   if (e.target.type === "checkbox") {
     saveSelection();
   }
 });
-
