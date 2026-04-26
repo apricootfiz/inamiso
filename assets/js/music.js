@@ -43,12 +43,20 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 
+// YYYY年の切り出し
+function extractYear(date) {
+  if (!date) return "不明";
+
+  const match = String(date).match(/Date\((\d{4})/);
+  return match ? match[1] : "不明";
+}
+
 // ▼ リスト表示用のグループ化
 function groupByYearAndStream(data) {
   const result = {};
 
   data.forEach(item => {
-    const year = item.date ? item.date.split("/")[0] : "不明";
+    const year = extractYear(item.date);
     const stream = item.streamTitle || "不明";
 
     if (!result[year]) result[year] = {};
@@ -186,25 +194,28 @@ function nextVideo() {
 
 // ▼ YouTube準備
 function onYouTubeIframeAPIReady() {
+  console.log("YouTube準備OK");
+
   player = new YT.Player('player', {
     height: '360',
     width: '640',
     playerVars: {
       autoplay: 0
-    },
-    events: {
-      'onReady': () => {},
-      'onStateChange': onPlayerStateChange
     }
   });
 }
 
 // ▼ 再生
 function loadVideo(index) {
+  if (!player || !player.loadVideoById) {
+    console.log("player未準備");
+    return;
+  }
+
   const item = selectedList[index];
 
   document.getElementById("nowPlaying").innerText =
-    `再生中: ${item.song} - ${item.artist} (${index + 1}/${selectedList.length})`;
+    `再生中: ${item.song} - ${item.artist}`;
 
   player.loadVideoById({
     videoId: getVideoId(item.url),
