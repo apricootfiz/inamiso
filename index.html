@@ -15,9 +15,15 @@
 <h2>曲リスト</h2>
 <div id="list"></div>
 
-<button onclick="playSelected()">選択した曲を再生</button>
+<button onclick="playSelected()">再生</button>
+<button onclick="prevVideo()">前へ</button>
+<button onclick="nextVideo()">次へ</button>
+
 <button onclick="selectAll()">全選択</button>
 <button onclick="clearAll()">全解除</button>
+
+<label><input type="checkbox" id="shuffle"> シャッフル</label>
+<label><input type="checkbox" id="loop"> ループ</label>
 
 <hr>
 
