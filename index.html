@@ -13,25 +13,27 @@
 </head>
 <body>
 
-<h2>曲リスト</h2>
+<div id="listContainer">
+	<h2>曲リスト</h2>
 
-<button onclick="playSelected()">再生</button>
-<button onclick="prevVideo()">前へ</button>
-<button onclick="nextVideo()">次へ</button>
+	<button onclick="playSelected()">再生</button>
+	<button onclick="prevVideo()">前へ</button>
+	<button onclick="nextVideo()">次へ</button>
 
-<button onclick="selectAll()">全選択</button>
-<button onclick="clearAll()">全解除</button>
+	<button onclick="selectAll()">全選択</button>
+	<button onclick="clearAll()">全解除</button>
 
-<div id="list"></div>
+	<div id="list"></div>
 
-<label><input type="checkbox" id="shuffle"> シャッフル</label>
-<label><input type="checkbox" id="loop"> ループ</label>
+	<label><input type="checkbox" id="shuffle"> シャッフル</label>
+	<label><input type="checkbox" id="loop"> ループ</label>
+</div>
 
 <hr>
 
 <div id="playerContainer">
-  <div id="nowPlaying"></div>
-  <div id="player"></div>
+	<div id="nowPlaying"></div>
+	<div id="player"></div>
 </div>
 
 <script src="assets/js/music.js"></script>

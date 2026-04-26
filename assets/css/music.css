@@ -1,3 +1,14 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 /* ▼ グループのインデント */
 details {
   margin-left: 10px;
@@ -22,6 +33,30 @@ summary {
   margin-left: 10px;
   margin-bottom: 4px;
 }
+
+/* ▼ 上：スクロール領域 */
+#listContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  background: #fafafa;
+}
+
+/* ▼ 下：固定プレイヤー */
+#playerContainer {
+  height: 220px; /* 好きな高さ */
+  background: white;
+  border-top: 1px solid #ccc;
+  padding: 10px;
+  padding-bottom: 10px;/* 下側の余白 */
+}
+
+/* ▼ YouTubeサイズ調整 */
+#player {
+  width: 100%;
+  height: 160px;
+}
+
 
 /* ===============================
    スマホ用UI
@@ -50,4 +85,13 @@ input[type="checkbox"] {
   button {
     width: 100%;
   }
+  
+    #playerContainer {
+    height: 180px;
+  }
+
+  #player {
+    height: 120px;
+  }
+  
 }
