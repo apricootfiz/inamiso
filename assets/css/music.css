@@ -88,7 +88,7 @@ summary {
 }
 
 /* labelにインデント（左の余白）をつける */
-label {
+.target-list label {
   display: block;        /* ブロック要素にして、縦並びや余白を反映させやすくする */
   padding-left: 20px;    /* ここで好きなだけインデントの深さを調整 */
   margin-bottom: 5px;    /* 各行の間に少し隙間を空ける */
