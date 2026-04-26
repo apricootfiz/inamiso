@@ -273,3 +273,7 @@ document.addEventListener("change", (e) => {
     saveSelection();
   }
 });
+
+if (window.YT && window.YT.Player) {
+  window.onYouTubeIframeAPIReady();
+}
