@@ -207,7 +207,9 @@ function nextVideo() {
 }
 
 // ▼ YouTube準備
-function onYouTubeIframeAPIReady() {
+window.onYouTubeIframeAPIReady = function () {
+  console.log("YouTube API呼ばれた");
+  
   player = new YT.Player('player', {
     events: {
       'onReady': () => {
