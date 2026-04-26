@@ -103,7 +103,7 @@ function renderList() {
   const grouped = groupByYearAndStream(playlist);
 
   // ▼ 年ごとにループ
-  Object.keys(grouped).sort().forEach(year => {
+  Object.keys(grouped).sort((a, b) => b - a).forEach(year => {
 
     const yearBlock = document.createElement("div");
 
@@ -117,9 +117,9 @@ function renderList() {
     yearDetails.appendChild(yearSummary);
 
     // ▼ 配信タイトルごと
-    Object.keys(grouped[year]).forEach(stream => {
+    Object.keys(grouped[year]).sort().reverse().forEach((stream, streamIndex) => {
 
-      const streamId = `stream-${year}-${stream.replace(/\W/g, "")}`;
+      const streamId = `stream-${year}-${streamIndex}-${Math.random().toString(36).slice(2,6)}`;
 
       const streamBlock = document.createElement("details");
 
