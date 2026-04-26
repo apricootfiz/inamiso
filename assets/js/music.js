@@ -10,8 +10,10 @@ async function loadPlaylist() {
   const res = await fetch(SHEET_URL);
   const text = await res.text();
 
-  const json = JSON.parse(text.substr(47).slice(0, -2));
+  const jsonText = text.match(/google\.visualization\.Query\.setResponse\((.*)\)/)[1];
+  const json = JSON.parse(jsonText);
   const rows = json.table.rows;
+  
 
   // ▼ 1行目はヘッダーなのでスキップ
   playlist = rows.slice(1).map(r => ({
