@@ -235,6 +235,8 @@ function loadVideo(index) {
     startSeconds: item.start
   });
 
+  player.playVideo();
+
   checkEnd(item.end);
 }
 
