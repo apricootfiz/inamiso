@@ -43,6 +43,23 @@ window.addEventListener("DOMContentLoaded", () => {
   loadPlaylist();
 });
 
+document.addEventListener("change", (e) => {
+  // ▼ 配信単位チェック
+  if (e.target.classList.contains("stream-checkbox")) {
+    const stream = e.target.dataset.stream;
+    const checked = e.target.checked;
+
+    document.querySelectorAll(`input[data-stream="${stream}"]:not(.stream-checkbox)`)
+      .forEach(cb => cb.checked = checked);
+
+    saveSelection();
+  }
+
+  // ▼ 個別チェック保存
+  if (e.target.type === "checkbox") {
+    saveSelection();
+  }
+});
 
 // ▼YYYY年の切り出し
 function extractYear(date) {
@@ -73,33 +90,75 @@ function groupByYearAndStream(data) {
 function renderList() {
   const container = document.getElementById("list");
 
+  // ▼ 念のため存在チェック
   if (!container) {
     console.error("list要素がない");
     return;
   }
 
+  // ▼ 初期化
   container.innerHTML = "";
 
+  // ▼ 年度＆配信タイトルでグループ化
   const grouped = groupByYearAndStream(playlist);
 
-  console.log("grouped:", grouped);
-
+  // ▼ 年ごとにループ
   Object.keys(grouped).sort().forEach(year => {
+
     const yearBlock = document.createElement("div");
 
-    const yearTitle = document.createElement("details");
-    yearTitle.innerHTML = `<summary>${year}年</summary>`;
+    // ▼ 年の折りたたみ
+    const yearDetails = document.createElement("details");
+//    yearDetails.open = true; // 初期で開く（不要なら消してOK）
 
+    const yearSummary = document.createElement("summary");
+    yearSummary.textContent = `${year}年`;
+
+    yearDetails.appendChild(yearSummary);
+
+    // ▼ 配信タイトルごと
     Object.keys(grouped[year]).forEach(stream => {
+
+      const streamId = `stream-${year}-${stream.replace(/\W/g, "")}`;
+
       const streamBlock = document.createElement("details");
-      streamBlock.innerHTML = `<summary>${stream}</summary>`;
+
+      // =========================
+      // ▼ ▼ 配信タイトル部分（ここ重要）
+      // =========================
+
+      const summary = document.createElement("summary");
+
+      // ▼ チェックボックス（配信単位）
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.classList.add("stream-checkbox");
+      checkbox.dataset.stream = streamId;
+
+      // ▼ チェック時に開閉しないようにする
+      checkbox.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+
+      // ▼ タイトル文字
+      const text = document.createElement("span");
+      text.textContent = " " + stream;
+
+      // ▼ 組み立て
+      summary.appendChild(checkbox);
+      summary.appendChild(text);
+      streamBlock.appendChild(summary);
+
+      // =========================
+      // ▼ ▼ 曲一覧
+      // =========================
 
       grouped[year][stream].forEach(item => {
         const div = document.createElement("div");
 
         div.innerHTML = `
           <label>
-            <input type="checkbox" value="${item.id}">
+            <input type="checkbox" value="${item.id}" data-stream="${streamId}">
             ${item.song} - ${item.artist}
           </label>
         `;
@@ -107,13 +166,15 @@ function renderList() {
         streamBlock.appendChild(div);
       });
 
-      yearTitle.appendChild(streamBlock);
+      // ▼ 年の中に追加
+      yearDetails.appendChild(streamBlock);
     });
 
-    yearBlock.appendChild(yearTitle);
+    yearBlock.appendChild(yearDetails);
     container.appendChild(yearBlock);
   });
 }
+
 
 // ▼ 再生リスト復元
 function loadSelection() {
