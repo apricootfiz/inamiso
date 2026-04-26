@@ -3,14 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <title>YouTube Playlist</title>
+  <style>
+    body { font-family: sans-serif; }
+    #list { margin-bottom: 20px; }
+    .item { margin: 5px 0; }
+    button { margin-right: 10px; }
+  </style>
 </head>
 <body>
 
-<h2>再生プレイヤー</h2>
+<h2>曲リスト</h2>
+<div id="list"></div>
+
+<button onclick="playSelected()">選択した曲を再生</button>
+<button onclick="selectAll()">全選択</button>
+<button onclick="clearAll()">全解除</button>
+
+<hr>
+
+<div id="nowPlaying"></div>
 <div id="player"></div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
-<script src="assets/js/script.js"></script>
+<script src="assets/js/music.js"></script>
 
 </body>
 </html>
