@@ -1,3 +1,4 @@
+console.log("JS読み込まれた"); // デバッグ用
 let player;
 let playlist = [];
 let selectedList = [];
@@ -8,6 +9,7 @@ const SHEET_URL = "https://docs.google.com/spreadsheets/d/1fnYlyOuVm6bl21crPuUXC
 
 // ▼ 初期化 （ページ読み込み後の再生回避）
 async function loadPlaylist() {
+console.log("loadPlaylist呼ばれた"); // デバッグ用
   const res = await fetch(SHEET_URL);
   const text = await res.text();
 
