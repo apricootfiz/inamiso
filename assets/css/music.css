@@ -1,7 +1,32 @@
-html, body {
-  height: 100%;
-  margin: 0;
+/* ===============================
+   基本設定
+================================ */
+
+body {
+  font-family: sans-serif; /* シンプルで読みやすいフォント */
+  margin: 24px;            /* 画面端との余白 */
+  color: #222;             /* 基本の文字色 */
 }
+
+/* ===============================
+   タイトル・概要
+================================ */
+/* タイトル文字 */
+.title {
+  font-size: 20px;         /* 少し小さめの見出し */
+  margin-bottom: 4px;      /* 概要との間隔 */
+}
+
+/* タイトル下の説明文 */
+.description {
+  font-size: 10px;         /* 控えめな文字サイズ */
+  color: #666;             /* タイトルより薄い色 */
+  margin-bottom: 16px;     /* 月一覧との間隔 */
+}
+
+/* ===============================
+   ページ別設定
+================================ */
 
 #app {
   display: flex;
@@ -11,21 +36,22 @@ html, body {
 
 /* ▼ グループのインデント */
 details {
-  margin-left: 10px;
+  margin-left: 10px; /* 左側に余白 */
 }
 
 details details {
-  margin-left: 20px;
+  margin-left: 20px; /* 左側に余白 */
 }
 
 details details details {
-  margin-left: 30px;
+  margin-left: 30px; /* 左側に余白 */
 }
 
 /* ▼ 見た目改善 */
 summary {
   cursor: pointer;
-  font-weight: bold;
+  font-family: sans-serif;
+  /* font-weight: bold; */
 }
 
 /* ▼ 曲リスト */
@@ -52,10 +78,10 @@ summary {
 }
 
 /* ▼ YouTubeサイズ調整 */
-#player {
+/* #player {
   width: 100%;
   height: 160px;
-}
+}  */
 
 
 /* ===============================
@@ -90,8 +116,8 @@ input[type="checkbox"] {
     height: 180px;
   }
 
-  #player {
+/*   #player {
     height: 120px;
-  }
+  } */
   
 }

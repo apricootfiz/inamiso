@@ -124,7 +124,7 @@ function renderList() {
       const streamBlock = document.createElement("details");
 
       // =========================
-      // ▼ ▼ 配信タイトル部分（ここ重要）
+      // ▼ ▼ 配信タイトル部分
       // =========================
 
       const summary = document.createElement("summary");
@@ -157,9 +157,9 @@ function renderList() {
         const div = document.createElement("div");
 
         div.innerHTML = `
-          <label>
+          <label style="display: flex; gap: 10px; align-items: center;">>
             <input type="checkbox" value="${item.id}" data-stream="${streamId}">
-            ${item.song} - ${item.artist}
+            <span>${item.song} - ${item.artist}</span>
           </label>
         `;
 
