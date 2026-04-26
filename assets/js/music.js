@@ -4,6 +4,7 @@ let playlist = [];
 let selectedList = [];
 let currentIndex = 0;
 let isPlaying = false;
+let isPlayerReady = false;
 
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1fnYlyOuVm6bl21crPuUXCmWE6jQuxjeAfl-T0z-PhcA/gviz/tq?tqx=out:json&gid=2072097352";
 
@@ -136,8 +137,25 @@ function saveSelection() {
   localStorage.setItem("playlistSelection", JSON.stringify(checked));
 }
 
+// ▼ 再生遅延ボタン
+function waitForPlayerReady(callback) {
+  const interval = setInterval(() => {
+    if (isPlayerReady) {
+      clearInterval(interval);
+      callback();
+    }
+  }, 200);
+}
+
+
 // ▼ 再生開始
 function playSelected() {
+  waitForPlayerReady(() => {
+    startPlayback();
+  });
+}
+
+function startPlayback() {
   selectedList = [];
 
   document.querySelectorAll("input[type=checkbox]:checked").forEach(cb => {
@@ -148,10 +166,6 @@ function playSelected() {
   if (selectedList.length === 0) {
     alert("曲を選択してください");
     return;
-  }
-
-  if (document.getElementById("shuffle").checked) {
-    selectedList.sort(() => Math.random() - 0.5);
   }
 
   currentIndex = 0;
@@ -194,13 +208,12 @@ function nextVideo() {
 
 // ▼ YouTube準備
 function onYouTubeIframeAPIReady() {
-  console.log("YouTube準備OK");
-
   player = new YT.Player('player', {
-    height: '360',
-    width: '640',
-    playerVars: {
-      autoplay: 0
+    events: {
+      'onReady': () => {
+        console.log("player ready");
+        isPlayerReady = true;
+      }
     }
   });
 }
