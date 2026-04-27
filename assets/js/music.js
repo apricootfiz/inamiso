@@ -360,10 +360,9 @@ function loadVideo(index) {
 // ▼ 終了時間チェック
 let endCheckInterval = null;
 
-function checkEnd(endTime) {
+function checkEnd(startTime, endTime) {
   if (!endTime || endTime <= 0) return;
 
-  // ▼ 前の監視を止める
   if (endCheckInterval) {
     clearInterval(endCheckInterval);
   }
@@ -373,9 +372,12 @@ function checkEnd(endTime) {
 
     const current = player.getCurrentTime();
 
-    console.log("current:", current, "end:", endTime);
+    // ▼ 再生開始からの経過時間
+    const elapsed = current - startTime;
 
-    if (current >= endTime) {
+    console.log("elapsed:", elapsed, "end:", endTime);
+
+    if (elapsed >= (endTime - startTime)) {
       clearInterval(endCheckInterval);
       endCheckInterval = null;
       nextVideo();
