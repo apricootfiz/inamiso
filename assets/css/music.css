@@ -54,6 +54,7 @@ summary {
   display: flex;
   align-items: center;
   gap: 6px; /* ← これが効く */
+  padding: 6px 0;
 }
 
 /* ▼ 曲リスト */
@@ -93,11 +94,10 @@ summary {
   margin-right: 10px;
 }
 
-/* labelにインデント（左の余白）をつける */
-.target-list label {
-  display: block;        /* ブロック要素にして、縦並びや余白を反映させやすくする */
-  padding-left: 20px;    /* ここで好きなだけインデントの深さを調整 */
-  margin-bottom: 5px;    /* 各行の間に少し隙間を空ける */
+
+label {
+  display: block;
+  padding: 6px 0;
 }
 
 /* ===============================
@@ -110,30 +110,38 @@ body {
 
 button {
   font-size: 16px;
-  padding: 8px 12px;
-  margin: 4px;
+  padding: 10px;
+  width: 100%; /* ← 横いっぱい */
 }
 
 input[type="checkbox"] {
-  transform: scale(1.3);
-  margin-right: 6px;
+  transform: scale(1.5);
+  margin-right: 8px;
 }
 
 @media (max-width: 600px) {
+
+  /* ▼ フォント少し大きく */
   body {
     font-size: 18px;
   }
 
-  button {
-    width: 100%;
-  }
-  
-    #playerContainer {
+  /* ▼ プレイヤー高さ調整 */
+  #playerContainer {
     height: 180px;
   }
 
-/*   #player {
+  #player {
     height: 120px;
-  } */
-  
+  }
+
+  /* ▼ リスト余白 */
+  #listContainer {
+    padding: 8px;
+  }
+
+  /* ▼ summary（タイトル） */
+  summary {
+    font-size: 16px;
+  }
 }
