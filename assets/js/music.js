@@ -61,12 +61,24 @@ document.addEventListener("change", (e) => {
   }
 });
 
+
+// ▼文字列を日付に変換
+function parseDate(dateStr) {
+  const match = String(dateStr).match(/Date\((\d+),(\d+),(\d+)/);
+  if (!match) return new Date(0);
+
+  const y = Number(match[1]);
+  const m = Number(match[2]);
+  const d = Number(match[3]);
+
+  return new Date(y, m, d);
+}
+
+
 // ▼YYYY年の切り出し
 function extractYear(date) {
-  if (!date) return "不明";
-
-  const match = String(date).match(/Date\((\d{4})/);
-  return match ? match[1] : "不明";
+  const d = parseDate(date);
+  return d.getFullYear() || "不明";
 }
 
 // ▼ リスト表示用のグループ化
@@ -124,7 +136,7 @@ function renderList() {
 		    const dateA = grouped[year][a][0].date;
 		    const dateB = grouped[year][b][0].date;
 
-		    return new Date(dateB) - new Date(dateA);
+		    return dateB - dateA;
 		  })
 		  .forEach((stream, streamIndex) => {
 
