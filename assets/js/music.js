@@ -356,13 +356,28 @@ function loadVideo(index) {
   checkEnd(item.end);
 }
 
-// ▼ 終了時間チェック
-function checkEnd(endTime) {
-  const interval = setInterval(() => {
-    if (!player || !player.getCurrentTime) return;
 
-    if (endTime && player.getCurrentTime() >= endTime) {
-      clearInterval(interval);
+// ▼ 終了時間チェック
+let endCheckInterval = null;
+
+function checkEnd(endTime) {
+  if (!endTime || endTime <= 0) return;
+
+  // ▼ 前の監視を止める
+  if (endCheckInterval) {
+    clearInterval(endCheckInterval);
+  }
+
+  endCheckInterval = setInterval(() => {
+    if (!player || typeof player.getCurrentTime !== "function") return;
+
+    const current = player.getCurrentTime();
+
+    console.log("current:", current, "end:", endTime);
+
+    if (current >= endTime) {
+      clearInterval(endCheckInterval);
+      endCheckInterval = null;
       nextVideo();
     }
   }, 500);
