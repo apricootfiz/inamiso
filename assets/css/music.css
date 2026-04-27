@@ -51,13 +51,19 @@ details details details {
 summary {
   cursor: pointer;
   font-family: sans-serif;
-  /* font-weight: bold; */
+  display: flex;
+  align-items: center;
+  gap: 6px; /* ← これが効く */
 }
 
 /* ▼ 曲リスト */
 #list div {
   margin-left: 10px;
   margin-bottom: 4px;
+}
+
+.target-list {
+  margin-left: 30px;
 }
 
 /* ▼ 上：スクロール領域 */

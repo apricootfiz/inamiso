@@ -117,7 +117,18 @@ function renderList() {
     yearDetails.appendChild(yearSummary);
 
     // ▼ 配信タイトルごと
-    Object.keys(grouped[year]).sort().reverse().forEach((stream, streamIndex) => {
+    // Object.keys(grouped[year]).sort().reverse().forEach((stream, streamIndex) => {
+
+		Object.keys(grouped[year])
+		  .sort((a, b) => {
+		    const dateA = grouped[year][a][0].date;
+		    const dateB = grouped[year][b][0].date;
+
+		    return new Date(dateB) - new Date(dateA);
+		  })
+		  .forEach((stream, streamIndex) => {
+
+
 
       const streamId = `stream-${year}-${streamIndex}-${Math.random().toString(36).slice(2,6)}`;
 
@@ -142,7 +153,25 @@ function renderList() {
 
       // ▼ タイトル文字
       const text = document.createElement("span");
-      text.textContent = " " + stream;
+      
+      // ▼ その配信の最初のデータから日付取得
+      const firstItem = grouped[year][stream][0];
+
+      // ▼ 日付整形（YYYY/MM/DD）
+      const rawDate = firstItem.date;
+      let formattedDate = "";
+
+      const match = String(rawDate).match(/Date\((\d+),(\d+),(\d+)/);
+      if (match) {
+        const y = match[1];
+        const m = String(Number(match[2]) + 1).padStart(2, "0");
+        const d = String(match[3]).padStart(2, "0");
+        formattedDate = `${y}/${m}/${d}`;
+      }
+
+      // ▼ 表示
+      text.textContent = ` ${formattedDate} ${stream}`;
+      //text.textContent = " " + stream;
 
       // ▼ 組み立て
       summary.appendChild(checkbox);
