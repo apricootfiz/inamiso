@@ -129,6 +129,27 @@ body {
   height: 100vh;
 }
 
+#listHeader {
+  position: sticky;
+  top: 0;
+  background: #fafafa;
+  z-index: 10;
+}
+
+/* 列ヘッダー */
+.header-row {
+  display: flex;
+  padding: 8px 10px;
+  border-bottom: 2px solid #ccc;
+  font-weight: bold;
+}
+
+/* 件数表示 */
+#songCount {
+  font-size: 12px;
+  color: #666;
+  padding: 4px 10px;
+}
 
 /* ===============================
    スマホ用
