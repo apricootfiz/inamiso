@@ -118,11 +118,12 @@ function renderList() {
     });
 
 	row.addEventListener("click", (e) => {
-	  if (e.target.tagName !== "INPUT") {
-	    playNow(item.id);
-	  }
-	});
 
+	  // ▼ チェックボックス押したときは無視
+	  if (e.target.classList.contains("song-checkbox")) return;
+
+	  playNow(item.id);
+	});
   });
 }
 
