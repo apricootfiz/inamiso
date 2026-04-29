@@ -120,10 +120,17 @@ body {
   display: none; /* デフォルト非表示 */
 }
 
-.song-label:hover {
+.song-row:hover {
   background: #f5f5f5;
 }
 
+.song-row {
+  cursor: pointer; /* カーソルの変更 */
+}
+
+.song-checkbox {
+  cursor: default;
+}
 @media (min-width: 768px) {
   .stream-title {
     display: block;
