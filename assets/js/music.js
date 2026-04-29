@@ -6,6 +6,8 @@ let selectedList = [];
 let currentIndex = 0;
 let isPlaying = false;
 let isPlayerReady = false;
+let interruptBackup = null;
+let isInterrupting = false;
 
 
 // ===============================================
@@ -90,9 +92,10 @@ function renderList() {
         row.className = "song-row";
 
         row.innerHTML = `
-          <label class="song-label">
+          <div class="song-row-inner">
 
-            <input type="checkbox" value="${item.id}" data-stream="${streamId}">
+            <input type="checkbox" class="song-checkbox"
+                   value="${item.id}" data-stream="${streamId}">
 
             <div class="song-info">
               <div class="song-main">
@@ -105,7 +108,7 @@ function renderList() {
               </div>
             </div>
 
-          </label>
+          </div>
         `;
 
         container.appendChild(row);
@@ -207,6 +210,41 @@ function startPlayback() {
 
 
 // ===============================================
+// クリック再生
+// ===============================================
+row.addEventListener("click", (e) => {
+
+  // ▼ チェックボックス押したときは無視
+  if (e.target.classList.contains("song-checkbox")) return;
+
+  playNow(item.id);
+});
+
+function playNow(itemId) {
+  const item = playlist.find(p => p.id == itemId);
+  if (!item) return;
+
+  // ▼ 再生中なら割り込み
+  if (isPlaying && selectedList.length > 0) {
+
+    interruptBackup = {
+      list: [...selectedList],
+      index: currentIndex
+    };
+
+    isInterrupting = true;
+  }
+
+  // ▼ 1曲だけ再生
+  selectedList = [item];
+  currentIndex = 0;
+  isPlaying = true;
+
+  loadVideo(0);
+}
+
+
+// ===============================================
 // 再生リストの取得
 // ===============================================
 function getSelectedList() {
@@ -241,7 +279,23 @@ function prevVideo() {
 function nextVideo() {
   if (!isPlaying) return;
 
-  // ▼ 毎回再取得
+  // ▼ 割り込み再生中だった場合
+  if (isInterrupting) {
+    isInterrupting = false;
+
+    if (interruptBackup) {
+      selectedList = interruptBackup.list;
+      currentIndex = interruptBackup.index;
+
+      interruptBackup = null;
+
+      // ▼ 元のリストに戻る
+      loadVideo(currentIndex);
+      return;
+    }
+  }
+
+  // ▼ 通常処理
   selectedList = getSelectedList();
 
   if (selectedList.length === 0) return;
@@ -279,6 +333,9 @@ function waitForPlayerReady(callback) {
     }
   }, 200);
 }
+
+
+
 
 
 // ===============================================
