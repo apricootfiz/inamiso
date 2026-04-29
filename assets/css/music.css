@@ -95,11 +95,21 @@ body {
   cursor: pointer;
 }
 
+.card.expanded {
+  grid-column: span 3; /* 3列ぶち抜き */
+}
+
 .song-list {
   margin-top: 8px;
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.song-list label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .hidden {

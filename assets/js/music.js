@@ -102,9 +102,9 @@ function renderList() {
       img.loading = "lazy";
 
       // ▼ タイトル
-      const title = document.createElement("div");
-      title.className = "card-title";
-      title.textContent = `${firstItem.date} ${stream}`;
+//      const title = document.createElement("div");
+//      title.className = "card-title";
+//      title.textContent = `${firstItem.date} ${stream}`;
 
       // ▼ チェック（配信単位）
       const checkbox = document.createElement("input");
@@ -133,6 +133,9 @@ function renderList() {
 
       // ▼ サムネクリックで展開
       img.addEventListener("click", () => {
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("expanded"));
+        card.classList.add("expanded");
+
         songList.classList.toggle("hidden");
       });
 
@@ -150,7 +153,7 @@ function renderList() {
       // ▼ 組み立て
       // =========================
       card.appendChild(img);
-      card.appendChild(title);
+//      card.appendChild(title);
       card.appendChild(checkbox);
       card.appendChild(songList);
 
