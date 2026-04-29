@@ -24,19 +24,19 @@ body {
 
   /* 左：プレイヤー */
   #playerArea {
-    width: 40%;
+    flex: 1;  /* ←50% */
     padding: 10px;
     border-right: 1px solid #ccc;
     position: sticky;
     top: 0;
     height: 100vh;
-    
-    box-sizing: border-box; /* ←これ重要 */
+    box-sizing: border-box;
   }
+
 
   /* 右：その他 */
   #mainArea {
-    width: 60%;
+    flex: 1;  /* ←50% */
     display: flex;
     flex-direction: column;
   }
