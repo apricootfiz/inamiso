@@ -72,9 +72,6 @@ function groupByYearAndStream(data) {
 // リスト表示（曲名一覧表示）
 // ===============================================
 function renderList() {
-  row.addEventListener("dblclick", () => {
-  playNow(item.id);
-  });
 
   const container = document.getElementById("list");
   if (!container) return;
@@ -118,6 +115,12 @@ function renderList() {
       });
 
     });
+
+	row.addEventListener("click", (e) => {
+	  if (e.target.tagName !== "INPUT") {
+	    playNow(item.id);
+	  }
+	});
 
   });
 }
