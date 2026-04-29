@@ -6,100 +6,97 @@ let currentIndex = 0;
 let isPlaying = false;
 let isPlayerReady = false;
 
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1fnYlyOuVm6bl21crPuUXCmWE6jQuxjeAfl-T0z-PhcA/gviz/tq?tqx=out:json&gid=2072097352";
 
-// ===============================================
-// ページ読込み時にプレイリストを取得して表示
-// ===============================================
+
+// ▼ 初期化 （ページ読み込み後の再生回避）
+async function loadPlaylist() {
+console.log("loadPlaylist呼ばれた"); // デバッグ用
+  const res = await fetch(SHEET_URL);
+  const text = await res.text();
+
+  const jsonText = text.match(/google\.visualization\.Query\.setResponse\((.*)\)/)[1];
+  const json = JSON.parse(jsonText);
+
+  const rows = json.table.rows || [];
+
+
+  playlist = rows.map((r, i) => ({
+    id: i,
+    date: r.c?.[0]?.v || "",
+    streamTitle: r.c?.[1]?.v || "",
+    url: (r.c?.[2]?.v || "").replace("&amp;", "&"),
+    start: Number(r.c?.[3]?.v || 0),
+    end: Number(r.c?.[4]?.v || 0),
+    song: r.c?.[5]?.v || "曲名なし",
+    artist: r.c?.[6]?.v || ""
+  }));
+
+  console.log("playlist:", playlist);
+
+  renderList();
+  loadSelection();
+}
 
 window.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM読み込み完了");
   loadPlaylist();
 });
 
-
-// ===============================================
-// JSONを読込、画面表示（選択状態の復元含む）
-// ===============================================
-
-async function loadPlaylist() {
-  try {
-  	playlist = await fetch("assets/data/playlist.json").then(res => res.json());
-  	
-  	renderList();
-  	
-  	loadSelection();
-  
-  } catch (e) {
-  	console.error("JSON読み込み失敗", e);
-  }
-}
-
-
-// ===============================================
-// リストの作成
-// ===============================================
-// ▼ チェックボックス変更時のイベント（イベント委譲）
 document.addEventListener("change", (e) => {
-
-  // ▼ 配信タイトルのチェックボックスが変更された場合
+  // ▼ 配信単位チェック
   if (e.target.classList.contains("stream-checkbox")) {
-
-    // ▼ 対象の配信グループID取得
     const stream = e.target.dataset.stream;
-
-    // ▼ チェック状態（ON / OFF）
     const checked = e.target.checked;
 
-    // ▼ 同じ配信グループの「親要素」を取得
-    // （これで他の配信に影響しないようにする）
-    const container = e.target.closest(".stream-block");
+    document.querySelectorAll(`input[data-stream="${stream}"]:not(.stream-checkbox)`)
+      .forEach(cb => cb.checked = checked);
 
-    // ▼ 同じ配信グループ内の曲チェックボックスを取得して状態を揃える
-    container
-      .querySelectorAll(`input[data-stream="${stream}"]:not(.stream-checkbox)`)
-      .forEach(cb => {
-        cb.checked = checked; // ON / OFF を統一
-      });
+    saveSelection();
+  }
 
-    // ▼ チェック状態を保存（ローカルストレージなど）
+  // ▼ 個別チェック保存
+  if (e.target.type === "checkbox") {
     saveSelection();
   }
 });
 
-// ===============================================
-// 表示用に年度＋配信単位でグループ化
-// ===============================================
-function groupByYearAndStream(data) {
-  const result = {}; // 最終的なグループ結果を格納
 
-  data.forEach(item => {
+// ▼文字列を日付に変換
+function parseDate(dateStr) {
+  const match = String(dateStr).match(/Date\((\d+),(\d+),(\d+)/);
+  if (!match) return new Date(0);
 
-    // ▼ 日付から年を取得（例: "2023-05-06" → 2023）
-    const dateObj = new Date(item.date);
-    const year = isNaN(dateObj) ? "不明" : dateObj.getFullYear();
+  const y = Number(match[1]);
+  const m = Number(match[2]);
+  const d = Number(match[3]);
 
-    // ▼ 配信単位のキーを決定
-    // 優先順位：
-    // ① 配信タイトル（あれば一番分かりやすい）
-    // ② videoId（ユニーク）
-    // ③ URL（最終 fallback）
-    // ④ どれも無ければ「不明」
-    const stream = item.streamTitle || item.videoId || item.url || "不明";
-
-    // ▼ 年ごとのオブジェクトを初期化
-    if (!result[year]) result[year] = {};
-
-    // ▼ 配信ごとの配列を初期化
-    if (!result[year][stream]) result[year][stream] = [];
-
-    // ▼ 該当グループにデータを追加
-    result[year][stream].push(item);
-  });
-
-  // ▼ グループ化された結果を返す
-  return result;
+  return new Date(y, m, d);
 }
 
 
+// ▼YYYY年の切り出し
+function extractYear(date) {
+  const d = parseDate(date);
+  return d.getFullYear() || "不明";
+}
+
+// ▼ リスト表示用のグループ化
+function groupByYearAndStream(data) {
+  const result = {};
+
+  data.forEach(item => {
+    const year = extractYear(item.date);
+    const stream = item.streamTitle || "不明";
+
+    if (!result[year]) result[year] = {};
+    if (!result[year][stream]) result[year][stream] = [];
+
+    result[year][stream].push(item);
+  });
+
+  return result;
+}
 
 // ▼ リスト表示
 function renderList() {
