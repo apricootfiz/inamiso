@@ -67,7 +67,7 @@ function groupByYearAndStream(data) {
 
 
 // ===============================================
-// リスト表示
+// リスト表示（曲名一覧表示）
 // ===============================================
 function renderList() {
   const container = document.getElementById("list");
@@ -79,54 +79,40 @@ function renderList() {
 
   Object.keys(grouped).sort((a, b) => b - a).forEach(year => {
 
-    const yearDetails = document.createElement("details");
-    const yearSummary = document.createElement("summary");
-    yearSummary.textContent = `${year}年`;
-    yearDetails.appendChild(yearSummary);
-
     Object.keys(grouped[year]).forEach((stream, streamIndex) => {
 
+      const items = grouped[year][stream];
       const streamId = `stream-${year}-${streamIndex}`;
 
-      const streamBlock = document.createElement("details");
-      const summary = document.createElement("summary");
+      items.forEach(item => {
 
-      // ▼ 配信チェックボックス
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.classList.add("stream-checkbox");
-      checkbox.dataset.stream = streamId;
-      checkbox.addEventListener("click", (e) => e.stopPropagation());
+        const row = document.createElement("div");
+        row.className = "song-row";
 
-      // ▼ 日付
-      const firstItem = grouped[year][stream][0];
-      const formattedDate = firstItem.date.replace(/-/g, "/");
+        row.innerHTML = `
+          <label class="song-label">
 
-      const text = document.createElement("span");
-      text.textContent = ` ${formattedDate} ${stream}`;
-
-      summary.appendChild(checkbox);
-      summary.appendChild(text);
-      streamBlock.appendChild(summary);
-
-      // ▼ 曲リスト
-      grouped[year][stream].forEach(item => {
-        const div = document.createElement("div");
-
-        div.innerHTML = `
-          <label>
             <input type="checkbox" value="${item.id}" data-stream="${streamId}">
-            ${item.song} - ${item.artist}
+
+            <div class="song-info">
+              <div class="song-main">
+                <span class="song-name">${item.song}</span>
+                <span class="artist-name">${item.artist}</span>
+              </div>
+
+              <div class="stream-title">
+                ${item.streamTitle}
+              </div>
+            </div>
+
           </label>
         `;
 
-        streamBlock.appendChild(div);
+        container.appendChild(row);
       });
 
-      yearDetails.appendChild(streamBlock);
     });
 
-    container.appendChild(yearDetails);
   });
 }
 

@@ -66,3 +66,66 @@ body {
   height: 200px;
 }
 
+/* ===============================
+   スマホ用
+================================ */
+
+/* 行 */
+.song-row {
+  border-bottom: 1px solid #eee;
+}
+
+/* ラベル全体クリック可能 */
+.song-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+/* チェックボックス */
+.song-label input {
+  flex-shrink: 0;
+}
+
+/* 情報エリア */
+.song-info {
+  flex: 1;
+}
+
+/* 1行目（曲＋アーティスト） */
+.song-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+}
+
+/* 曲名 */
+.song-name {
+  font-weight: bold;
+}
+
+/* アーティスト */
+.artist-name {
+  color: #666;
+  white-space: nowrap;
+}
+
+/* 2行目（配信タイトル） */
+.stream-title {
+  font-size: 12px;
+  color: #999;
+  display: none; /* デフォルト非表示 */
+}
+
+.song-label:hover {
+  background: #f5f5f5;
+}
+
+@media (min-width: 768px) {
+  .stream-title {
+    display: block;
+  }
+}
