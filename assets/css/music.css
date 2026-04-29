@@ -144,8 +144,23 @@ body {
   font-weight: bold;
 }
 
-/* 件数表示 */
+
+/* ===============================
+   検索エリア
+================================ */
+#searchArea {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#searchInput {
+  flex: 1;
+}
+
+/* 総数表示 */
 #songCount {
+  white-space: nowrap;
   font-size: 12px;
   color: #666;
   padding: 4px 10px;

@@ -171,6 +171,16 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
   });
 });
 
+function updateVisibleCount() {
+  let count = 0;
+
+  document.querySelectorAll(".song-row").forEach(row => {
+    if (row.style.display !== "none") count++;
+  });
+
+  document.getElementById("songCount").textContent =
+    `${count} / ${playlist.length} 曲`;
+}
 
 // ===============================================
 // 選択保存
