@@ -21,7 +21,7 @@ window.addEventListener("DOMContentLoaded", () => {
 // ===============================================
 async function loadPlaylist() {
   try {
-    const raw = await fetch("playlist.json").then(res => res.json());
+    const raw = await fetch("assets/data/playlist.json").then(res => res.json());
 
     // ▼ JSON → アプリ用に変換
     playlist = raw.map((item, index) => ({
