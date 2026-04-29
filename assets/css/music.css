@@ -22,17 +22,26 @@ body {
     height: 100vh;
   }
 
-  #fixedArea {
+  /* 左：プレイヤー */
+  #playerArea {
     width: 40%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
     padding: 10px;
     border-right: 1px solid #ccc;
+    position: sticky;
+    top: 0;
+    height: 100vh;
   }
 
-  #listContainer {
+  /* 右：その他 */
+  #mainArea {
     width: 60%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* リストだけスクロール */
+  #list {
+    flex: 1;
     overflow-y: auto;
   }
 

@@ -18,45 +18,50 @@
 <div id="app">
 <div id="fixedArea">
 
-  <div id="playerContainer">
-    <div id="nowPlaying"></div>
-    <div id="player"></div>
+  <div id="playerArea">
+	  <div id="playerContainer">
+	    <div id="nowPlaying"></div>
+	    <div id="player"></div>
+	  </div>
   </div>
 
-  <div id="controls">
-    <button onclick="playSelected()">再生</button>
-    <button onclick="prevVideo()">前へ</button>
-    <button onclick="nextVideo()">次へ</button>
-    <button onclick="stopVideo()">停止</button>
+  <div id="mainArea">
+	  <div id="controls">
+	    <button onclick="playSelected()">再生</button>
+	    <button onclick="prevVideo()">前へ</button>
+	    <button onclick="nextVideo()">次へ</button>
+	    <button onclick="stopVideo()">停止</button>
 
-    <button onclick="selectAll()">全選択</button>
-    <button onclick="clearAll()">全解除</button>
+	    <button onclick="selectAll()">全選択</button>
+	    <button onclick="clearAll()">全解除</button>
 
-    <label><input type="checkbox" id="shuffle"> シャッフル</label>
-    <label><input type="checkbox" id="loop"> ループ</label>
-  </div>
-  
-  <div id="searchArea">
-    <input type="text" id="searchInput" placeholder="曲名・アーティスト・配信で検索">
-    <div id="songCount"></div>
-  </div>
+	    <label><input type="checkbox" id="shuffle"> シャッフル</label>
+	    <label><input type="checkbox" id="loop"> ループ</label>
+	  </div>
+	  
+	  <div id="searchArea">
+	    <input type="text" id="searchInput" placeholder="曲名・アーティスト・配信で検索">
+	    <div id="songCount"></div>
+	  </div>
 
-  <div id="listHeader">
+	  <div id="listHeader">
 
-    <div class="header-row">
-      <div class="col-song">曲名</div>
-      <div class="col-artist">アーティスト</div>
-      <div class="col-check">✔</div>
-    </div>
+	    <div class="header-row">
+	      <div class="col-song">曲名</div>
+	      <div class="col-artist">アーティスト</div>
+	      <div class="col-check">✔</div>
+	    </div>
 
-  </div>
+	  </div>
 
-</div>
+	</div>
 
-<!-- ▼ スクロールエリア -->
+	<!-- ▼ スクロールエリア -->
+	<div id="listContainer">
+	  <div id="list"></div>
+	</div>
 
-<div id="list"></div>
-
+	</div>
 </div>
 
 <script src="assets/js/music.js"></script>
