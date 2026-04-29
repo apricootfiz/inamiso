@@ -71,7 +71,7 @@ body {
 
 /* 曲名列 */
 .col-song {
-  flex: 2;
+  flex: 1;
   display: flex;
   flex-direction: column;
   font-size: 11px;
@@ -79,7 +79,7 @@ body {
 
 /* 曲名 */
 .song-name {
-  flex: 2;
+  flex: 1;
   font-weight: bold;
   font-size: 11px;
 }
@@ -114,9 +114,6 @@ body {
   font-size: 9px;
   color: #999;
   display: none; /* デフォルト非表示 */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 
