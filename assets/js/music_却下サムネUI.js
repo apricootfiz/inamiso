@@ -67,7 +67,7 @@ function groupByYearAndStream(data) {
 
 
 // ===============================================
-// リスト表示
+// リスト表示（サムネイル表示）
 // ===============================================
 function renderList() {
   const container = document.getElementById("list");
@@ -77,57 +77,91 @@ function renderList() {
 
   const grouped = groupByYearAndStream(playlist);
 
-  Object.keys(grouped).sort((a, b) => b - a).forEach(year => {
+  // ▼ グリッドコンテナ
+  const grid = document.createElement("div");
+  grid.className = "grid";
 
-    const yearDetails = document.createElement("details");
-    const yearSummary = document.createElement("summary");
-    yearSummary.textContent = `${year}年`;
-    yearDetails.appendChild(yearSummary);
+  Object.keys(grouped).sort((a, b) => b - a).forEach(year => {
 
     Object.keys(grouped[year]).forEach((stream, streamIndex) => {
 
+      const items = grouped[year][stream];
+      const firstItem = items[0];
+
       const streamId = `stream-${year}-${streamIndex}`;
 
-      const streamBlock = document.createElement("details");
-      const summary = document.createElement("summary");
+      // =========================
+      // ▼ カード
+      // =========================
+      const card = document.createElement("div");
+      card.className = "card";
 
-      // ▼ 配信チェックボックス
+      // ▼ サムネイル
+      const img = document.createElement("img");
+      img.src = `https://img.youtube.com/vi/${firstItem.videoId}/mqdefault.jpg`;
+      img.loading = "lazy";
+
+      // ▼ タイトル
+//      const title = document.createElement("div");
+//      title.className = "card-title";
+//      title.textContent = `${firstItem.date} ${stream}`;
+
+      // ▼ チェック（配信単位）
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
-      checkbox.classList.add("stream-checkbox");
+      checkbox.className = "stream-checkbox";
       checkbox.dataset.stream = streamId;
-      checkbox.addEventListener("click", (e) => e.stopPropagation());
 
-      // ▼ 日付
-      const firstItem = grouped[year][stream][0];
-      const formattedDate = firstItem.date.replace(/-/g, "/");
+      // ▼ 曲リスト（折りたたみ）
+      const songList = document.createElement("div");
+      songList.className = "song-list hidden";
 
-      const text = document.createElement("span");
-      text.textContent = ` ${formattedDate} ${stream}`;
+      items.forEach(item => {
+        const label = document.createElement("label");
 
-      summary.appendChild(checkbox);
-      summary.appendChild(text);
-      streamBlock.appendChild(summary);
-
-      // ▼ 曲リスト
-      grouped[year][stream].forEach(item => {
-        const div = document.createElement("div");
-
-        div.innerHTML = `
-          <label>
-            <input type="checkbox" value="${item.id}" data-stream="${streamId}">
-            ${item.song} - ${item.artist}
-          </label>
+        label.innerHTML = `
+          <input type="checkbox" value="${item.id}" data-stream="${streamId}">
+          ${item.song}
         `;
 
-        streamBlock.appendChild(div);
+        songList.appendChild(label);
       });
 
-      yearDetails.appendChild(streamBlock);
-    });
+      // =========================
+      // ▼ イベント
+      // =========================
 
-    container.appendChild(yearDetails);
+      // ▼ サムネクリックで展開
+      img.addEventListener("click", () => {
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("expanded"));
+        card.classList.add("expanded");
+
+        songList.classList.toggle("hidden");
+      });
+
+      // ▼ タイトルクリックでも展開
+      title.addEventListener("click", () => {
+        songList.classList.toggle("hidden");
+      });
+
+      // ▼ チェッククリックで展開防止
+      checkbox.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+
+      // =========================
+      // ▼ 組み立て
+      // =========================
+      card.appendChild(img);
+//      card.appendChild(title);
+      card.appendChild(checkbox);
+      card.appendChild(songList);
+
+      grid.appendChild(card);
+    });
   });
+
+  container.appendChild(grid);
 }
 
 
