@@ -95,20 +95,20 @@ function renderList() {
 		row.innerHTML = `
 		  <div class="song-row-inner">
 
-		    <div class="song-info">
-		      <div class="song-main">
-		        <span class="song-name">${item.song}</span>
-		        <span class="artist-name">${item.artist}</span>
-		      </div>
-
-		      <div class="stream-title">
-		        ${item.streamTitle}
-		      </div>
+		    <div class="col-song">
+		      <div class="song-name">${item.song}</div>
+		      <div class="stream-title">${item.streamTitle}</div>
 		    </div>
-		    
-		    <input type="checkbox" class="song-checkbox"
-		           value="${item.id}" data-stream="${streamId}">
-		           
+
+		    <div class="col-artist">
+		      ${item.artist}
+		    </div>
+
+		    <div class="col-check">
+		      <input type="checkbox" class="song-checkbox"
+		             value="${item.id}" data-stream="${streamId}">
+		    </div>
+
 		  </div>
 		`;
 

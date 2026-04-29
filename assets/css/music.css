@@ -23,37 +23,19 @@ body {
   border-bottom: 2px solid #ccc;
 }
 
-/* 各列の設定 */
+/* 行 */
+.song-row-inner {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* 曲名列 */
 .col-song {
   flex: 2;
-  white-space: nowrap;
-}
-
-.col-artist {
-  flex: 1;
-  text-align: right;
-  white-space: nowrap;
-}
-
-.col-check {
-  width: 40px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-/* 1行目（曲＋アーティスト） */
-.song-main {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 14px;
-}
-
-/* 2行目（配信タイトル） */
-.stream-title {
-  font-size: 12px;
-  color: #999;
-  display: none; /* デフォルト非表示 */
+  flex-direction: column;
 }
 
 /* 曲名 */
@@ -61,6 +43,28 @@ body {
   flex: 2;
   font-weight: bold;
 }
+
+/* アーティスト列 */
+.col-artist {
+  flex: 1;
+  text-align: right;
+}
+
+/* チェック列 */
+.col-check {
+  width: 40px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+
+/* 配信タイトル列 */
+.stream-title {
+  font-size: 12px;
+  color: #999;
+  display: none; /* デフォルト非表示 */
+}
+
 
 /* アーティスト */
 .artist-name {
@@ -116,16 +120,6 @@ body {
   font-weight: bold;
 }
 
-/* ▼ チェックボックス */
-.song-row-inner {
-  display: flex;
-  align-items: flex-start;
-  padding: 10px;
-}
-
-.song-info {
-  flex: 1;
-}
 
 /* ===============================
    スクロールエリア（曲リスト）
@@ -134,6 +128,7 @@ body {
   overflow-y: auto;
   height: 100vh;
 }
+
 
 /* ===============================
    スマホ用
@@ -149,6 +144,7 @@ body {
 /* 行 */
 .song-row {
   border-bottom: 1px solid #eee;
+  cursor: pointer; /* カーソルの変更 */
 }
 
 /* ラベル全体クリック可能 */
@@ -161,18 +157,13 @@ body {
 }
 
 /* チェックボックス */
-.song-label input {
+.song-checkbox {
   flex-shrink: 0;
 }
 
 .song-row:hover {
   background: #f5f5f5;
 }
-
-.song-row {
-  cursor: pointer; /* カーソルの変更 */
-}
-
 
 @media (min-width: 768px) {
   .stream-title {
