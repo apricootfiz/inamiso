@@ -9,9 +9,36 @@ body {
   font-family: sans-serif;
 }
 
+/* レイアウト（スマホ） */
+#app {
+  display: block;
+}
+
+/* レイアウト（PC） */
+@media (min-width: 1024px) {
+  #app {
+    display: flex;
+    height: 100vh;
+  }
+
+  #fixedArea {
+    width: 40%;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    border-right: 1px solid #ccc;
+  }
+
+  #listContainer {
+    width: 60%;
+    overflow-y: auto;
+  }
+}
+
 
 /* ===============================
-   表のカラム名表示
+   表のカラム名
 ================================ */
 /* ヘッダー行 */
 #listHeaderRow {
@@ -47,7 +74,17 @@ body {
 /* アーティスト列 */
 .col-artist {
   flex: 1;
-  text-align: right;
+  padding-left: 10px;
+/*  text-align: right; */
+}
+
+/* アーティスト */
+.artist-name {
+  color: #666;
+  white-space: nowrap;
+  flex: 1;
+  padding-left: 10px;
+/*   text-align: right; */
 }
 
 /* チェック列 */
@@ -57,7 +94,6 @@ body {
   flex-shrink: 0;
 }
 
-
 /* 配信タイトル列 */
 .stream-title {
   font-size: 12px;
@@ -66,13 +102,6 @@ body {
 }
 
 
-/* アーティスト */
-.artist-name {
-  color: #666;
-  white-space: nowrap;
-  flex: 1;
-  text-align: right;
-}
 
 /* チェックボックス */
 .song-checkbox {
