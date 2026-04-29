@@ -95,9 +95,6 @@ function renderList() {
 		row.innerHTML = `
 		  <div class="song-row-inner">
 
-		    <input type="checkbox" class="song-checkbox"
-		           value="${item.id}" data-stream="${streamId}">
-
 		    <div class="song-info">
 		      <div class="song-main">
 		        <span class="song-name">${item.song}</span>
@@ -108,7 +105,10 @@ function renderList() {
 		        ${item.streamTitle}
 		      </div>
 		    </div>
-
+		    
+		    <input type="checkbox" class="song-checkbox"
+		           value="${item.id}" data-stream="${streamId}">
+		           
 		  </div>
 		`;
 
@@ -148,6 +148,26 @@ document.addEventListener("change", (e) => {
 
 
 // ===============================================
+// 検索処理
+// ===============================================
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  const keyword = e.target.value.toLowerCase();
+
+  document.querySelectorAll(".song-row").forEach(row => {
+
+    const text = row.innerText.toLowerCase();
+
+    if (text.includes(keyword)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+
+  });
+});
+
+
+// ===============================================
 // 選択保存
 // ===============================================
 function saveSelection() {
@@ -175,16 +195,29 @@ function loadSelection() {
 // ボタン
 // ===============================================
 function selectAll() {
-  document.querySelectorAll('#list input[type="checkbox"]').forEach(cb => {
-    cb.checked = true;
+  document.querySelectorAll('.song-row').forEach(row => {
+
+    // ▼ 非表示はスキップ
+    if (row.style.display === "none") return;
+
+    const cb = row.querySelector('.song-checkbox');
+    if (cb) cb.checked = true;
+
   });
+
   saveSelection();
 }
 
 function clearAll() {
-  document.querySelectorAll('#list input[type="checkbox"]').forEach(cb => {
-    cb.checked = false;
+  document.querySelectorAll('.song-row').forEach(row => {
+
+    if (row.style.display === "none") return;
+
+    const cb = row.querySelector('.song-checkbox');
+    if (cb) cb.checked = false;
+
   });
+
   saveSelection();
 }
 
