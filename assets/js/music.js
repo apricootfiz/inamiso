@@ -221,6 +221,21 @@ function startPlayback() {
 
 
 // ===============================================
+// 再生リストの取得
+// ===============================================
+function getSelectedList() {
+  const list = [];
+
+  document.querySelectorAll("input[type=checkbox]:checked").forEach(cb => {
+    const item = playlist.find(p => p.id == cb.value);
+    if (item) list.push(item);
+  });
+
+  return list;
+}
+
+
+// ===============================================
 // 前後移動
 // ===============================================
 function prevVideo() {
@@ -238,7 +253,12 @@ function prevVideo() {
 }
 
 function nextVideo() {
-  if (!isPlaying || selectedList.length === 0) return;
+  if (!isPlaying) return;
+
+  // ▼ 毎回再取得
+  selectedList = getSelectedList();
+
+  if (selectedList.length === 0) return;
 
   if (currentIndex + 1 < selectedList.length) {
     currentIndex++;
