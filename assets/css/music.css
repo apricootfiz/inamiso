@@ -32,8 +32,6 @@ body {
 /* ▼ プレイヤー */
 #playerContainer {
   padding: 10px;
-  display: flex;
-  gap: 20px;
 }
 
 /* ▼ YouTubeサイズ */
