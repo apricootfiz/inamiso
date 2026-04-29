@@ -214,7 +214,7 @@ body {
 }
 
 #searchInput {
-  flex: 1;
+  flex: 2;
 }
 
 /* 総数表示 */
