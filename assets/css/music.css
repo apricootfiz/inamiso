@@ -74,18 +74,21 @@ body {
   flex: 2;
   display: flex;
   flex-direction: column;
+  font-size: 11px;
 }
 
 /* 曲名 */
 .song-name {
   flex: 2;
   font-weight: bold;
+  font-size: 11px;
 }
 
 /* アーティスト列 */
 .col-artist {
   flex: 1;
   padding-left: 10px;
+  font-size: 11px;
 /*  text-align: right; */
 }
 
@@ -95,6 +98,7 @@ body {
   white-space: nowrap;
   flex: 1;
   padding-left: 10px;
+  font-size: 11px;
 /*   text-align: right; */
 }
 
@@ -107,11 +111,10 @@ body {
 
 /* 配信タイトル列 */
 .stream-title {
-  font-size: 12px;
+  font-size: 9px;
   color: #999;
   display: none; /* デフォルト非表示 */
 }
-
 
 
 /* チェックボックス */
