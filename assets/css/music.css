@@ -30,6 +30,8 @@ body {
     position: sticky;
     top: 0;
     height: 100vh;
+    
+    box-sizing: border-box; /* ←これ重要 */
   }
 
   /* 右：その他 */
@@ -136,6 +138,7 @@ body {
   border-bottom: 1px solid #ccc;
 }
 
+
 /* ▼ 操作ボタン */
 #controls {
   display: flex;
@@ -146,6 +149,7 @@ body {
   margin: 0 auto;
 }
 
+
 /* 各行 */
 .control-row {
   display: flex;
@@ -154,6 +158,7 @@ body {
   gap: 8px;
   align-items: center;
 }
+
 
 #controls button {
   padding: 6px 10px;
@@ -172,6 +177,7 @@ body {
 /*   max-width: 640px; */
   aspect-ratio: 16 / 9;
 }
+
 
 /* ▼ 再生中表示 */
 #nowPlaying {
@@ -194,6 +200,7 @@ body {
   background: #fafafa;
   z-index: 10;
 }
+
 
 /* 列ヘッダー */
 .header-row {
