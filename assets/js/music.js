@@ -92,24 +92,25 @@ function renderList() {
         const row = document.createElement("div");
         row.className = "song-row";
 
-        row.innerHTML = `
-          <label class="song-label">
+		row.innerHTML = `
+		  <div class="song-row-inner">
 
-            <input type="checkbox" value="${item.id}" data-stream="${streamId}">
+		    <input type="checkbox" class="song-checkbox"
+		           value="${item.id}" data-stream="${streamId}">
 
-            <div class="song-info">
-              <div class="song-main">
-                <span class="song-name">${item.song}</span>
-                <span class="artist-name">${item.artist}</span>
-              </div>
+		    <div class="song-info">
+		      <div class="song-main">
+		        <span class="song-name">${item.song}</span>
+		        <span class="artist-name">${item.artist}</span>
+		      </div>
 
-              <div class="stream-title">
-                ${item.streamTitle}
-              </div>
-            </div>
+		      <div class="stream-title">
+		        ${item.streamTitle}
+		      </div>
+		    </div>
 
-          </label>
-        `;
+		  </div>
+		`;
 
         container.appendChild(row);
       });
