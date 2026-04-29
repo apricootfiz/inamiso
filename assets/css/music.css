@@ -140,13 +140,17 @@ body {
 #controls {
   display: flex;
   flex-direction: column;
+  align-items: center; /* ← 全体を中央寄せ */
   gap: 8px;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 /* 各行 */
 .control-row {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center; /* ← 横中央 */
   gap: 8px;
   align-items: center;
 }
