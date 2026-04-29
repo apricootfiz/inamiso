@@ -112,18 +112,18 @@ function renderList() {
 		  </div>
 		`;
 
+	  row.addEventListener("click", (e) => {
+
+	    // ▼ チェック押したときは無視
+	    if (e.target.classList.contains("song-checkbox")) return;
+
+	    playNow(item.id);
+	  });
+
         container.appendChild(row);
       });
 
     });
-
-	row.addEventListener("click", (e) => {
-
-	  // ▼ チェックボックス押したときは無視
-	  if (e.target.classList.contains("song-checkbox")) return;
-
-	  playNow(item.id);
-	});
   });
 }
 
