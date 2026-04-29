@@ -26,6 +26,7 @@
     <button onclick="playSelected()">再生</button>
     <button onclick="prevVideo()">前へ</button>
     <button onclick="nextVideo()">次へ</button>
+    <button onclick="stopVideo()">停止</button>
 
     <button onclick="selectAll()">全選択</button>
     <button onclick="clearAll()">全解除</button>
@@ -39,10 +40,12 @@
 </div>
 
 <!-- ▼ スクロールエリア -->
-<div id="listContainer">
-  <h2 id="title">曲リスト</h2>
-  <div id="list"></div>
+<div id="listHeader">
+  <h2>曲リスト</h2>
+  <div id="songCount"></div>
 </div>
+
+<div id="list"></div>
 
 <script src="assets/js/music.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>

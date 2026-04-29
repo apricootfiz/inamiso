@@ -9,6 +9,18 @@ body {
   font-family: sans-serif;
 }
 
+
+/* ===============================
+   曲リスト
+================================ */
+#listHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
 /* ===============================
    固定エリア
 ================================ */

@@ -125,6 +125,11 @@ function renderList() {
 
     });
   });
+  
+  // ▼ 総数表示
+  document.getElementById("songCount").textContent =
+    `${playlist.length} 曲`;
+  
 }
 
 
@@ -192,7 +197,7 @@ function loadSelection() {
 
 
 // ===============================================
-// ボタン
+// 選択ボタン
 // ===============================================
 function selectAll() {
   document.querySelectorAll('.song-row').forEach(row => {
@@ -223,7 +228,7 @@ function clearAll() {
 
 
 // ===============================================
-// 再生
+// 再生ボタン
 // ===============================================
 function playSelected() {
   waitForPlayerReady(() => {
@@ -249,6 +254,16 @@ function startPlayback() {
   loadVideo(currentIndex);
 }
 
+// ===============================================
+// 停止ボタン
+// ===============================================
+function stopVideo() {
+  if (player && player.stopVideo) {
+    player.stopVideo();
+  }
+
+  isPlaying = false;
+}
 
 // ===============================================
 // クリック再生
