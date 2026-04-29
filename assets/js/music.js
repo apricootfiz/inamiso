@@ -126,9 +126,7 @@ function renderList() {
     });
   });
   
-  // ▼ 総数表示
-  //   document.getElementById("songCount").textContent =
-  //     `　全 ${playlist.length} 曲`;
+  updateVisibleCount();
   
 }
 
@@ -169,17 +167,20 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
     }
 
   });
+  
+  updateVisibleCount();
 });
 
 function updateVisibleCount() {
-  let count = 0;
+  const rows = document.querySelectorAll(".song-row");
+  let visible = 0;
 
-  document.querySelectorAll(".song-row").forEach(row => {
-    if (row.style.display !== "none") count++;
+  rows.forEach(row => {
+    if (row.style.display !== "none") visible++;
   });
 
   document.getElementById("songCount").textContent =
-    `${count} / ${playlist.length} 曲`;
+    `${visible} / ${playlist.length} 曲`;
 }
 
 // ===============================================
