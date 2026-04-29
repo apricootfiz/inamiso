@@ -127,8 +127,8 @@ function renderList() {
   });
   
   // ▼ 総数表示
-  document.getElementById("songCount").textContent =
-    `　全 ${playlist.length} 曲`;
+  //   document.getElementById("songCount").textContent =
+  //     `　全 ${playlist.length} 曲`;
   
 }
 
