@@ -13,12 +13,64 @@ body {
 /* ===============================
    曲リスト
 ================================ */
-#listHeader {
+/* ヘッダー行 */
+#listHeaderRow {
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-weight: bold;
+  border-bottom: 2px solid #ccc;
+  background: #fafafa;
+}
+
+/* 各列 */
+.col-song {
+  flex: 2;
+}
+
+.col-artist {
+  flex: 1;
+  text-align: right;
+}
+
+.col-check {
+  width: 40px;
+  text-align: center;
+}
+
+/* 1行目（曲＋アーティスト） */
+.song-main {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
+  gap: 10px;
+  font-size: 14px;
+}
+
+/* 2行目（配信タイトル） */
+.stream-title {
+  font-size: 12px;
+  color: #999;
+  display: none; /* デフォルト非表示 */
+}
+
+/* 曲名 */
+.song-name {
+  flex: 2;
+  font-weight: bold;
+}
+
+/* アーティスト */
+.artist-name {
+  color: #666;
+  white-space: nowrap;
+  flex: 1;
+  text-align: right;
+}
+
+/* チェックボックス */
+.song-checkbox {
+  cursor: default;
 }
 
 /* ===============================
@@ -66,17 +118,12 @@ body {
 .song-row-inner {
   display: flex;
   align-items: flex-start;
-}
-
-.song-main {
-  display: flex;
-  justify-content: space-between;
+  padding: 10px;
 }
 
 .song-info {
   flex: 1;
 }
-
 
 /* ===============================
    スクロールエリア
@@ -117,37 +164,6 @@ body {
   flex-shrink: 0;
 }
 
-/* 情報エリア */
-.song-info {
-  flex: 1;
-}
-
-/* 1行目（曲＋アーティスト） */
-.song-main {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 14px;
-}
-
-/* 曲名 */
-.song-name {
-  font-weight: bold;
-}
-
-/* アーティスト */
-.artist-name {
-  color: #666;
-  white-space: nowrap;
-}
-
-/* 2行目（配信タイトル） */
-.stream-title {
-  font-size: 12px;
-  color: #999;
-  display: none; /* デフォルト非表示 */
-}
-
 .song-row:hover {
   background: #f5f5f5;
 }
@@ -156,9 +172,7 @@ body {
   cursor: pointer; /* カーソルの変更 */
 }
 
-.song-checkbox {
-  cursor: default;
-}
+
 @media (min-width: 768px) {
   .stream-title {
     display: block;
