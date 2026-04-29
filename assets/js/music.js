@@ -1,4 +1,5 @@
-console.log("JS読み込まれた"); // デバッグ用
+console.log("JS読み込まれた");
+
 let player;
 let playlist = [];
 let selectedList = [];
@@ -8,200 +9,112 @@ let isPlayerReady = false;
 
 
 // ===============================================
-// ページ読込み時にプレイリストを取得して表示
+// 初期ロード
 // ===============================================
-
 window.addEventListener("DOMContentLoaded", () => {
   loadPlaylist();
 });
 
 
 // ===============================================
-// JSONを読込、画面表示（選択状態の復元含む）
+// JSON読み込み＋整形
 // ===============================================
-
 async function loadPlaylist() {
   try {
-  	playlist = await fetch("assets/data/playlist.json").then(res => res.json());
-  	
-  	renderList();
-  	
-  	loadSelection();
-  
+    const raw = await fetch("playlist.json").then(res => res.json());
+
+    // ▼ JSON → アプリ用に変換
+    playlist = raw.map((item, index) => ({
+      id: index,
+      date: item["配信日"],
+      streamTitle: item["配信タイトル"],
+      videoId: item["URL"],
+      start: Number(item["start"]) || 0,
+      end: Number(item["end"]) || 0,
+      song: item["曲名"],
+      artist: item["アーティスト"]
+    }));
+
+    renderList();
+    loadSelection();
+
   } catch (e) {
-  	console.error("JSON読み込み失敗", e);
+    console.error("JSON読み込み失敗", e);
   }
 }
 
 
 // ===============================================
-// リストの作成
-// ===============================================
-// ▼ チェックボックス変更時のイベント（イベント委譲）
-document.addEventListener("change", (e) => {
-
-  // ▼ 配信タイトルのチェックボックスが変更された場合
-  if (e.target.classList.contains("stream-checkbox")) {
-
-    // ▼ 対象の配信グループID取得
-    const stream = e.target.dataset.stream;
-
-    // ▼ チェック状態（ON / OFF）
-    const checked = e.target.checked;
-
-    // ▼ 同じ配信グループの「親要素」を取得
-    // （これで他の配信に影響しないようにする）
-    const container = e.target.closest(".stream-block");
-
-    // ▼ 同じ配信グループ内の曲チェックボックスを取得して状態を揃える
-    container
-      .querySelectorAll(`input[data-stream="${stream}"]:not(.stream-checkbox)`)
-      .forEach(cb => {
-        cb.checked = checked; // ON / OFF を統一
-      });
-
-    // ▼ チェック状態を保存（ローカルストレージなど）
-    saveSelection();
-  }
-});
-
-// ===============================================
-// 表示用に年度＋配信単位でグループ化
+// グループ化
 // ===============================================
 function groupByYearAndStream(data) {
-  const result = {}; // 最終的なグループ結果を格納
+  const result = {};
 
   data.forEach(item => {
-
-    // ▼ 日付から年を取得（例: "2023-05-06" → 2023）
     const dateObj = new Date(item.date);
     const year = isNaN(dateObj) ? "不明" : dateObj.getFullYear();
 
-    // ▼ 配信単位のキーを決定
-    // 優先順位：
-    // ① 配信タイトル（あれば一番分かりやすい）
-    // ② videoId（ユニーク）
-    // ③ URL（最終 fallback）
-    // ④ どれも無ければ「不明」
-    const stream = item.streamTitle || item.videoId || item.url || "不明";
+    const stream = item.streamTitle || item.videoId || "不明";
 
-    // ▼ 年ごとのオブジェクトを初期化
     if (!result[year]) result[year] = {};
-
-    // ▼ 配信ごとの配列を初期化
     if (!result[year][stream]) result[year][stream] = [];
 
-    // ▼ 該当グループにデータを追加
     result[year][stream].push(item);
   });
 
-  // ▼ グループ化された結果を返す
   return result;
 }
 
 
-
-// ▼ リスト表示
+// ===============================================
+// リスト表示
+// ===============================================
 function renderList() {
   const container = document.getElementById("list");
+  if (!container) return;
 
-  // ▼ 念のため存在チェック
-  if (!container) {
-    console.error("list要素がない");
-    return;
-  }
-
-  // ▼ 初期化
   container.innerHTML = "";
 
-  // ▼ 年度＆配信タイトルでグループ化
   const grouped = groupByYearAndStream(playlist);
 
-  // ▼ 年ごとにループ
   Object.keys(grouped).sort((a, b) => b - a).forEach(year => {
 
-    const yearBlock = document.createElement("div");
-
-    // ▼ 年の折りたたみ
     const yearDetails = document.createElement("details");
-//    yearDetails.open = true; // 初期で開く（不要なら消してOK）
-
     const yearSummary = document.createElement("summary");
     yearSummary.textContent = `${year}年`;
-
     yearDetails.appendChild(yearSummary);
 
-    // ▼ 配信タイトルごと
-    // Object.keys(grouped[year]).sort().reverse().forEach((stream, streamIndex) => {
+    Object.keys(grouped[year]).forEach((stream, streamIndex) => {
 
-		Object.keys(grouped[year])
-		  .sort((a, b) => {
-		    const dateA = grouped[year][a][0].date;
-		    const dateB = grouped[year][b][0].date;
-
-		    return dateB - dateA;
-		  })
-		  .forEach((stream, streamIndex) => {
-
-
-
-      const streamId = `stream-${year}-${streamIndex}-${Math.random().toString(36).slice(2,6)}`;
+      const streamId = `stream-${year}-${streamIndex}`;
 
       const streamBlock = document.createElement("details");
-
-      // =========================
-      // ▼ ▼ 配信タイトル部分
-      // =========================
-
       const summary = document.createElement("summary");
 
-      // ▼ チェックボックス（配信単位）
+      // ▼ 配信チェックボックス
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.classList.add("stream-checkbox");
       checkbox.dataset.stream = streamId;
+      checkbox.addEventListener("click", (e) => e.stopPropagation());
 
-      // ▼ チェック時に開閉しないようにする
-      checkbox.addEventListener("click", (e) => {
-        e.stopPropagation();
-      });
-
-      // ▼ タイトル文字
-      const text = document.createElement("span");
-      
-      // ▼ その配信の最初のデータから日付取得
+      // ▼ 日付
       const firstItem = grouped[year][stream][0];
+      const formattedDate = firstItem.date.replace(/-/g, "/");
 
-      // ▼ 日付整形（YYYY/MM/DD）
-      const rawDate = firstItem.date;
-      let formattedDate = "";
-
-      const match = String(rawDate).match(/Date\((\d+),(\d+),(\d+)/);
-      if (match) {
-        const y = match[1];
-        const m = String(Number(match[2]) + 1).padStart(2, "0");
-        const d = String(match[3]).padStart(2, "0");
-        formattedDate = `${y}/${m}/${d}`;
-      }
-
-      // ▼ 表示
+      const text = document.createElement("span");
       text.textContent = ` ${formattedDate} ${stream}`;
-      //text.textContent = " " + stream;
 
-      // ▼ 組み立て
       summary.appendChild(checkbox);
       summary.appendChild(text);
       streamBlock.appendChild(summary);
 
-      // =========================
-      // ▼ ▼ 曲一覧
-      // =========================
-
+      // ▼ 曲リスト
       grouped[year][stream].forEach(item => {
         const div = document.createElement("div");
 
         div.innerHTML = `
-          <label class="target-list">
+          <label>
             <input type="checkbox" value="${item.id}" data-stream="${streamId}">
             ${item.song} - ${item.artist}
           </label>
@@ -210,28 +123,36 @@ function renderList() {
         streamBlock.appendChild(div);
       });
 
-      // ▼ 年の中に追加
       yearDetails.appendChild(streamBlock);
     });
 
-    yearBlock.appendChild(yearDetails);
-    container.appendChild(yearBlock);
+    container.appendChild(yearDetails);
   });
 }
 
 
-// ▼ 再生リスト復元
-function loadSelection() {
-  const saved = JSON.parse(localStorage.getItem("playlistSelection") || "[]");
+// ===============================================
+// チェック連動（配信単位）
+// ===============================================
+document.addEventListener("change", (e) => {
+  if (e.target.classList.contains("stream-checkbox")) {
 
-  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
-    if (saved.includes(cb.value)) {
-      cb.checked = true;
-    }
-  });
-}
+    const stream = e.target.dataset.stream;
+    const checked = e.target.checked;
+    const container = e.target.closest("details");
 
-// ▼ 再生リスト保存
+    container
+      .querySelectorAll(`input[data-stream="${stream}"]:not(.stream-checkbox)`)
+      .forEach(cb => cb.checked = checked);
+
+    saveSelection();
+  }
+});
+
+
+// ===============================================
+// 選択保存
+// ===============================================
 function saveSelection() {
   const checked = [];
 
@@ -242,17 +163,20 @@ function saveSelection() {
   localStorage.setItem("playlistSelection", JSON.stringify(checked));
 }
 
-// ▼ 再生遅延ボタン
-function waitForPlayerReady(callback) {
-  const interval = setInterval(() => {
-    if (isPlayerReady) {
-      clearInterval(interval);
-      callback();
+function loadSelection() {
+  const saved = JSON.parse(localStorage.getItem("playlistSelection") || "[]");
+
+  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    if (saved.includes(cb.value)) {
+      cb.checked = true;
     }
-  }, 200);
+  });
 }
 
-// ▼ 全選択ボタン
+
+// ===============================================
+// ボタン
+// ===============================================
 function selectAll() {
   document.querySelectorAll('#list input[type="checkbox"]').forEach(cb => {
     cb.checked = true;
@@ -268,7 +192,9 @@ function clearAll() {
 }
 
 
-// ▼ 再生開始
+// ===============================================
+// 再生
+// ===============================================
 function playSelected() {
   waitForPlayerReady(() => {
     startPlayback();
@@ -293,7 +219,10 @@ function startPlayback() {
   loadVideo(currentIndex);
 }
 
-// ▼ 前へ
+
+// ===============================================
+// 前後移動
+// ===============================================
 function prevVideo() {
   if (!isPlaying) return;
 
@@ -308,7 +237,6 @@ function prevVideo() {
   loadVideo(currentIndex);
 }
 
-// ▼ 次へボタン
 function nextVideo() {
   if (!isPlaying || selectedList.length === 0) return;
 
@@ -317,97 +245,72 @@ function nextVideo() {
   } else if (document.getElementById("loop").checked) {
     currentIndex = 0;
   } else {
-    return; // ★終了させない
+    return;
   }
 
   loadVideo(currentIndex);
 }
 
-// ▼ YouTube準備
+
+// ===============================================
+// YouTube
+// ===============================================
 window.onYouTubeIframeAPIReady = function () {
-  console.log("YouTube API呼ばれた");
-  
   player = new YT.Player('player', {
     events: {
       'onReady': () => {
-        console.log("player ready");
         isPlayerReady = true;
       }
     }
   });
+};
+
+function waitForPlayerReady(callback) {
+  const interval = setInterval(() => {
+    if (isPlayerReady) {
+      clearInterval(interval);
+      callback();
+    }
+  }, 200);
 }
 
-// ▼ 再生
-function loadVideo(index) {
-  if (!player || !player.loadVideoById) {
-    console.log("player未準備");
-    return;
-  }
 
+// ===============================================
+// 再生処理
+// ===============================================
+function loadVideo(index) {
   const item = selectedList[index];
 
   document.getElementById("nowPlaying").innerText =
     `再生中: ${item.song} - ${item.artist}`;
 
   player.loadVideoById({
-    videoId: getVideoId(item.url),
+    videoId: item.videoId,
     startSeconds: item.start
   });
 
   player.playVideo();
 
-  checkEnd(item.end);
+  checkEnd(item.start, item.end);
 }
 
 
-// ▼ 終了時間チェック
+// ===============================================
+// 終了時間制御
+// ===============================================
 let endCheckInterval = null;
 
 function checkEnd(startTime, endTime) {
-  if (!endTime || endTime <= 0) return;
+  if (!endTime || endTime <= startTime) return;
 
-  if (endCheckInterval) {
-    clearInterval(endCheckInterval);
-  }
+  if (endCheckInterval) clearInterval(endCheckInterval);
 
   endCheckInterval = setInterval(() => {
-    if (!player || typeof player.getCurrentTime !== "function") return;
-
     const current = player.getCurrentTime();
 
-    // ▼ 再生開始からの経過時間
-    const elapsed = current - startTime;
-
-    console.log("elapsed:", elapsed, "end:", endTime);
-
-    if (elapsed >= (endTime - startTime)) {
+    if (current >= endTime) {
       clearInterval(endCheckInterval);
-      endCheckInterval = null;
       nextVideo();
     }
   }, 500);
-}
-
-// ▼ 動画ID取得
-function getVideoId(url) {
-  const match = url.match(/(?:v=|youtu\.be\/)([^&]+)/);
-  return match ? match[1] : null;
-}
-
-// ▼ 動画終了時
-function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.ENDED) {
-    nextVideo();
-  }
-}
-
-// ▼ 自動保存
-document.addEventListener("change", (e) => {
-  if (e.target.type === "checkbox") {
-    saveSelection();
-  }
-});
-
-if (window.YT && window.YT.Player) {
-  window.onYouTubeIframeAPIReady();
 }
