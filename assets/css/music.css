@@ -50,6 +50,22 @@ body {
   font-weight: bold;
 }
 
+/* ▼ チェックボックス */
+.song-row-inner {
+  display: flex;
+  align-items: flex-start;
+}
+
+.song-main {
+  display: flex;
+  justify-content: space-between;
+}
+
+.song-info {
+  flex: 1;
+}
+
+
 /* ===============================
    スクロールエリア
 ================================ */
