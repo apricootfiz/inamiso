@@ -411,7 +411,7 @@ function loadVideo(index) {
 
   const nowPlaying = document.getElementById("nowPlaying");
   if (nowPlaying) {
-    nowPlaying.innerText = `再生中: ${item.song} - ${item.artist}`;
+    nowPlaying.innerText = `再生中: ${item.song} - ${item.artist} (${currentIndex + 1} / ${selectedList.length})`;
   }
 
   player.loadVideoById({
