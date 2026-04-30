@@ -421,7 +421,7 @@ function loadVideo(index) {
 
   const nowPlaying = document.getElementById("nowPlaying");
   if (nowPlaying) {
-    nowPlaying.innerText = `再生中: ${item.song} - ${item.artist} (${currentIndex + 1} / ${selectedList.length})`;
+    nowPlaying.innerText = `♪ : ${item.song} - ${item.artist} (${currentIndex + 1}/${selectedList.length})`;
   }
 
   player.loadVideoById({
@@ -476,7 +476,7 @@ function stopVideo() {
 
   const nowPlaying = document.getElementById("nowPlaying");
   if (nowPlaying) {
-    nowPlaying.innerText = "停止中";
+    nowPlaying.innerText = "停止";
   }
 }
 
