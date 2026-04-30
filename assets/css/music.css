@@ -178,17 +178,24 @@ body {
 
 
 #controls button {
-  padding: 6px 10px;
-  font-size: 13px;
+/*   padding: 6px 10px; */
+/*   font-size: 13px; */
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+
+#controls img {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 /* ▼ プレイヤー */
 #playerContainer {
   padding: 10px;
 }
-
-
-
 
 /* ▼ 再生中表示 */
 #nowPlaying {
