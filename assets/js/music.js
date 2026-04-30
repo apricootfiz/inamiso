@@ -112,6 +112,14 @@ function renderList() {
 		  </div>
 		`;
 
+		// ▼ 検索用データを持たせる
+		row.dataset.search = [
+		  item.song,
+		  item.artist,
+		  item.streamTitle
+		].join(" ").toLowerCase();
+
+
 	  row.addEventListener("click", (e) => {
 
 	    // ▼ チェック押したときは無視
@@ -158,7 +166,8 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
 
   document.querySelectorAll(".song-row").forEach(row => {
 
-    const text = row.innerText.toLowerCase();
+    // const text = row.innerText.toLowerCase();
+    const text = row.dataset.search;
 
     if (text.includes(keyword)) {
       row.style.display = "";
@@ -255,17 +264,6 @@ function startPlayback() {
 }
 
 // ===============================================
-// 停止ボタン
-// ===============================================
-function stopVideo() {
-  if (player && player.stopVideo) {
-    player.stopVideo();
-  }
-
-  isPlaying = false;
-}
-
-// ===============================================
 // クリック再生
 // ===============================================
 function playNow(itemId) {
@@ -335,19 +333,22 @@ function nextVideo() {
   if (selectedList.length === 1) {
     if (isLoop) {
       loadVideo(0);
+    } else {
+      stopVideo();
     }
     return;
   }
 
   if (currentIndex + 1 < selectedList.length) {
     currentIndex++;
+    loadVideo(currentIndex);
   } else if (isLoop) {
     currentIndex = 0;
+    loadVideo(currentIndex);
   } else {
-    return;
+    stopVideo();
   }
 
-  loadVideo(currentIndex);
 }
 
 
@@ -451,4 +452,16 @@ function checkEnd(startTime, endTime) {
       
     }
   }, 500);
+}
+
+// ===============================================
+// 再生停止処理
+// ===============================================
+function stopVideo() {
+  if (player && player.stopVideo) {
+    player.stopVideo();
+  }
+
+  isPlaying = false;
+  currentIndex = 0;
 }
