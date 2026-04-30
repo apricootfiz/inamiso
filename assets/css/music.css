@@ -129,6 +129,7 @@ body {
 /* 列ヘッダー（固定） */
 .header-row {
   display: flex;
+  align-items: center;
   padding: 8px 10px;
   border-bottom: 2px solid #ccc;
   font-weight: bold;
@@ -331,11 +332,6 @@ body {
   height: 24px;
   display: block;
 }
-
-/* ===============================
-   スクロールエリア（曲リスト）
-================================ */
-
 
 
 /* ===============================
