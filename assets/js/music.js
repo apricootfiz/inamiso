@@ -311,6 +311,13 @@ function getSelectedList() {
 function prevVideo() {
   if (!isPlaying) return;
 
+  selectedList = getSelectedList(); // ←追加
+
+  if (selectedList.length === 0) {
+    stopVideo();
+    return;
+  }
+
   if (currentIndex > 0) {
     currentIndex--;
   } else if (isLoop) {
@@ -414,6 +421,16 @@ function toggleLoop() {
 // ===============================================
 function loadVideo(index) {
   const item = selectedList[index];
+  if (!item) return;
+
+  // ▼ 再生状態ON
+  isPlaying = true;
+
+  // ▼ 前のend監視止める
+  if (endCheckInterval) {
+    clearInterval(endCheckInterval);
+    endCheckInterval = null;
+  }
 
   document.getElementById("nowPlaying").innerText =
     `再生中: ${item.song} - ${item.artist}`;
@@ -423,7 +440,7 @@ function loadVideo(index) {
     startSeconds: item.start
   });
 
-  player.playVideo();
+  // playVideoは不要（loadVideoByIdで再生される）
 }
 
 
@@ -465,7 +482,14 @@ function checkEnd(startTime, endTime) {
       clearInterval(endCheckInterval);
       endCheckInterval = null;
 
+      if (!isPlaying) return;
+      
       selectedList = getSelectedList();
+
+      if (selectedList.length === 0) {
+        stopVideo();
+        return;
+      }
 
       // ▼ 1曲のみ
       if (selectedList.length === 1) {
