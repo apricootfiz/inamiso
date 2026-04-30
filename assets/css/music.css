@@ -223,9 +223,9 @@ body {
 }
 
 .icon-check {
-  width: 10px;
-  height: 10px;
-  fill: #fff;
+  width: 15px;
+  height: 15px;
+  fill: #aaa;
 }
 
 /* ホバー・アクティブ時の色変更 */
