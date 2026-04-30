@@ -187,6 +187,7 @@ body {
 /* チェックボックス */
 .song-checkbox {
   cursor: default;
+  margin: 0;
 }
 
 /* ===============================
