@@ -75,10 +75,10 @@ body {
 #nowPlaying {
   margin-bottom: 8px;
   font-weight: bold;
-  font-size: 12px;          /* ← 少し小さく */
-  overflow: hidden;         /* はみ出し隠す */
-  white-space: nowrap;      /* 1行固定 */
-  text-overflow: ellipsis;  /* ...表示 */
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 
@@ -102,8 +102,8 @@ body {
 
 /* SVG共通 */
 .icon {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   fill: #fff;
 }
 
