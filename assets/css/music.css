@@ -208,8 +208,10 @@ body {
 #listHeader {
   position: sticky;
   top: 0;
-  background: #fafafa;
   z-index: 10;
+/*  background: #fafafa; */
+  background: #111;
+  border-bottom: 1px solid #333;
 }
 
 
@@ -219,6 +221,7 @@ body {
   padding: 8px 10px;
   border-bottom: 2px solid #ccc;
   font-weight: bold;
+  color: #ccc;
 }
 
 
