@@ -106,6 +106,7 @@ body {
   flex: 1;
   padding-left: 5px;
   font-size: 11px;
+  color: #aaa;
 /*  text-align: right; */
 }
 
@@ -130,6 +131,7 @@ body {
 .stream-title {
   font-size: 9px;
   color: #999;
+/*   color: #777; */
   display: none; /* デフォルト非表示 */
 }
 
@@ -231,6 +233,9 @@ body {
 
 #searchInput {
   flex: 2;
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
 }
 
 /* 総数表示 */
@@ -248,8 +253,13 @@ body {
 
 /* 行 */
 .song-row {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #333;
   cursor: pointer; /* カーソルの変更 */
+}
+
+.song-row:hover {
+/*  background: #f5f5f5; */
+  background: #222;
 }
 
 /* ラベル全体クリック可能 */
@@ -266,9 +276,7 @@ body {
   flex-shrink: 0;
 }
 
-.song-row:hover {
-  background: #f5f5f5;
-}
+
 
 @media (min-width: 768px) {
   .stream-title {
