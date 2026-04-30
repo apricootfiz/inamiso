@@ -207,6 +207,14 @@ body {
   cursor: pointer;
 }
 
+.icon-btn-check {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+}
+
+
 /* SVGアイコン */
 .icon {
   width: 24px;
@@ -217,7 +225,7 @@ body {
 .icon-check {
   width: 10px;
   height: 10px;
-  fill: #aaa;
+  fill: #fff;
 }
 
 /* ホバー・アクティブ時の色変更 */
