@@ -421,6 +421,29 @@ function loadVideo(index) {
 
 
 // ===============================================
+// ■ 再生中の行ハイライト更新
+// ===============================================
+function updatePlayingRow() {
+  // ▼ いったん全行からplayingを外す
+  document.querySelectorAll(".song-row").forEach(row => {
+    row.classList.remove("playing");
+  });
+
+  const item = selectedList[currentIndex];
+  if (!item) return;
+
+  // ▼ valueが現在の曲IDと一致するチェックボックスを探す
+  const checkbox = document.querySelector(`.song-checkbox[value="${item.id}"]`);
+  if (!checkbox) return;
+
+  const row = checkbox.closest(".song-row");
+  if (!row) return;
+
+  row.classList.add("playing");
+}
+
+
+// ===============================================
 // ■ 停止処理
 // ===============================================
 function stopVideo() {
