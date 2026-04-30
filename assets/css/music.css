@@ -184,6 +184,17 @@ body {
   }
 }
 
+/* アーティスト */
+.artist-name {
+  color: #666;
+  white-space: nowrap;
+  flex: 1;
+  padding-left: 5px;
+  font-size: 11px;
+/*   text-align: right; */
+}
+
+
 /* チェックボックス */
 .song-checkbox {
   cursor: default;
@@ -271,15 +282,6 @@ body {
 
 
 
-/* アーティスト */
-.artist-name {
-  color: #666;
-  white-space: nowrap;
-  flex: 1;
-  padding-left: 5px;
-  font-size: 11px;
-/*   text-align: right; */
-}
 
 
 /* ===============================
