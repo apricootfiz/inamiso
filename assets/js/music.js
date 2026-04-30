@@ -1,31 +1,39 @@
 console.log("JS読み込まれた");
 
-let player;
-let playlist = [];
-let selectedList = [];
-let currentIndex = 0;
-let isPlaying = false;
-let isPlayerReady = false;
-let interruptBackup = null;
-let isInterrupting = false;
+// ===============================================
+// グローバル状態管理
+// ===============================================
+let player;              // YouTubeプレイヤー
+let playlist = [];       // 全曲データ
+let selectedList = [];   // 再生対象リスト
+let currentIndex = 0;    // 現在の再生位置
+
+let isPlaying = false;       // 再生中フラグ
+let isPlayerReady = false;   // YouTube準備完了フラグ
+
+let isShuffle = false;   // シャッフルON/OFF
+let isLoop = false;      // ループON/OFF
+
+let endCheckInterval = null; // end監視用タイマー
 
 
 // ===============================================
-// 初期ロード
+// 初期処理
 // ===============================================
 window.addEventListener("DOMContentLoaded", () => {
-  loadPlaylist();
+  loadPlaylist();     // JSON読み込み
+  setupSearchInput(); // 検索イベント設定
 });
 
 
 // ===============================================
-// JSON読み込み＋整形
+// JSON読み込み＆整形
 // ===============================================
 async function loadPlaylist() {
   try {
     const raw = await fetch("assets/data/playlist.json").then(res => res.json());
 
-    // ▼ JSON → アプリ用に変換
+    // ▼ 日本語キー → JS用に変換
     playlist = raw.map((item, index) => ({
       id: index,
       date: item["配信日"],
@@ -37,8 +45,9 @@ async function loadPlaylist() {
       artist: item["アーティスト"]
     }));
 
-    renderList();
-    loadSelection();
+    renderList();     // 画面描画
+    loadSelection();  // 保存済みチェック復元
+    updateVisibleCount();
 
   } catch (e) {
     console.error("JSON読み込み失敗", e);
@@ -47,7 +56,7 @@ async function loadPlaylist() {
 
 
 // ===============================================
-// グループ化
+// 年＆配信単位でグループ化
 // ===============================================
 function groupByYearAndStream(data) {
   const result = {};
@@ -55,7 +64,6 @@ function groupByYearAndStream(data) {
   data.forEach(item => {
     const dateObj = new Date(item.date);
     const year = isNaN(dateObj) ? "不明" : dateObj.getFullYear();
-
     const stream = item.streamTitle || item.videoId || "不明";
 
     if (!result[year]) result[year] = {};
@@ -69,10 +77,9 @@ function groupByYearAndStream(data) {
 
 
 // ===============================================
-// リスト表示（曲名一覧表示）
+// 曲一覧をDOMに描画
 // ===============================================
 function renderList() {
-
   const container = document.getElementById("list");
   if (!container) return;
 
@@ -80,243 +87,186 @@ function renderList() {
 
   const grouped = groupByYearAndStream(playlist);
 
-  Object.keys(grouped).sort((a, b) => b - a).forEach(year => {
+  Object.keys(grouped)
+    .sort((a, b) => b - a) // 新しい年から表示
+    .forEach(year => {
 
-    Object.keys(grouped[year]).forEach((stream, streamIndex) => {
+      Object.keys(grouped[year]).forEach(stream => {
+        const items = grouped[year][stream];
 
-      const items = grouped[year][stream];
-      const streamId = `stream-${year}-${streamIndex}`;
+        items.forEach(item => {
+          const row = document.createElement("div");
+          row.className = "song-row";
 
-      items.forEach(item => {
+          // ▼ HTML構造
+          row.innerHTML = `
+            <div class="song-row-inner">
+              <div class="col-song">
+                <div class="song-name">${item.song}</div>
+                <div class="stream-title">${item.streamTitle}</div>
+              </div>
 
-        const row = document.createElement("div");
-        row.className = "song-row";
+              <div class="col-artist">
+                ${item.artist}
+              </div>
 
-		row.innerHTML = `
-		  <div class="song-row-inner">
+              <div class="col-check">
+                <input type="checkbox" class="song-checkbox" value="${item.id}">
+              </div>
+            </div>
+          `;
 
-		    <div class="col-song">
-		      <div class="song-name">${item.song}</div>
-		      <div class="stream-title">${item.streamTitle}</div>
-		    </div>
+          // ▼ 検索用データ
+          row.dataset.search = [
+            item.song,
+            item.artist,
+            item.streamTitle
+          ].join(" ").toLowerCase();
 
-		    <div class="col-artist">
-		      ${item.artist}
-		    </div>
+          // ▼ 行クリックで即再生
+          row.addEventListener("click", e => {
+            if (e.target.classList.contains("song-checkbox")) return;
+            playNow(item.id);
+          });
 
-		    <div class="col-check">
-		      <input type="checkbox" class="song-checkbox"
-		             value="${item.id}" data-stream="${streamId}">
-		    </div>
+          // ▼ チェック変更時は保存
+          row.querySelector(".song-checkbox")
+             .addEventListener("change", saveSelection);
 
-		  </div>
-		`;
-
-		// ▼ 検索用データを持たせる
-		row.dataset.search = [
-		  item.song,
-		  item.artist,
-		  item.streamTitle
-		].join(" ").toLowerCase();
-
-
-	    row.addEventListener("click", (e) => {
-
-	    // ▼ チェック押したときは無視
-	    if (e.target.classList.contains("song-checkbox")) return;
-
-	    playNow(item.id);
-	  });
-
-        container.appendChild(row);
+          container.appendChild(row);
+        });
       });
-
     });
-  });
-  
-  updateVisibleCount();
-  
 }
 
 
 // ===============================================
-// チェック連動（配信単位）
+// 検索入力イベント
 // ===============================================
-document.addEventListener("change", (e) => {
-  if (e.target.classList.contains("stream-checkbox")) {
+function setupSearchInput() {
+  const input = document.getElementById("searchInput");
+  if (!input) return;
 
-    const stream = e.target.dataset.stream;
-    const checked = e.target.checked;
-    const container = e.target.closest("details");
+  input.addEventListener("input", e => {
+    const keyword = e.target.value.toLowerCase();
 
-    container
-      .querySelectorAll(`input[data-stream="${stream}"]:not(.stream-checkbox)`)
-      .forEach(cb => cb.checked = checked);
+    document.querySelectorAll(".song-row").forEach(row => {
+      const text = row.dataset.search || "";
+      row.style.display = text.includes(keyword) ? "" : "none";
+    });
 
-    saveSelection();
-  }
-});
-
-
-// ===============================================
-// 検索処理
-// ===============================================
-document.getElementById("searchInput").addEventListener("input", (e) => {
-  const keyword = e.target.value.toLowerCase();
-
-  document.querySelectorAll(".song-row").forEach(row => {
-
-    // const text = row.innerText.toLowerCase();
-    const text = row.dataset.search;
-
-    if (text.includes(keyword)) {
-      row.style.display = "";
-    } else {
-      row.style.display = "none";
-    }
-
+    updateVisibleCount();
   });
-  
-  updateVisibleCount();
-});
+}
 
+
+// ===============================================
+// 表示件数更新
+// ===============================================
 function updateVisibleCount() {
+  const el = document.getElementById("songCount");
+  if (!el) return;
+
   const rows = document.querySelectorAll(".song-row");
-  let visible = 0;
+  const visible = [...rows].filter(r => r.style.display !== "none").length;
 
-  rows.forEach(row => {
-    if (row.style.display !== "none") visible++;
-  });
-
-  document.getElementById("songCount").textContent =
-    `${visible} / ${playlist.length} 曲`;
+  el.textContent = `${visible} / ${playlist.length} 曲`;
 }
 
+
 // ===============================================
-// 選択保存
+// チェック状態保存（localStorage）
 // ===============================================
 function saveSelection() {
-  const checked = [];
-
-  document.querySelectorAll("input[type=checkbox]:checked").forEach(cb => {
-    checked.push(cb.value);
-  });
+  const checked = [...document.querySelectorAll(".song-checkbox:checked")]
+    .map(cb => cb.value);
 
   localStorage.setItem("playlistSelection", JSON.stringify(checked));
 }
 
+
+// ===============================================
+// チェック状態復元
+// ===============================================
 function loadSelection() {
   const saved = JSON.parse(localStorage.getItem("playlistSelection") || "[]");
 
-  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
-    if (saved.includes(cb.value)) {
-      cb.checked = true;
-    }
+  document.querySelectorAll(".song-checkbox").forEach(cb => {
+    cb.checked = saved.includes(cb.value);
   });
 }
 
 
 // ===============================================
-// チェックボタン
+// 表示中の曲だけ全選択/解除
 // ===============================================
-let isAllSelected = false;
-
 function toggleSelectAll() {
-  const checkboxes = document.querySelectorAll(".song-checkbox");
+  const visible = [...document.querySelectorAll(".song-checkbox")]
+    .filter(cb => cb.closest(".song-row").style.display !== "none");
 
-  const visible = [...checkboxes].filter(cb => {
-    const row = cb.closest(".song-row");
-    return row.style.display !== "none";
-  });
+  if (visible.length === 0) return;
 
   const allChecked = visible.every(cb => cb.checked);
 
-  visible.forEach(cb => {
-    cb.checked = !allChecked;
-  });
+  visible.forEach(cb => cb.checked = !allChecked);
+
+  saveSelection();
 }
 
+
 // ===============================================
-// 再生ボタン
+// チェックされている曲を取得
+// ===============================================
+function getSelectedList() {
+  return [...document.querySelectorAll(".song-checkbox:checked")]
+    .map(cb => playlist.find(p => p.id == cb.value))
+    .filter(Boolean);
+}
+
+
+// ===============================================
+// 再生（複数選択）
 // ===============================================
 function playSelected() {
   waitForPlayerReady(() => {
-    startPlayback();
+
+    selectedList = getSelectedList();
+
+    if (selectedList.length === 0) {
+      alert("曲を選択してください");
+      return;
+    }
+
+    // ▼ シャッフル適用
+    if (isShuffle) shuffleList(selectedList);
+
+    currentIndex = 0;
+    loadVideo(currentIndex);
   });
 }
 
-function startPlayback() {
-  selectedList = [];
-
-  document.querySelectorAll("input[type=checkbox]:checked").forEach(cb => {
-    const item = playlist.find(p => p.id == cb.value);
-    if (item) selectedList.push(item);
-  });
-
-  if (selectedList.length === 0) {
-    alert("曲を選択してください");
-    return;
-  }
-
-  currentIndex = 0;
-  isPlaying = true;
-  loadVideo(currentIndex);
-}
 
 // ===============================================
-// クリック再生
+// 即再生（1曲）
 // ===============================================
 function playNow(itemId) {
-  const item = playlist.find(p => p.id == itemId);
-  if (!item) return;
+  waitForPlayerReady(() => {
+    const item = playlist.find(p => p.id == itemId);
+    if (!item) return;
 
-  // ▼ 再生中なら割り込み
-  if (isPlaying && selectedList.length > 0) {
+    selectedList = [item];
+    currentIndex = 0;
 
-    interruptBackup = {
-      list: [...selectedList],
-      index: currentIndex
-    };
-
-    isInterrupting = true;
-  }
-
-  // ▼ 1曲だけ再生
-  selectedList = [item];
-  currentIndex = 0;
-  isPlaying = true;
-
-  loadVideo(0);
-}
-
-
-// ===============================================
-// 再生リストの取得
-// ===============================================
-function getSelectedList() {
-  const list = [];
-
-  document.querySelectorAll("input[type=checkbox]:checked").forEach(cb => {
-    const item = playlist.find(p => p.id == cb.value);
-    if (item) list.push(item);
+    loadVideo(0);
   });
-
-  return list;
 }
 
 
 // ===============================================
-// 前後移動
+// 前の曲
 // ===============================================
 function prevVideo() {
   if (!isPlaying) return;
-
-  selectedList = getSelectedList(); // ←追加
-
-  if (selectedList.length === 0) {
-    stopVideo();
-    return;
-  }
 
   if (currentIndex > 0) {
     currentIndex--;
@@ -329,108 +279,106 @@ function prevVideo() {
   loadVideo(currentIndex);
 }
 
+
+// ===============================================
+// 次の曲
+// ===============================================
 function nextVideo() {
   if (!isPlaying) return;
-
-  selectedList = getSelectedList();
-
-  if (selectedList.length === 0) return;
-
-  // ▼ 1曲のみ
-  if (selectedList.length === 1) {
-    if (isLoop) {
-      loadVideo(0);
-    } else {
-      stopVideo();
-    }
-    return;
-  }
 
   if (currentIndex + 1 < selectedList.length) {
     currentIndex++;
     loadVideo(currentIndex);
-  } else if (isLoop) {
-    currentIndex = 0;
-    loadVideo(currentIndex);
-  } else {
-    stopVideo();
+    return;
   }
 
+  if (isLoop) {
+    currentIndex = 0;
+    loadVideo(currentIndex);
+    return;
+  }
+
+  stopVideo();
 }
 
 
 // ===============================================
-// YouTube
+// シャッフル切替
+// ===============================================
+function toggleShuffle() {
+  isShuffle = !isShuffle;
+  document.getElementById("shuffleBtn")?.classList.toggle("active", isShuffle);
+}
+
+
+// ===============================================
+// ループ切替
+// ===============================================
+function toggleLoop() {
+  isLoop = !isLoop;
+  document.getElementById("loopBtn")?.classList.toggle("active", isLoop);
+}
+
+
+// ===============================================
+// 配列シャッフル
+// ===============================================
+function shuffleList(list) {
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
+  }
+}
+
+
+// ===============================================
+// YouTube API 初期化
 // ===============================================
 window.onYouTubeIframeAPIReady = function () {
-  player = new YT.Player('player', {
+  player = new YT.Player("player", {
     events: {
-      'onReady': () => {
-        isPlayerReady = true;
-      },
-      'onStateChange': onPlayerStateChange
+      onReady: () => isPlayerReady = true,
+      onStateChange: onPlayerStateChange
     }
   });
 };
 
+
+// ===============================================
+// プレイヤー準備待ち
+// ===============================================
 function waitForPlayerReady(callback) {
-  const interval = setInterval(() => {
+  if (isPlayerReady) return callback();
+
+  const timer = setInterval(() => {
     if (isPlayerReady) {
-      clearInterval(interval);
+      clearInterval(timer);
       callback();
     }
   }, 200);
 }
 
+
+// ===============================================
+// 再生状態変更時
+// ===============================================
 function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.PLAYING) {
     const item = selectedList[currentIndex];
-    checkEnd(item.start, item.end);
+    if (item) checkEnd(item.start, item.end);
   }
 }
 
-// ===============================================
-// シャフル再生処理
-// ===============================================
-let isShuffle = false;
-
-function toggleShuffle() {
-  const btn = document.getElementById("shuffleBtn");
-
-  isShuffle = !isShuffle;
-
-  btn.classList.toggle("active", isShuffle);
-}
 
 // ===============================================
-// ループ再生処理
-// ===============================================
-let isLoop = false;
-
-function toggleLoop() {
-  const btn = document.getElementById("loopBtn");
-
-  isLoop = !isLoop;
-
-  btn.classList.toggle("active", isLoop);
-}
-
-
-// ===============================================
-// 再生処理
+// 動画再生
 // ===============================================
 function loadVideo(index) {
   const item = selectedList[index];
   if (!item) return;
 
-  // ▼ 再生状態ON
   isPlaying = true;
-
-  // ▼ 前のend監視止める
-  if (endCheckInterval) {
-    clearInterval(endCheckInterval);
-    endCheckInterval = null;
-  }
+  clearEndCheck();
 
   document.getElementById("nowPlaying").innerText =
     `再生中: ${item.song} - ${item.artist}`;
@@ -439,71 +387,47 @@ function loadVideo(index) {
     videoId: item.videoId,
     startSeconds: item.start
   });
-
-  // playVideoは不要（loadVideoByIdで再生される）
 }
 
 
 // ===============================================
-// 再生停止処理
+// 停止処理
 // ===============================================
 function stopVideo() {
-  if (player && player.stopVideo) {
-    player.stopVideo();
-  }
-
-  if (endCheckInterval) {
-    clearInterval(endCheckInterval);
-    endCheckInterval = null;
-  }
-
+  player?.stopVideo();
+  clearEndCheck();
   isPlaying = false;
+
+  document.getElementById("nowPlaying").innerText = "停止中";
 }
 
-// ===============================================
-// 動画の終了時間(end)制御
-// ===============================================
-let endCheckInterval = null;
 
-function checkEnd(startTime, endTime) {
-  if (!endTime || endTime <= startTime) return;
-
+// ===============================================
+// end監視クリア
+// ===============================================
+function clearEndCheck() {
   if (endCheckInterval) {
     clearInterval(endCheckInterval);
     endCheckInterval = null;
   }
+}
+
+
+// ===============================================
+// end時間監視 → 次の曲へ
+// ===============================================
+function checkEnd(start, end) {
+  if (!end || end <= start) return;
+
+  clearEndCheck();
 
   endCheckInterval = setInterval(() => {
-    if (!player || !player.getCurrentTime) return;
+    const current = player?.getCurrentTime?.();
+    if (!current) return;
 
-    const current = player.getCurrentTime();
-
-    if (current >= endTime) {
-      clearInterval(endCheckInterval);
-      endCheckInterval = null;
-
-      if (!isPlaying) return;
-      
-      selectedList = getSelectedList();
-
-      if (selectedList.length === 0) {
-        stopVideo();
-        return;
-      }
-
-      // ▼ 1曲のみ
-      if (selectedList.length === 1) {
-        if (isLoop) {
-          loadVideo(0);
-        } else {
-          stopVideo();
-        }
-        return;
-      }
-
-      // ▼ 複数曲
-      nextVideo();
+    if (current >= end) {
+      clearEndCheck();
+      if (isPlaying) nextVideo();
     }
-
   }, 300);
 }
