@@ -393,3 +393,27 @@ body {
   -webkit-overflow-scrolling: touch;
   height: auto;
 }
+
+/* =========================================
+   ■ PC用：左右2画面
+========================================= */
+@media (min-width: 1024px) {
+
+  #app {
+    flex-direction: row;
+  }
+
+  #playerArea {
+    flex: 1;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    box-sizing: border-box;
+  }
+
+  #mainArea {
+    flex: 1;
+    height: 100vh;
+    min-width: 0;
+  }
+}
