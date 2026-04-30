@@ -63,11 +63,11 @@
 	    <!-- <button onclick="stopVideo()">停止</button> -->
 	  </div>
 	  
-	  <div class="control-row">
+	  <!--<div class="control-row">
 	    <button onclick="selectAll()">全選択</button>
 	    <button onclick="clearAll()">全解除</button>
 	    
-	  </div>
+	  </div> -->
 	  
   </div>
 
@@ -87,7 +87,11 @@
 	    <div class="header-row">
 	      <div class="col-song">曲名</div>
 	      <div class="col-artist">アーティスト</div>
-	      <div class="col-check">✔</div>
+	      
+	      <div class="col-check">
+	      	<button id="selectToggleBtn" class="icon-btn" onclick="toggleSelectAll()">✔</button>
+	      </div>
+	      
 	    </div>
 
 	  </div>

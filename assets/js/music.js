@@ -208,35 +208,24 @@ function loadSelection() {
 
 
 // ===============================================
-// 選択ボタン
+// チェックボタン
 // ===============================================
-function selectAll() {
-  document.querySelectorAll('.song-row').forEach(row => {
+let isAllSelected = false;
 
-    // ▼ 非表示はスキップ
-    if (row.style.display === "none") return;
+function toggleSelectAll() {
+  const checkboxes = document.querySelectorAll(".song-checkbox");
 
-    const cb = row.querySelector('.song-checkbox');
-    if (cb) cb.checked = true;
-
+  const visible = [...checkboxes].filter(cb => {
+    const row = cb.closest(".song-row");
+    return row.style.display !== "none";
   });
 
-  saveSelection();
-}
+  const allChecked = visible.every(cb => cb.checked);
 
-function clearAll() {
-  document.querySelectorAll('.song-row').forEach(row => {
-
-    if (row.style.display === "none") return;
-
-    const cb = row.querySelector('.song-checkbox');
-    if (cb) cb.checked = false;
-
+  visible.forEach(cb => {
+    cb.checked = !allChecked;
   });
-
-  saveSelection();
 }
-
 
 // ===============================================
 // 再生ボタン
@@ -403,7 +392,6 @@ function toggleLoop() {
 
   btn.classList.toggle("active", isLoop);
 }
-
 
 
 // ===============================================
