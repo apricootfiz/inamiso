@@ -111,8 +111,9 @@ function renderList() {
     ].join(" ").toLowerCase();
 
     // ▼ 行クリックで即再生
+    // ただし、チェックボックス周辺を押した場合は再生しない
     row.addEventListener("click", e => {
-      if (e.target.classList.contains("song-checkbox")) return;
+      if (e.target.closest(".check-wrap")) return;
       playNow(item.id);
     });
 
