@@ -197,6 +197,10 @@ body {
   color: #ccc;
 }
 
+.header-row .col-check {
+  justify-content: flex-start;
+  padding-left: 6px;
+}
 
 /* =========================================
    ■ 曲リスト
@@ -241,6 +245,7 @@ body {
   align-items: center;
   flex-shrink: 0;
 }
+
 
 /* 曲名 */
 .song-name {
