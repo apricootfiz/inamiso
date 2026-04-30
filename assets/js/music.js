@@ -155,7 +155,7 @@ function updateVisibleCount() {
   const rows = document.querySelectorAll(".song-row");
   const visible = [...rows].filter(row => row.style.display !== "none").length;
 
-  el.textContent = `${visible} / ${playlist.length} 曲`;
+  el.textContent = `${visible} / ${playlist.length}`;
 }
 
 

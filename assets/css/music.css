@@ -314,8 +314,8 @@ body {
 
 /* チェック時 */
 .song-checkbox:checked + .check-icon {
-  background: #444;      /* ← 落ち着いたグレー */
-  border-color: #888;    /* ← 少し明るく */
+  background: #444;
+  border-color: #888;
 }
 
 .song-checkbox:checked + .check-icon .check-svg {
