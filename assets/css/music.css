@@ -224,7 +224,6 @@ body {
   display: flex;
   flex-direction: column;
   font-size: 11px;
-  min-width: 0;
 }
 
 .col-artist {
@@ -232,7 +231,6 @@ body {
   padding-left: 10px;
   font-size: 11px;
   color: #aaa;
-  min-width: 0;
 }
 
 .col-check {
@@ -254,9 +252,6 @@ body {
   font-size: 9px;
   color: #999;
   display: none;
-  overflow: hidden;        /* はみ出し隠す */
-  text-overflow: ellipsis; /* ...表示 */
-  white-space: nowrap;     /* 1行固定 */
 }
 
 @media (min-width: 768px) {
