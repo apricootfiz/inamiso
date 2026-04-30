@@ -126,6 +126,14 @@ body {
   border-bottom: 2px solid #ccc;
 }
 
+/* 列ヘッダー */
+.header-row {
+  display: flex;
+  padding: 8px 10px;
+  border-bottom: 2px solid #ccc;
+  font-weight: bold;
+  color: #ccc;
+}
 
 /* ===============================
    曲リスト（動的生成）
@@ -149,12 +157,10 @@ body {
   border-bottom: 1px solid #eee;
 }
 
-
 /* 各カラムの共通設定 */
 .col-song { flex: 1; display: flex; flex-direction: column; font-size: 11px; }
 .col-artist { flex: 1; padding-left: 5px; font-size: 11px; color: #aaa; }
 .col-check { width: 40px; text-align: center; flex-shrink: 0; }
-
 
 
 /* 曲名 */
@@ -181,8 +187,6 @@ body {
 .song-checkbox {
   cursor: default;
 }
-
-
 
 /* ===============================
    操作ボタン（SVG・アイコン）
@@ -309,14 +313,7 @@ body {
    スクロールエリア（曲リスト）
 ================================ */
 
-/* 列ヘッダー */
-.header-row {
-  display: flex;
-  padding: 8px 10px;
-  border-bottom: 2px solid #ccc;
-  font-weight: bold;
-  color: #ccc;
-}
+
 
 /* ===============================
    スマホ用
