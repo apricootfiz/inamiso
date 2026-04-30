@@ -155,7 +155,7 @@ body {
   display: flex;
   align-items: center;
   padding: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #999;
 }
 
 /* 各カラムの共通設定 */
