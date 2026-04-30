@@ -8,7 +8,7 @@ body {
   height: 100vh;
   font-family: sans-serif;
   background: #111;
-  color: #eee;
+  color: #fff;
 }
 
 /* レイアウト（スマホ） */
@@ -158,71 +158,22 @@ body {
 
 /* ▼ 操作ボタン */
 #controls {
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* gap: 8px; */
-  /* max-width: 400px; */
-  /* margin: 0 auto; */
   display: flex;
   flex-direction: column;
-  gap: 10px;
   align-items: center; /* ← 全体を中央寄せ */
+  gap: 8px;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 
 /* 各行 */
 .control-row {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* ← 横中央 */
   gap: 8px;
   align-items: center;
-  /* flex-wrap: wrap; */
-  /* justify-content: center; ← 横中央 */
-}
-
-
-/* ボタン完全リセット（これが超重要） */
-.icon-btn {
-  background: none;
-  border: none;
-  padding: 6px;
-  cursor: pointer;
-}
-
-/* 通常ボタン（テキスト） */
-.icon-btn:not(:has(svg)) {
-  background: #222;
-  color: #fff;
-  border: 1px solid #444;
-  border-radius: 4px;
-  padding: 6px 10px;
-}
-
-
-/* SVGアイコン */
-.icon {
-  width: 24px;
-  height: 24px;
-  fill: #fff;
-  display: block;
-}
-
-
-/* ホバー */
-.icon-btn:hover .icon {
-  fill: #4da3ff;
-}
-
-/* 押した感 */
-.icon-btn:active .icon {
-  transform: scale(0.9);
-}
-
-/* チェックボックス */
-.loop-label {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: #ccc;
 }
 
 
@@ -234,6 +185,12 @@ body {
 /*  padding: 0; */
 /*} */
 
+
+.icon {
+  width: 24px;
+  height: 24px;
+  fill: #fff; /* ←ここで色制御 */
+}
 
 
 #controls img {
