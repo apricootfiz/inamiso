@@ -315,7 +315,7 @@ function prevVideo() {
 
   if (currentIndex > 0) {
     currentIndex--;
-  } else if (document.getElementById("loop").checked) {
+  } else if (isLoop) {
     currentIndex = selectedList.length - 1;
   } else {
     return;
@@ -327,14 +327,21 @@ function prevVideo() {
 function nextVideo() {
   if (!isPlaying) return;
 
-  // ▼ 毎回再取得
   selectedList = getSelectedList();
 
   if (selectedList.length === 0) return;
 
+  // ▼ 1曲のみ
+  if (selectedList.length === 1) {
+    if (isLoop) {
+      loadVideo(0);
+    }
+    return;
+  }
+
   if (currentIndex + 1 < selectedList.length) {
     currentIndex++;
-  } else if (document.getElementById("loop").checked) {
+  } else if (isLoop) {
     currentIndex = 0;
   } else {
     return;
@@ -352,7 +359,8 @@ window.onYouTubeIframeAPIReady = function () {
     events: {
       'onReady': () => {
         isPlayerReady = true;
-      }
+      },
+      'onStateChange': onPlayerStateChange
     }
   });
 };
@@ -366,6 +374,12 @@ function waitForPlayerReady(callback) {
   }, 200);
 }
 
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.PLAYING) {
+    const item = selectedList[currentIndex];
+    checkEnd(item.start, item.end);
+  }
+}
 
 // ===============================================
 // シャフル再生処理
@@ -409,9 +423,8 @@ function loadVideo(index) {
   });
 
   player.playVideo();
-
-  checkEnd(item.start, item.end);
 }
+
 
 
 // ===============================================
@@ -429,7 +442,13 @@ function checkEnd(startTime, endTime) {
 
     if (current >= endTime) {
       clearInterval(endCheckInterval);
-      nextVideo();
+      
+      if (selectedList.length === 1 && isLoop) {
+    	loadVideo(0);
+      } else {
+    	nextVideo();
+      }
+      
     }
   }, 500);
 }
