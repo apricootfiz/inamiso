@@ -9,8 +9,9 @@ body {
   font-family: sans-serif;
   background: #111;
   color: #eee;
-  overflow: hidden;  /* ←追加 */
+  overflow: hidden;
 }
+
 
 /* アプリ全体 */
 #app {
@@ -353,10 +354,42 @@ body {
 }
 
 /* =========================================
-   ■ リストスクロール
+   ■ スマホ＆PC共通：リストだけスクロール化
 ========================================= */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#playerArea {
+  flex-shrink: 0;
+}
+
+#mainArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#searchArea,
+#listHeader {
+  flex-shrink: 0;
+}
+
 #listContainer {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   height: auto;
 }
