@@ -126,7 +126,7 @@ body {
   border-bottom: 2px solid #ccc;
 }
 
-/* 列ヘッダー */
+/* 列ヘッダー（固定） */
 .header-row {
   display: flex;
   padding: 8px 10px;
@@ -196,7 +196,7 @@ body {
   gap: 8px;
   align-items: center;
   /* flex-wrap: wrap; */
-  /* justify-content: center; ← 横中央 */
+  justify-content: center;/*  ← 横中央 */
 }
 
 /* ボタン共通リセット */
