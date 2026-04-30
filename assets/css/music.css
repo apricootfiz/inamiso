@@ -203,7 +203,7 @@ body {
   width: 24px;
   height: 24px;
   fill: #fff;
-  display: block;
+/*   display: block; */
 }
 
 
@@ -216,6 +216,7 @@ body {
 .icon-btn:active .icon {
   fill: #4da3ff;
 }
+
 
 /* チェックボックス */
 .loop-label {
