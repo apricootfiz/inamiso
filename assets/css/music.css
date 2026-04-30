@@ -252,6 +252,9 @@ body {
   font-size: 9px;
   color: #999;
   display: none;
+  overflow: hidden;        /* はみ出し隠す */
+  text-overflow: ellipsis; /* ...表示 */
+  white-space: nowrap;     /* 1行固定 */
 }
 
 @media (min-width: 768px) {
