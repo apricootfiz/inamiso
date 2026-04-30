@@ -330,7 +330,7 @@ body {
 /* スマホではさらに押しやすく */
 @media (max-width: 600px) {
   .col-check {
-    width: 52px;
+    width: 48px;
   }
 
   .check-wrap {
