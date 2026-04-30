@@ -406,6 +406,7 @@ function loadVideo(index) {
 
   isPlaying = true;
   updatePlayButton();
+  updatePlayingRow();
   clearEndCheck();
 
   const nowPlaying = document.getElementById("nowPlaying");
@@ -442,6 +443,14 @@ function updatePlayingRow() {
   row.classList.add("playing");
 }
 
+// ===============================================
+// ■ 再生中ハイライト解除
+// ===============================================
+function clearPlayingRow() {
+  document.querySelectorAll(".song-row").forEach(row => {
+    row.classList.remove("playing");
+  });
+}
 
 // ===============================================
 // ■ 停止処理
@@ -453,6 +462,7 @@ function stopVideo() {
 
   isPlaying = false;
   updatePlayButton();
+  updatePlayingRow();
 
   const nowPlaying = document.getElementById("nowPlaying");
   if (nowPlaying) {
