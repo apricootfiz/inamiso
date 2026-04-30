@@ -214,9 +214,16 @@ body {
   fill: #fff;
 }
 
+.icon-check {
+  width: 10px;
+  height: 10px;
+  fill: #aaa;
+}
+
 /* ホバー・アクティブ時の色変更 */
 .icon-btn:hover .icon { fill: #4da3ff; }
 .icon-btn.active .icon { fill: #4da3ff; } /* JSで付与される.activeに対応 */
+.icon-btn-check:hover .icon { fill: #4da3ff; }
 
 
 /* 通常ボタン（テキスト） */
@@ -235,14 +242,14 @@ body {
 }
 
 /* チェックボタン */
-#selectToggleBtn {
-  font-size: 16px;
-  color: #aaa;
-}
+/*#selectToggleBtn { */
+/*  font-size: 16px; */
+/*  color: #aaa; */
+/*} */
 
-#selectToggleBtn.active {
-  color: #4da3ff;
-}
+/*#selectToggleBtn.active { */
+/*  color: #4da3ff; */
+/*} */
 
 
 
