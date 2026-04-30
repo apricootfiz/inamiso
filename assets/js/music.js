@@ -101,9 +101,6 @@ function renderList() {
           </label>
         </div>
         
-        //<div class="col-check">
-        //  <input type="checkbox" class="song-checkbox" value="${item.id}">
-        //</div>
       </div>
     `;
 
