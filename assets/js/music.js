@@ -120,7 +120,7 @@ function renderList() {
 		].join(" ").toLowerCase();
 
 
-	  row.addEventListener("click", (e) => {
+	    row.addEventListener("click", (e) => {
 
 	    // ▼ チェック押したときは無視
 	    if (e.target.classList.contains("song-checkbox")) return;
@@ -427,33 +427,6 @@ function loadVideo(index) {
 }
 
 
-
-// ===============================================
-// 終了時間制御
-// ===============================================
-let endCheckInterval = null;
-
-function checkEnd(startTime, endTime) {
-  if (!endTime || endTime <= startTime) return;
-
-  if (endCheckInterval) clearInterval(endCheckInterval);
-
-  endCheckInterval = setInterval(() => {
-    const current = player.getCurrentTime();
-
-    if (current >= endTime) {
-      clearInterval(endCheckInterval);
-      
-      if (selectedList.length === 1 && isLoop) {
-    	loadVideo(0);
-      } else {
-    	nextVideo();
-      }
-      
-    }
-  }, 500);
-}
-
 // ===============================================
 // 再生停止処理
 // ===============================================
@@ -464,4 +437,45 @@ function stopVideo() {
 
   isPlaying = false;
   currentIndex = 0;
+}
+
+// ===============================================
+// 動画の終了時間(end)制御
+// ===============================================
+let endCheckInterval = null;
+
+function checkEnd(startTime, endTime) {
+  if (!endTime || endTime <= startTime) return;
+
+  if (endCheckInterval) {
+    clearInterval(endCheckInterval);
+    endCheckInterval = null;
+  }
+
+  endCheckInterval = setInterval(() => {
+    if (!player || !player.getCurrentTime) return;
+
+    const current = player.getCurrentTime();
+
+    if (current >= endTime) {
+      clearInterval(endCheckInterval);
+      endCheckInterval = null;
+
+      selectedList = getSelectedList();
+
+      // ▼ 1曲のみ
+      if (selectedList.length === 1) {
+        if (isLoop) {
+          loadVideo(0);
+        } else {
+          stopVideo();
+        }
+        return;
+      }
+
+      // ▼ 複数曲
+      nextVideo();
+    }
+
+  }, 300);
 }

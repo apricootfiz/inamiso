@@ -89,6 +89,8 @@ body {
 }
 
 #searchInput {
+  font-size: 16px;
+  padding: 10px;
   flex: 2;
   background: #222;
   color: #fff;
