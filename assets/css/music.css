@@ -161,7 +161,7 @@ body {
 
 /* 各カラムの共通設定 */
 .col-song { flex: 2; display: flex; flex-direction: column; font-size: 11px; }
-.col-artist { flex: 2; padding-left: 2px; font-size: 11px; color: #aaa; }
+.col-artist { flex: 2; font-size: 11px; color: #aaa; }
 .col-check { display: flex; width: 40px; text-align: center; flex-shrink: 0; align-items: center; justify-content: center;}
 
 
