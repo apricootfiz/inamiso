@@ -186,6 +186,13 @@ body {
 }
 
 
+.icon {
+  width: 24px;
+  height: 24px;
+  fill: #fff; /* ←ここで色制御 */
+}
+
+
 #controls img {
   width: 24px;
   height: 24px;
