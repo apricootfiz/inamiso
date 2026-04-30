@@ -272,24 +272,78 @@ body {
 }
 
 /* =========================================
-   ■ スマホ用：チェックボックスを押しやすくする
+   ■ 曲チェックボックス：押しやすいカスタム表示
 ========================================= */
-.song-checkbox {
-  width: 18px;
-  height: 18px;
+
+/* タップ領域 */
+.check-wrap {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 
+/* 本物のcheckboxは見えなくする */
+.song-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 見た目用の四角 */
+.check-icon {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #777;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* チェックSVGは最初非表示 */
+.check-svg {
+  width: 16px;
+  height: 16px;
+  fill: #fff;
+  display: none;
+}
+
+/* チェック時 */
+.song-checkbox:checked + .check-icon {
+  background: #4da3ff;
+  border-color: #4da3ff;
+}
+
+.song-checkbox:checked + .check-icon .check-svg {
+  display: block;
+}
+
+/* ホバー時 */
+.check-wrap:hover .check-icon {
+  border-color: #4da3ff;
+}
+
+/* スマホではさらに押しやすく */
 @media (max-width: 600px) {
   .col-check {
-    width: 48px;
+    width: 52px;
   }
 
-  .song-checkbox {
-    width: 22px;
-    height: 22px;
+  .check-wrap {
+    width: 48px;
+    height: 48px;
+  }
+
+  .check-icon {
+    width: 24px;
+    height: 24px;
   }
 }
+
 /* =========================================
    ■ リストスクロール
 ========================================= */
