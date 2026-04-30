@@ -214,7 +214,7 @@ body {
 
 /* 押した感 */
 .icon-btn:active .icon {
-  fill: #4da3ff;
+  fill: #4da3ff !important;
 }
 
 
