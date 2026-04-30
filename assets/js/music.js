@@ -1,39 +1,41 @@
 console.log("JS読み込まれた");
 
 // ===============================================
-// グローバル状態管理
+// ■ グローバル状態
 // ===============================================
-let player;              // YouTubeプレイヤー
-let playlist = [];       // 全曲データ
-let selectedList = [];   // 再生対象リスト
-let currentIndex = 0;    // 現在の再生位置
+// アプリ全体で共有する状態をここに集約
+let player;              // YouTubeプレイヤーインスタンス
+let playlist = [];       // JSONから読み込んだ全曲データ
+let selectedList = [];   // 再生対象リスト（チェック or 単体再生）
+let currentIndex = 0;    // 現在再生中のインデックス
 
-let isPlaying = false;       // 再生中フラグ
-let isPlayerReady = false;   // YouTube準備完了フラグ
+let isPlaying = false;       // 再生中フラグ（UI制御にも使用）
+let isPlayerReady = false;   // YouTube API準備完了フラグ
 
-let isShuffle = false;   // シャッフルON/OFF
-let isLoop = false;      // ループON/OFF
+let isShuffle = false;   // シャッフル状態
+let isLoop = false;      // ループ状態
 
-let endCheckInterval = null; // end監視用タイマー
+let endCheckInterval = null; // end時間監視用タイマー
 
 
 // ===============================================
-// 初期処理
+// ■ 初期処理（ページ読み込み時）
 // ===============================================
 window.addEventListener("DOMContentLoaded", () => {
   loadPlaylist();     // JSON読み込み
   setupSearchInput(); // 検索イベント設定
+  updatePlayButton(); // ボタン初期状態
 });
 
 
 // ===============================================
-// JSON読み込み＆整形
+// ■ JSON読み込み＆整形
 // ===============================================
 async function loadPlaylist() {
   try {
     const raw = await fetch("assets/data/playlist.json").then(res => res.json());
 
-    // ▼ 日本語キー → JS用に変換
+    // ▼ 日本語キー → JSで扱いやすい形式に変換
     playlist = raw.map((item, index) => ({
       id: index,
       date: item["配信日"],
@@ -45,7 +47,7 @@ async function loadPlaylist() {
       artist: item["アーティスト"]
     }));
 
-    renderList();     // 画面描画
+    renderList();     // 一覧表示
     loadSelection();  // 保存済みチェック復元
     updateVisibleCount();
 
@@ -56,7 +58,7 @@ async function loadPlaylist() {
 
 
 // ===============================================
-// 年＆配信単位でグループ化
+// ■ 年 + 配信タイトルでグループ化
 // ===============================================
 function groupByYearAndStream(data) {
   const result = {};
@@ -77,7 +79,7 @@ function groupByYearAndStream(data) {
 
 
 // ===============================================
-// 曲一覧をDOMに描画
+// 曲一覧を日付順で表示（新しい順）
 // ===============================================
 function renderList() {
   const container = document.getElementById("list");
@@ -85,63 +87,62 @@ function renderList() {
 
   container.innerHTML = "";
 
-  const grouped = groupByYearAndStream(playlist);
+  // ============================================
+  // ▼ 日付でソート（新しい → 古い）
+  // ============================================
+  const sorted = [...playlist].sort((a, b) => {
+    return new Date(b.date) - new Date(a.date);
+  });
 
-  Object.keys(grouped)
-    .sort((a, b) => b - a) // 新しい年から表示
-    .forEach(year => {
+  // ============================================
+  // ▼ フラット表示
+  // ============================================
+  sorted.forEach(item => {
 
-      Object.keys(grouped[year]).forEach(stream => {
-        const items = grouped[year][stream];
+    const row = document.createElement("div");
+    row.className = "song-row";
 
-        items.forEach(item => {
-          const row = document.createElement("div");
-          row.className = "song-row";
+    row.innerHTML = `
+      <div class="song-row-inner">
+        <div class="col-song">
+          <div class="song-name">${item.song}</div>
+          <div class="stream-title">${item.streamTitle}</div>
+        </div>
 
-          // ▼ HTML構造
-          row.innerHTML = `
-            <div class="song-row-inner">
-              <div class="col-song">
-                <div class="song-name">${item.song}</div>
-                <div class="stream-title">${item.streamTitle}</div>
-              </div>
+        <div class="col-artist">
+          ${item.artist}
+        </div>
 
-              <div class="col-artist">
-                ${item.artist}
-              </div>
+        <div class="col-check">
+          <input type="checkbox" class="song-checkbox" value="${item.id}">
+        </div>
+      </div>
+    `;
 
-              <div class="col-check">
-                <input type="checkbox" class="song-checkbox" value="${item.id}">
-              </div>
-            </div>
-          `;
+    // ▼ 検索用
+    row.dataset.search = [
+      item.song,
+      item.artist,
+      item.streamTitle
+    ].join(" ").toLowerCase();
 
-          // ▼ 検索用データ
-          row.dataset.search = [
-            item.song,
-            item.artist,
-            item.streamTitle
-          ].join(" ").toLowerCase();
-
-          // ▼ 行クリックで即再生
-          row.addEventListener("click", e => {
-            if (e.target.classList.contains("song-checkbox")) return;
-            playNow(item.id);
-          });
-
-          // ▼ チェック変更時は保存
-          row.querySelector(".song-checkbox")
-             .addEventListener("change", saveSelection);
-
-          container.appendChild(row);
-        });
-      });
+    // ▼ 行クリックで再生
+    row.addEventListener("click", e => {
+      if (e.target.classList.contains("song-checkbox")) return;
+      playNow(item.id);
     });
+
+    // ▼ チェック保存
+    row.querySelector(".song-checkbox")
+      .addEventListener("change", saveSelection);
+
+    container.appendChild(row);
+  });
 }
 
 
 // ===============================================
-// 検索入力イベント
+// ■ 検索処理
 // ===============================================
 function setupSearchInput() {
   const input = document.getElementById("searchInput");
@@ -161,7 +162,7 @@ function setupSearchInput() {
 
 
 // ===============================================
-// 表示件数更新
+// ■ 表示件数更新
 // ===============================================
 function updateVisibleCount() {
   const el = document.getElementById("songCount");
@@ -175,7 +176,7 @@ function updateVisibleCount() {
 
 
 // ===============================================
-// チェック状態保存（localStorage）
+// ■ チェック状態保存（localStorage）
 // ===============================================
 function saveSelection() {
   const checked = [...document.querySelectorAll(".song-checkbox:checked")]
@@ -186,7 +187,7 @@ function saveSelection() {
 
 
 // ===============================================
-// チェック状態復元
+// ■ チェック状態復元
 // ===============================================
 function loadSelection() {
   const saved = JSON.parse(localStorage.getItem("playlistSelection") || "[]");
@@ -198,7 +199,7 @@ function loadSelection() {
 
 
 // ===============================================
-// 表示中の曲だけ全選択/解除
+// ■ 全選択 / 全解除（表示中のみ）
 // ===============================================
 function toggleSelectAll() {
   const visible = [...document.querySelectorAll(".song-checkbox")]
@@ -207,7 +208,6 @@ function toggleSelectAll() {
   if (visible.length === 0) return;
 
   const allChecked = visible.every(cb => cb.checked);
-
   visible.forEach(cb => cb.checked = !allChecked);
 
   saveSelection();
@@ -215,7 +215,7 @@ function toggleSelectAll() {
 
 
 // ===============================================
-// チェックされている曲を取得
+// ■ チェックされた曲リスト取得
 // ===============================================
 function getSelectedList() {
   return [...document.querySelectorAll(".song-checkbox:checked")]
@@ -225,18 +225,19 @@ function getSelectedList() {
 
 
 // ===============================================
-// 再生 / 停止ボタン押下時
+// ■ 再生 / 停止ボタン処理
 // ===============================================
 function playSelected() {
 
-  // ▼ 再生中なら停止
+  // ▼ 再生中なら停止（トグル動作）
   if (isPlaying) {
     stopVideo();
     return;
   }
 
-  // ▼ 停止中なら選択曲を再生
+  // ▼ 停止中なら再生開始
   waitForPlayerReady(() => {
+
     selectedList = getSelectedList();
 
     if (selectedList.length === 0) {
@@ -251,7 +252,7 @@ function playSelected() {
 
 
 // ===============================================
-// 即再生（1曲）
+// ■ 即再生（1曲クリック）
 // ===============================================
 function playNow(itemId) {
   waitForPlayerReady(() => {
@@ -267,25 +268,7 @@ function playNow(itemId) {
 
 
 // ===============================================
-// 前の曲
-// ===============================================
-function prevVideo() {
-  if (!isPlaying) return;
-
-  if (currentIndex > 0) {
-    currentIndex--;
-  } else if (isLoop) {
-    currentIndex = selectedList.length - 1;
-  } else {
-    return;
-  }
-
-  loadVideo(currentIndex);
-}
-
-
-// ===============================================
-// 次の曲
+// ■ 次の曲
 // ===============================================
 function nextVideo() {
   if (!isPlaying) return;
@@ -293,65 +276,56 @@ function nextVideo() {
   if (currentIndex + 1 < selectedList.length) {
     currentIndex++;
     loadVideo(currentIndex);
-    return;
-  }
-
-  if (isLoop) {
+  } else if (isLoop) {
     currentIndex = 0;
     loadVideo(currentIndex);
-    return;
+  } else {
+    stopVideo();
   }
-
-  stopVideo();
 }
 
 
 // ===============================================
-// シャッフル切替
+// ■ シャッフル切替（押した瞬間に並び替え）
 // ===============================================
 function toggleShuffle() {
   isShuffle = !isShuffle;
 
-  const btn = document.getElementById("shuffleBtn");
-  btn?.classList.toggle("active", isShuffle);
+  document.getElementById("shuffleBtn")
+    ?.classList.toggle("active", isShuffle);
 
-  // ▼ シャッフルON時だけ並び替え
-  if (isShuffle && selectedList.length > 1) {
+  if (!isShuffle) return;
 
-    // ▼ 現在再生中の曲を保持
-    const currentItem = selectedList[currentIndex];
+  if (selectedList.length === 0) {
+    selectedList = getSelectedList();
+  }
 
-    // ▼ シャッフル実行
-    shuffleList(selectedList);
+  if (selectedList.length <= 1) return;
 
-    // ▼ 再生位置を維持（同じ曲を指すようにする）
-    currentIndex = selectedList.findIndex(item => item.id === currentItem.id);
+  const currentItem = selectedList[currentIndex];
+
+  shuffleList(selectedList);
+
+  if (currentItem) {
+    currentIndex = selectedList.findIndex(i => i.id === currentItem.id);
   }
 }
 
 
 // ===============================================
-// ループ切替
+// ■ 再生ボタンUI更新（ここ重要）
 // ===============================================
-function toggleLoop() {
-  isLoop = !isLoop;
-  document.getElementById("loopBtn")?.classList.toggle("active", isLoop);
+// playingクラスでSVG切替する
+function updatePlayButton() {
+  const btn = document.getElementById("playBtn");
+  if (!btn) return;
+
+  btn.classList.toggle("playing", isPlaying);
 }
 
 
 // ===============================================
-// 配列シャッフル
-// ===============================================
-function shuffleList(list) {
-  for (let i = list.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [list[i], list[j]] = [list[j], list[i]];
-  }
-}
-
-
-// ===============================================
-// YouTube API 初期化
+// ■ YouTube API 初期化
 // ===============================================
 window.onYouTubeIframeAPIReady = function () {
   player = new YT.Player("player", {
@@ -364,7 +338,7 @@ window.onYouTubeIframeAPIReady = function () {
 
 
 // ===============================================
-// プレイヤー準備待ち
+// ■ プレイヤー準備待ち
 // ===============================================
 function waitForPlayerReady(callback) {
   if (isPlayerReady) return callback();
@@ -379,37 +353,15 @@ function waitForPlayerReady(callback) {
 
 
 // ===============================================
-// 再生状態変更時
-// ===============================================
-function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.PLAYING) {
-    const item = selectedList[currentIndex];
-    if (item) checkEnd(item.start, item.end);
-  }
-}
-
-
-// ===============================================
-// 再生ボタン表示更新
-// ===============================================
-function updatePlayButton() {
-  const btn = document.getElementById("playBtn");
-  if (!btn) return;
-
-  btn.classList.toggle("playing", isPlaying);
-}
-
-
-// ===============================================
-// 動画再生
+// ■ 動画再生
 // ===============================================
 function loadVideo(index) {
   const item = selectedList[index];
   if (!item) return;
 
   isPlaying = true;
-  updatePlayButton();
-  
+  updatePlayButton(); // ←ここでSVG切替
+
   clearEndCheck();
 
   document.getElementById("nowPlaying").innerText =
@@ -423,32 +375,22 @@ function loadVideo(index) {
 
 
 // ===============================================
-// 停止処理
+// ■ 停止処理
 // ===============================================
 function stopVideo() {
   player?.stopVideo();
+
   clearEndCheck();
-  
+
   isPlaying = false;
-  updatePlayButton();
+  updatePlayButton(); // ←ここで戻す
 
   document.getElementById("nowPlaying").innerText = "停止中";
 }
 
 
 // ===============================================
-// end監視クリア
-// ===============================================
-function clearEndCheck() {
-  if (endCheckInterval) {
-    clearInterval(endCheckInterval);
-    endCheckInterval = null;
-  }
-}
-
-
-// ===============================================
-// end時間監視 → 次の曲へ
+// ■ end監視
 // ===============================================
 function checkEnd(start, end) {
   if (!end || end <= start) return;
