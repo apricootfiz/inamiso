@@ -435,8 +435,12 @@ function stopVideo() {
     player.stopVideo();
   }
 
+  if (endCheckInterval) {
+    clearInterval(endCheckInterval);
+    endCheckInterval = null;
+  }
+
   isPlaying = false;
-  currentIndex = 0;
 }
 
 // ===============================================
