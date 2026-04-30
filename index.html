@@ -64,11 +64,7 @@
   </div>
 
   <div id="mainArea">
-	  <div id="controls">
-	  
 
-	  </div>
-	  
 	  <div id="searchArea">
 	    <input type="text" id="searchInput" placeholder="曲名・アーティスト・配信タイトルで検索">
 	    <div id="songCount"></div>
@@ -81,11 +77,23 @@
 	      <div class="col-artist">アーティスト</div>
 	      
 	      <div class="col-check">
-	      	<button id="selectToggleBtn" class="icon-btn-check" onclick="toggleSelectAll()">
+	      <button id="playBtn" class="icon-btn-check" onclick="playSelected()">
+	      
+	        <!-- 再生 -->
+	        <svg viewBox="0 0 24 24" class="icon-play">
+	          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+	        </svg>
+	        
+	        <!-- 停止 -->
+	        <svg viewBox="0 0 24 24" class="icon-stop">
+	          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+	        </svg>
+	      </button>
+	      <!-- 	<button id="selectToggleBtn" class="icon-btn-check" onclick="toggleSelectAll()">
 	      		<svg viewBox="0 0 24 24" class="icon-check">
 	        		<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
 	      		</svg>
-	      	</button>
+	      	</button> -->
 	      </div>
 	      
 	    </div>

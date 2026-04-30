@@ -228,6 +228,13 @@ body {
   fill: #fff;
 }
 
+
+/* 停止アイコンは非表示 */
+.icon-stop {
+  display: none;
+}
+
+/* チェックアイコンは非表示 */
 .icon-check {
   width: 15px;
   height: 15px;
@@ -239,6 +246,14 @@ body {
 .icon-btn.active .icon { fill: #4da3ff; } /* JSで付与される.activeに対応 */
 .icon-btn-check:hover .icon { fill: #4da3ff; }
 
+/* 再生中 */
+#playBtn.playing .icon-play {
+  display: none;
+}
+
+#playBtn.playing .icon-stop {
+  display: inline;
+}
 
 /* 通常ボタン（テキスト） */
 .icon-btn:not(:has(svg)) {

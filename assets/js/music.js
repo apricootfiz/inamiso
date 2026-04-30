@@ -225,20 +225,24 @@ function getSelectedList() {
 
 
 // ===============================================
-// 再生（複数選択）
+// 再生 / 停止ボタン押下時
 // ===============================================
 function playSelected() {
-  waitForPlayerReady(() => {
 
+  // ▼ 再生中なら停止
+  if (isPlaying) {
+    stopVideo();
+    return;
+  }
+
+  // ▼ 停止中なら選択曲を再生
+  waitForPlayerReady(() => {
     selectedList = getSelectedList();
 
     if (selectedList.length === 0) {
       alert("曲を選択してください");
       return;
     }
-
-    // ▼ シャッフル適用
-    if (isShuffle) shuffleList(selectedList);
 
     currentIndex = 0;
     loadVideo(currentIndex);
@@ -307,7 +311,22 @@ function nextVideo() {
 // ===============================================
 function toggleShuffle() {
   isShuffle = !isShuffle;
-  document.getElementById("shuffleBtn")?.classList.toggle("active", isShuffle);
+
+  const btn = document.getElementById("shuffleBtn");
+  btn?.classList.toggle("active", isShuffle);
+
+  // ▼ シャッフルON時だけ並び替え
+  if (isShuffle && selectedList.length > 1) {
+
+    // ▼ 現在再生中の曲を保持
+    const currentItem = selectedList[currentIndex];
+
+    // ▼ シャッフル実行
+    shuffleList(selectedList);
+
+    // ▼ 再生位置を維持（同じ曲を指すようにする）
+    currentIndex = selectedList.findIndex(item => item.id === currentItem.id);
+  }
 }
 
 
@@ -371,6 +390,17 @@ function onPlayerStateChange(event) {
 
 
 // ===============================================
+// 再生ボタン表示更新
+// ===============================================
+function updatePlayButton() {
+  const btn = document.getElementById("playBtn");
+  if (!btn) return;
+
+  btn.classList.toggle("playing", isPlaying);
+}
+
+
+// ===============================================
 // 動画再生
 // ===============================================
 function loadVideo(index) {
@@ -378,6 +408,8 @@ function loadVideo(index) {
   if (!item) return;
 
   isPlaying = true;
+  updatePlayButton();
+  
   clearEndCheck();
 
   document.getElementById("nowPlaying").innerText =
@@ -396,7 +428,9 @@ function loadVideo(index) {
 function stopVideo() {
   player?.stopVideo();
   clearEndCheck();
+  
   isPlaying = false;
+  updatePlayButton();
 
   document.getElementById("nowPlaying").innerText = "停止中";
 }
