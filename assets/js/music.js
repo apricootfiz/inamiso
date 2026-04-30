@@ -378,6 +378,31 @@ function waitForPlayerReady(callback) {
 }
 
 
+// ===============================================
+// シャフル再生処理
+// ===============================================
+let isShuffle = false;
+
+function toggleShuffle() {
+  const btn = document.getElementById("shuffleBtn");
+
+  isShuffle = !isShuffle;
+
+  btn.classList.toggle("active", isShuffle);
+}
+
+// ===============================================
+// ループ再生処理
+// ===============================================
+let isLoop = false;
+
+function toggleLoop() {
+  const btn = document.getElementById("loopBtn");
+
+  isLoop = !isLoop;
+
+  btn.classList.toggle("active", isLoop);
+}
 
 
 

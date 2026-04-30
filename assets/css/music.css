@@ -214,7 +214,7 @@ body {
 
 /* 押した感 */
 .icon-btn:active .icon {
-  transform: scale(0.9);
+  fill: #4da3ff;
 }
 
 /* チェックボックス */
