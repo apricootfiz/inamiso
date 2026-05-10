@@ -1,22 +1,32 @@
 /* =========================================
    ■ 基本レイアウト
 ========================================= */
+html,
 body {
+  height: 100%;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  font-family: sans-serif;
-  background: #111;
-  color: #eee;
   overflow: hidden;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  background: #111;
+  color: #eee;
+}
 
 /* アプリ全体 */
 #app {
-  display: block;
+  display: flex;
+  flex-direction: column;
+
+  height: 100dvh;            /* 通常用 */
+  height: var(--app-height); /* iPhone対策（上書き） */
+
+  overflow: hidden;
 }
+
 
 /* =========================================
    ■ PCレイアウト（2カラム）
@@ -69,7 +79,7 @@ body {
 }
 
 #playerContainer {
-  padding: 10px;
+  padding: 6px 10px 2px;
 }
 
 #nowPlaying {
@@ -90,13 +100,14 @@ body {
   gap: 8px;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 /* ボタン共通 */
 .icon-btn {
   background: none;
   border: none;
-  padding: 6px;
+  padding: 4px;
   cursor: pointer;
 }
 
@@ -107,13 +118,34 @@ body {
   fill: #fff;
 }
 
-/* ホバー＆ON状態 */
-.icon-btn:hover .icon {
+.icon-btn.active .icon {
   fill: #4da3ff;
 }
 
-.icon-btn.active .icon {
-  fill: #4da3ff;
+.icon-btn {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.icon-btn:focus {
+  outline: none;
+}
+
+/* ===============================
+   hover（PCのみ & 有効時のみ）
+=============================== */
+@media (hover: hover) and (pointer: fine) {
+  .icon-btn:not(:disabled):not(.disabled):hover .icon {
+    fill: #4da3ff;
+  }
+}
+
+/* ===============================
+   非活性
+=============================== */
+.icon-btn:disabled .icon,
+.icon-btn.disabled .icon {
+  fill: #888;
+  opacity: 0.5;
 }
 
 /* =========================================
@@ -133,10 +165,11 @@ body {
   justify-content: center;
 }
 
-.icon-btn-check:hover .icon { 
-  fill: #4da3ff;
+@media (hover: hover) and (pointer: fine) {
+  .icon-btn-check:hover .icon-check {
+    fill: #4da3ff;
+  }
 }
-
 
 /* =========================================
    ■ 再生ボタン
@@ -156,20 +189,33 @@ body {
   display: inline;
 }
 
+/* =========================================
+   ■ 再生リストボタン
+========================================= */
+.queue-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
 
 /* =========================================
    ■ 検索エリア
 ========================================= */
 #searchArea {
-  margin: 10px;
+  margin: 8px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+#searchInput::placeholder {
+  font-size: 11px;
+}
+
 #searchInput {
   flex: 2;
-  padding: 10px;
+  padding: 5px;
   font-size: 16px;
   background: #222;
   color: #fff;
@@ -198,8 +244,8 @@ body {
 .header-row {
   display: flex;
   align-items: center;
-  padding: 8px 10px;
-  border-bottom: 2px solid #333;
+  padding: 2px 10px;
+  border-bottom: 1px solid #333;
   font-weight: bold;
   color: #ccc;
 }
@@ -227,7 +273,7 @@ body {
 .song-row-inner {
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding:4px;
 }
 
 /* カラム */
@@ -258,6 +304,10 @@ body {
 .song-name {
   font-weight: bold;
   font-size: 11px;
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* 配信タイトル（PCのみ表示） */
@@ -284,6 +334,19 @@ body {
   color: #4da3ff;
 }
 
+.play-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
+}
+
+.play-svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
 /* =========================================
    ■ 曲チェックボックス：押しやすいカスタム表示
 ========================================= */
@@ -296,12 +359,17 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
 }
 
 /* 本物のcheckboxは見えなくする */
 .song-checkbox {
   position: absolute;
+  width: 1px;
+  height: 1px;
   opacity: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
   pointer-events: none;
 }
 
