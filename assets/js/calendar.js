@@ -508,7 +508,7 @@ function renderStreamList(dayMap) {
   const titleEl = document.getElementById("streamListTitle");
 
   if (titleEl) {
-    titleEl.textContent = `配信一覧 (${rows.length}件)`;
+    titleEl.textContent = `💡配信一覧 (${rows.length}件)`;
   }
 
   rows.forEach(row => {
