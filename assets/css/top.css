@@ -8,6 +8,26 @@ body {
   color: #222;             /* 基本の文字色 */
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  background: #DCFF50;
+}
+
+.app-frame {
+  min-height: 100vh;
+  padding: 8px;
+  background: #DCFF50;
+}
+
+.app-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 24px;
+  padding: 20px;
+}
+
 /* ===============================
    タイトル・概要
 ================================ */
