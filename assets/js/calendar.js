@@ -35,7 +35,7 @@ function getMonthFromURL() {
 
 let currentDate = getMonthFromURL();
 
-const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
+  //const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
 
 
 /* ===============================
@@ -189,16 +189,16 @@ function renderCalendar(dayMap) {
   updateNavigation();
 
   // 曜日ヘッダー
-  weekDays.forEach((dayName, index) => {
-    const header = document.createElement("div");
-    header.className = "weekday";
+  //  weekDays.forEach((dayName, index) => {
+  //    const header = document.createElement("div");
+  //    header.className = "weekday";
 
-    if (index === 0) header.classList.add("sun-text");
-    if (index === 6) header.classList.add("sat-text");
+  //    if (index === 0) header.classList.add("sun-text");
+  //    if (index === 6) header.classList.add("sat-text");
 
-    header.textContent = dayName;
-    calendar.appendChild(header);
-  });
+  //    header.textContent = dayName;
+  //    calendar.appendChild(header);
+  //  });
 
   const firstDay = new Date(year, month, 1);
   const lastDate = new Date(year, month + 1, 0).getDate();
@@ -373,16 +373,6 @@ function openModal(dateKey, data) {
       block.appendChild(comment);
     }
 
-    if (item.videoId) {
-      const link = document.createElement("a");
-      link.href = `https://www.youtube.com/watch?v=${item.videoId}`;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.className = "youtube-link";
-      link.textContent = "YouTubeで見る";
-      block.appendChild(link);
-    }
-
     modalBody.appendChild(block);
   });
 
@@ -422,6 +412,19 @@ window.addEventListener("click", e => {
   }
 });
 
+
+/* ===============================
+   ×ボタンで閉じる
+================================ */
+document.addEventListener("DOMContentLoaded", () => {
+
+  const closeBtn = document.getElementById("modalClose");
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeModal);
+  }
+
+});
 
 /* ===============================
    Escキーで閉じる
