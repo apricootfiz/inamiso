@@ -18,6 +18,7 @@ body {
 }
 
 #streamListTitle {
+  margin: 0 0 4px;
   font-size: 14px;
 }
 
