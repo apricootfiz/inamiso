@@ -373,11 +373,11 @@ function openModal(dateKey, data) {
 
 	  const memoLabel = document.createElement("div");
 	  memoLabel.className = "memo-label";
-	  memoLabel.textContent = "📝 自分用メモ";
+	  memoLabel.textContent = "📝 メモ";
 
 	  const memoTextarea = document.createElement("textarea");
 	  memoTextarea.className = "memo-textarea";
-	  memoTextarea.placeholder = "感想や見返したいポイントをメモ";
+	  memoTextarea.placeholder = "＿φ(．．)";
 	  memoTextarea.value = localStorage.getItem(memoKey) || "";
 
 	  const saveButton = document.createElement("button");

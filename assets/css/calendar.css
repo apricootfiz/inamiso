@@ -267,7 +267,7 @@ body::before {
 
 .modal-content {
   position: relative;
-  width: min(640px, 100%);
+  width: min(560px, 100%);
 
   /* 1件でも同じ高さから見えるようにする */
   height: 62vh;
@@ -322,7 +322,12 @@ body::before {
 
 .modal-thumb {
   width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 34vh;
+  
   display: block;
+  object-fit: cover;
+  
   border-radius: 10px;
   background: #000;
 }
