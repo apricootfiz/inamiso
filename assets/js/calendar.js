@@ -333,34 +333,79 @@ function openModal(dateKey, data) {
   title.textContent = `${Number(month)}月${Number(day)}日の配信`;
   modalBody.appendChild(title);
 
-  data.forEach(item => {
-    const block = document.createElement("div");
-    block.className = "modal-item";
+	data.forEach((item, index) => {
+	  const block = document.createElement("div");
+	  block.className = "modal-item";
 
-    if (item.videoId) {
-      const a = document.createElement("a");
-      a.href = `https://www.youtube.com/watch?v=${item.videoId}`;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
+	  if (item.videoId) {
+	    const a = document.createElement("a");
+	    a.href = `https://www.youtube.com/watch?v=${item.videoId}`;
+	    a.target = "_blank";
+	    a.rel = "noopener noreferrer";
 
-      const img = document.createElement("img");
-      img.src = `https://img.youtube.com/vi/${item.videoId}/hqdefault.jpg`;
-      img.alt = item.comment || "配信サムネイル";
-      img.className = "modal-thumb";
+	    const img = document.createElement("img");
+	    img.src = `https://img.youtube.com/vi/${item.videoId}/hqdefault.jpg`;
+	    img.alt = item.comment || "配信サムネイル";
+	    img.className = "modal-thumb";
 
-      a.appendChild(img);
-      block.appendChild(a);
-    }
+	    a.appendChild(img);
+	    block.appendChild(a);
+	  }
 
-    if (item.comment) {
-      const comment = document.createElement("p");
-      comment.className = "modal-comment";
-      comment.textContent = item.comment;
-      block.appendChild(comment);
-    }
+	  if (item.comment) {
+	    const comment = document.createElement("p");
+	    comment.className = "modal-comment";
+	    comment.textContent = item.comment;
+	    block.appendChild(comment);
+	  }
 
-    modalBody.appendChild(block);
-  });
+	  /* ===============================
+	     自分用メモ
+	     - videoIdがある場合はvideoId単位
+	     - videoIdがない場合は日付＋連番で保存
+	  ================================ */
+	  const memoKey = item.videoId
+	    ? `streamMemo_${item.videoId}`
+	    : `streamMemo_${dateKey}_${index}`;
+
+	  const memoBox = document.createElement("div");
+	  memoBox.className = "memo-box";
+
+	  const memoLabel = document.createElement("div");
+	  memoLabel.className = "memo-label";
+	  memoLabel.textContent = "📝 自分用メモ";
+
+	  const memoTextarea = document.createElement("textarea");
+	  memoTextarea.className = "memo-textarea";
+	  memoTextarea.placeholder = "感想や見返したいポイントをメモ";
+	  memoTextarea.value = localStorage.getItem(memoKey) || "";
+
+	  const saveButton = document.createElement("button");
+	  saveButton.type = "button";
+	  saveButton.className = "memo-save-button";
+	  saveButton.textContent = "保存";
+
+	  const savedText = document.createElement("span");
+	  savedText.className = "memo-saved-text";
+
+	  saveButton.addEventListener("click", () => {
+	    localStorage.setItem(memoKey, memoTextarea.value);
+	    savedText.textContent = "保存しました";
+
+	    setTimeout(() => {
+	      savedText.textContent = "";
+	    }, 1500);
+	  });
+
+	  memoBox.appendChild(memoLabel);
+	  memoBox.appendChild(memoTextarea);
+	  memoBox.appendChild(saveButton);
+	  memoBox.appendChild(savedText);
+
+	  block.appendChild(memoBox);
+
+	  modalBody.appendChild(block);
+	});
 
   const closeButton = document.createElement("button");
   closeButton.type = "button";
