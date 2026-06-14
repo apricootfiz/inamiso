@@ -418,7 +418,7 @@ body {
 }
 
 #streamList .stream-row:first-child {
-  padding-top: 4px;
+  padding-top: 8px;
 }
 
 .stream-link{
