@@ -34,6 +34,11 @@ body::before {
   opacity: 0.2;
 }
 
+#streamListTitle {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
 /* ===============================
    ヘッダー
 ================================ */
