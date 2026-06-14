@@ -538,19 +538,17 @@ function renderStreamList(dayMap) {
 
     } else {
 
-      div.innerHTML = `
-        <span class="stream-date">
-          ${row.date}
-        </span>
+  div.innerHTML = `
+    <div class="stream-link no-link">
 
-        <span class="stream-title">
-          ${row.title}
-        </span>
-      `;
+      <span class="stream-date">
+        ${row.date}
+      </span>
 
-    }
+      <span class="stream-title">
+        ${row.title}
+      </span>
 
-    listEl.appendChild(div);
-
-  });
+    </div>
+  `;
 }
