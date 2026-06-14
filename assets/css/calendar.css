@@ -26,6 +26,7 @@ body {
 
 .app-content{
   margin:0;
+  background:#fff;
   border-radius:24px;
 }
 
