@@ -406,7 +406,7 @@ body {
 }
 
 #streamList .stream-row:first-child {
-  padding-top: 0px;
+  padding-top: 2px;
 }
 
 .stream-link{
