@@ -1,4 +1,12 @@
 /* ===============================
+   配信記録カレンダー
+   - 7列固定の月間カレンダー
+   - サムネのみ表示
+   - タップでその日の配信一覧モーダル表示
+================================ */
+
+
+/* ===============================
    URLから 年・月 を取得
 ================================ */
 function getMonthFromURL() {
@@ -14,7 +22,7 @@ function getMonthFromURL() {
   // ② /calendar/2026/03/
   const parts = location.pathname.split("/").filter(Boolean);
 
-  const year  = Number(parts.at(-2));
+  const year = Number(parts.at(-2));
   const month = Number(parts.at(-1));
 
   if (!isNaN(year) && !isNaN(month)) {
@@ -29,11 +37,13 @@ let currentDate = getMonthFromURL();
 
 const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
 
+
 /* ===============================
    Google Spreadsheet CSV URL
 ================================ */
 const sheetUrl =
-  `https://docs.google.com/spreadsheets/d/1fnYlyOuVm6bl21crPuUXCmWE6jQuxjeAfl-T0z-PhcA/gviz/tq?tqx=out:csv`;
+  "https://docs.google.com/spreadsheets/d/1fnYlyOuVm6bl21crPuUXCmWE6jQuxjeAfl-T0z-PhcA/gviz/tq?tqx=out:csv";
+
 
 /* ===============================
    YouTube動画ID抽出
@@ -48,19 +58,24 @@ function extractVideoId(url) {
       }
 
       if (u.pathname.startsWith("/live/")) {
-        return u.pathname.split("/live/")[1];
+        return u.pathname.split("/live/")[1].split("?")[0];
+      }
+
+      if (u.pathname.startsWith("/shorts/")) {
+        return u.pathname.split("/shorts/")[1].split("?")[0];
       }
     }
 
     if (u.hostname === "youtu.be") {
-      return u.pathname.slice(1);
+      return u.pathname.slice(1).split("?")[0];
     }
-
   } catch (e) {
     return null;
   }
+
   return null;
 }
+
 
 /* ===============================
    日付正規化
@@ -71,6 +86,39 @@ function normalizeDate(dateStr) {
 
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
+
+
+/* ===============================
+   CSV 1行パース
+   - カンマ入りタイトル対策
+================================ */
+function parseCsvLine(line) {
+  const result = [];
+  let current = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    const next = line[i + 1];
+
+    if (char === '"' && inQuotes && next === '"') {
+      current += '"';
+      i++;
+    } else if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === "," && !inQuotes) {
+      result.push(current);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+
+  result.push(current);
+
+  return result.map(v => v.trim());
+}
+
 
 /* ===============================
    CSV取得 & パース
@@ -84,14 +132,13 @@ fetch(sheetUrl)
     lines.forEach(line => {
       if (!line.trim()) return;
 
-      const cols = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
-      if (!cols) return;
+      const cols = parseCsvLine(line);
 
-      const dateRaw = (cols[0] || "").replace(/^"|"$/g, "").trim();
-      const commentRaw = (cols[1] || "").replace(/^"|"$/g, "").trim();
-      const urlRaw = (cols[2] || "").replace(/^"|"$/g, "").trim();
+      const dateRaw = cols[0] || "";
+      const commentRaw = cols[1] || "";
+      const urlRaw = cols[2] || "";
 
-      // ★ 空行完全ガード（タイトルもURLもない行は無視）
+      // タイトルもURLもない行は無視
       if (!commentRaw && !urlRaw) return;
 
       const date = normalizeDate(dateRaw);
@@ -107,15 +154,24 @@ fetch(sheetUrl)
         videoId = extractVideoId(urlRaw);
       }
 
-      // ★ タイトルのみでも保持
       dayMap[date].push({
-        comment: commentRaw || "",
-        videoId: videoId || null
+        comment: commentRaw,
+        url: urlRaw,
+        videoId: videoId
       });
     });
 
     renderCalendar(dayMap);
+  })
+  .catch(error => {
+    console.error("CSVの取得に失敗しました:", error);
+
+    const calendar = document.getElementById("calendar");
+    if (calendar) {
+      calendar.innerHTML = `<p class="error-message">配信データを読み込めませんでした。</p>`;
+    }
   });
+
 
 /* ===============================
    カレンダー描画
@@ -128,15 +184,37 @@ function renderCalendar(dayMap) {
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
+
+  updateTitle();
+  updateNavigation();
+
+  // 曜日ヘッダー
+  weekDays.forEach((dayName, index) => {
+    const header = document.createElement("div");
+    header.className = "weekday";
+
+    if (index === 0) header.classList.add("sun-text");
+    if (index === 6) header.classList.add("sat-text");
+
+    header.textContent = dayName;
+    calendar.appendChild(header);
+  });
+
   const firstDay = new Date(year, month, 1);
   const lastDate = new Date(year, month + 1, 0).getDate();
+  const firstWeekday = firstDay.getDay();
 
-  const startDay = firstDay.getDay();
-
-  const week = ["日", "月", "火", "水", "木", "金", "土"];
+  // 月初前の空白セル
+  for (let i = 0; i < firstWeekday; i++) {
+    const blank = document.createElement("div");
+    blank.className = "day empty";
+    calendar.appendChild(blank);
+  }
 
   // 日付セル
   for (let d = 1; d <= lastDate; d++) {
+    const dateObj = new Date(year, month, d);
+    const weekday = dateObj.getDay();
 
     const dateKey =
       `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
@@ -144,96 +222,82 @@ function renderCalendar(dayMap) {
     const cell = document.createElement("div");
     cell.className = "day";
 
-    // 日付表示エリアの作成
+    if (weekday === 0) cell.classList.add("sun");
+    if (weekday === 6) cell.classList.add("sat");
+
     const dateEl = document.createElement("div");
     dateEl.className = "date";
-    
-    const w = new Date(year, month, d).getDay(); // 曜日を取得 (0:日, 6:土)
-    dateEl.textContent = `${d} (${week[w]})`;
-
-    // 土日の判定をして背景色用のクラスを付与
-    if (w === 0) {
-      dateEl.classList.add("sun"); // 日曜日のクラス
-    } else if (w === 6) {
-      dateEl.classList.add("sat"); // 土曜日のクラス
-    }
-    
+    dateEl.textContent = d;
     cell.appendChild(dateEl);
 
     const data = dayMap[dateKey];
 
-    if (data) {
+    if (data && data.length > 0) {
+      cell.classList.add("has-stream");
 
-      // ★ 1行＝1セットで順番保持
-      data.forEach(item => {
-      
-      // ★ タイトルと画像を包む枠（コンテナ）を作成
-      const itemContainer = document.createElement("div");
-      itemContainer.className = "schedule-item";
-      
-        // タイトル（あれば表示）
-        if (item.comment) {
-          const comment = document.createElement("div");
-          comment.className = "comment";
-          comment.textContent = `${item.comment}`;
-          itemContainer.appendChild(comment);
-        }
+      // サムネがある配信を優先して1枚だけ表示
+      const firstVideo = data.find(item => item.videoId);
 
-        // 動画（あれば表示）
-        if (item.videoId) {
-          const a = document.createElement("a");
-          a.href = `https://www.youtube.com/watch?v=${item.videoId}`;
-          a.target = "_blank";
+      if (firstVideo) {
+        const img = document.createElement("img");
+        img.className = "calendar-thumb";
+        img.src = `https://img.youtube.com/vi/${firstVideo.videoId}/mqdefault.jpg`;
+        img.alt = firstVideo.comment || `${dateKey}の配信サムネイル`;
+        img.loading = "lazy";
 
-          const img = document.createElement("img");
-          img.src = `https://img.youtube.com/vi/${item.videoId}/hqdefault.jpg`;
+        cell.appendChild(img);
+      } else {
+        // URLなし・タイトルのみの日
+        const noThumb = document.createElement("div");
+        noThumb.className = "no-thumb";
+        noThumb.textContent = "配信";
+        cell.appendChild(noThumb);
+      }
 
-          a.appendChild(img);
-          itemContainer.appendChild(a);
-        }
-        
-        // 最後に、枠ごと cell に追加
-        cell.appendChild(itemContainer);
+      // 複数件ある場合は件数バッジ
+      if (data.length > 1) {
+        const badge = document.createElement("div");
+        badge.className = "count-badge";
+        badge.textContent = `+${data.length - 1}`;
+        cell.appendChild(badge);
+      }
+
+      // タップでモーダル
+      cell.addEventListener("click", () => {
+        openModal(dateKey, data);
       });
     }
-
-	// 最後にナビゲーションを更新
-	  updateNavigation();
-	  
-	  // タイトルも更新[cite: 1]
-	  const titleEl = document.getElementById("title");
-	  if (titleEl) {
-	    titleEl.textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`;
-	  }
 
     calendar.appendChild(cell);
   }
 
-/* ===============================
-   タイトル自動設定
-================================ */
-const titleEl = document.getElementById("title");
-if (titleEl) {
-  const y = currentDate.getFullYear();
-  const m = currentDate.getMonth();
+  // 最終週の空白セルを追加して見た目を揃える
+  const totalCells = firstWeekday + lastDate;
+  const remainder = totalCells % 7;
 
-  titleEl.textContent = `${y}年${m + 1}月`;
+  if (remainder !== 0) {
+    for (let i = 0; i < 7 - remainder; i++) {
+      const blank = document.createElement("div");
+      blank.className = "day empty";
+      calendar.appendChild(blank);
+    }
   }
-  
+}
+
 
 /* ===============================
-   翌月設定
+   タイトル更新
 ================================ */
 function updateTitle() {
   const titleEl = document.getElementById("title");
   if (!titleEl) return;
 
   const y = currentDate.getFullYear();
-  const m = currentDate.getMonth();
+  const m = currentDate.getMonth() + 1;
 
-  titleEl.textContent = `${y}年${m + 1}月`;
-  }
-  
+  titleEl.textContent = `${y}年${m}月`;
+}
+
 
 /* ===============================
    前月・翌月リンクの更新
@@ -247,23 +311,123 @@ function updateNavigation() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  // 前月の計算
   const prevDate = new Date(year, month - 1, 1);
   const prevY = prevDate.getFullYear();
   const prevM = String(prevDate.getMonth() + 1).padStart(2, "0");
-  // ?month=YYYY-MM 形式のパラメータを設定
+
   prevLink.href = `?month=${prevY}-${prevM}`;
   prevLink.textContent = `← ${prevY}年${prevM}月`;
-  prevLink.style.visibility = "visible"; // 非表示設定を解除
+  prevLink.style.visibility = "visible";
 
-  // 翌月の計算
   const nextDate = new Date(year, month + 1, 1);
   const nextY = nextDate.getFullYear();
   const nextM = String(nextDate.getMonth() + 1).padStart(2, "0");
+
   nextLink.href = `?month=${nextY}-${nextM}`;
   nextLink.textContent = `${nextY}年${nextM}月 →`;
-  nextLink.style.visibility = "visible"; // 非表示設定を解除[cite: 2]
-  }
-
-
+  nextLink.style.visibility = "visible";
 }
+
+
+/* ===============================
+   モーダル表示
+================================ */
+function openModal(dateKey, data) {
+  const modal = document.getElementById("modal");
+  const modalBody = document.getElementById("modalBody");
+
+  if (!modal || !modalBody) return;
+
+  const [year, month, day] = dateKey.split("-");
+
+  modalBody.innerHTML = "";
+
+  const title = document.createElement("h2");
+  title.className = "modal-title";
+  title.textContent = `${Number(month)}月${Number(day)}日の配信`;
+  modalBody.appendChild(title);
+
+  data.forEach(item => {
+    const block = document.createElement("div");
+    block.className = "modal-item";
+
+    if (item.videoId) {
+      const a = document.createElement("a");
+      a.href = `https://www.youtube.com/watch?v=${item.videoId}`;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+
+      const img = document.createElement("img");
+      img.src = `https://img.youtube.com/vi/${item.videoId}/hqdefault.jpg`;
+      img.alt = item.comment || "配信サムネイル";
+      img.className = "modal-thumb";
+
+      a.appendChild(img);
+      block.appendChild(a);
+    }
+
+    if (item.comment) {
+      const comment = document.createElement("p");
+      comment.className = "modal-comment";
+      comment.textContent = item.comment;
+      block.appendChild(comment);
+    }
+
+    if (item.videoId) {
+      const link = document.createElement("a");
+      link.href = `https://www.youtube.com/watch?v=${item.videoId}`;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.className = "youtube-link";
+      link.textContent = "YouTubeで見る";
+      block.appendChild(link);
+    }
+
+    modalBody.appendChild(block);
+  });
+
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.className = "modal-close-button";
+  closeButton.textContent = "閉じる";
+  closeButton.addEventListener("click", closeModal);
+
+  modalBody.appendChild(closeButton);
+
+  modal.style.display = "flex";
+  document.body.classList.add("modal-open");
+}
+
+
+/* ===============================
+   モーダルを閉じる
+================================ */
+function closeModal() {
+  const modal = document.getElementById("modal");
+  if (!modal) return;
+
+  modal.style.display = "none";
+  document.body.classList.remove("modal-open");
+}
+
+
+/* ===============================
+   モーダル外クリックで閉じる
+================================ */
+window.addEventListener("click", e => {
+  const modal = document.getElementById("modal");
+
+  if (modal && e.target === modal) {
+    closeModal();
+  }
+});
+
+
+/* ===============================
+   Escキーで閉じる
+================================ */
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    closeModal();
+  }
+});

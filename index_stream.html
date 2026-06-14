@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===============================
+       iPhoneホーム画面追加 / PWA風設定
+       - アイコンやステータスバー色を指定
+  ================================ -->
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#000000">
+
+  <title>配信追っかけカレンダー</title>
+
+  <!-- 共通CSS -->
+  <link rel="stylesheet" href="assets/css/top.css">
+
+  <!-- カレンダー専用CSS -->
+  <link rel="stylesheet" href="assets/css/calendar.css">
+</head>
+
+<body>
+
+  <!-- ===============================
+       ページ見出し
+  ================================ -->
+  <header class="page-header">
+    <p class="description">配信追っかけカレンダー</p>
+    <h2 id="title"></h2>
+  </header>
+
+  <!-- ===============================
+       曜日ヘッダー
+       - JSではなくHTML固定にして見た目を安定させる
+  ================================ -->
+  <div class="week-header" aria-hidden="true">
+    <div class="week-cell sun">日</div>
+    <div class="week-cell">月</div>
+    <div class="week-cell">火</div>
+    <div class="week-cell">水</div>
+    <div class="week-cell">木</div>
+    <div class="week-cell">金</div>
+    <div class="week-cell sat">土</div>
+  </div>
+
+  <!-- ===============================
+       カレンダー本体
+       - calendar.js がここに日付セルを描画する
+  ================================ -->
+  <main class="calendar" id="calendar"></main>
+
+  <!-- ===============================
+       前月 / 次月ナビ
+  ================================ -->
+  <footer class="footer">
+    <nav class="footer-nav">
+      <a id="prevLink" href="#" class="nav-link">←</a>
+      <span class="nav-separator">◇</span>
+      <a href="./" class="nav-link">トップ</a>
+      <span class="nav-separator">◇</span>
+      <a id="nextLink" href="#" class="nav-link">→</a>
+    </nav>
+  </footer>
+
+  <!-- ===============================
+       その日の配信一覧モーダル
+       - カレンダーの日付セルをタップすると表示
+  ================================ -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true">
+      <button id="modalClose" class="modal-close" type="button" aria-label="閉じる">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- カレンダー処理 -->
+  <script src="assets/js/calendar.js"></script>
+
+</body>
+</html>

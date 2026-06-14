@@ -1,0 +1,312 @@
+/* ===============================
+   全体設定
+   - 基本フォントを指定
+================================ */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 0;
+  background-color: #fff; /* 画像の隙間から見える下地の色 */
+}
+
+/* 背景画像専用のレイヤー */
+body::before {
+  content: "";
+  position: fixed;    /* 画面に固定 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 250px;
+  z-index: -1;        /* コンテンツ（カレンダー）の背面に配置 */
+
+  /* 画像の設定 */
+  background-image: url("../images/background.jpg");
+  background-repeat: repeat-x;  /* 横方向だけタイル状に並べる */
+  background-position: top; /* 中央に配置 */
+  background-size: 40%; /* サイズ */
+  opacity: 0.2;  /* 透明度 */
+}
+
+/* ===============================
+   カレンダー全体
+   - 7列（曜日分）のグリッド
+================================ */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 日〜土 */
+  gap: 8px; /* 日付セル間の余白 */
+}
+
+
+/* ===============================
+   各日付セル
+================================ */
+.day {
+  border: 1px solid #ccc; /* 枠線 */
+  padding: 6px;           /* 内側余白 */
+  font-size: 12px;        /* 基本文字サイズ */
+  min-height: 140px;      /* サムネ・コメント用の最低高さ */
+}
+
+
+/* ===============================
+   サムネイル画像
+   - 16:9を維持
+   - 黒背景で余白対策
+================================ */
+.day img {
+  width: 100%;
+  aspect-ratio: 16 / 9;   /* YouTube比率 */
+  object-fit: cover;     /* 画像をトリミングして埋める */
+  display: block;
+  background: #000;      /* 余白が出た場合の背景 */
+  cursor: pointer;       /* クリック可能を示す */
+}
+
+
+/* ===============================
+   サムネ1枚だけのとき大きく表示
+================================ */
+.thumbs.single {
+  grid-template-columns: 1fr; /* 1列にする */
+}
+
+.thumbs.single img {
+  aspect-ratio: 16 / 9;
+}
+
+/* ===============================
+   コメントエリア
+================================ */
+.comments {
+  min-height: 2.6em;     /* コメントが無くても高さ確保 */
+  margin-top: 6px;       /* 上の要素との間隔 */
+  font-size: 11px;       /* サブ情報なので小さめ */
+  color: #555;           /* 薄めの文字色 */
+}
+
+.comments div {
+  line-height: 1.3em;    /* 行間を詰めて一覧性を上げる */
+}
+
+/* ===============================
+   サムネ一覧（複数動画対応）
+================================ */
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2列表示 */
+  gap: 4px;             /* サムネ間の余白 */
+  margin-top: 6px;
+}
+
+/* ===============================
+   曜日別背景色
+================================ */
+.sun {
+  background: #fff5f5;  /* 日曜：薄い赤 */
+}
+
+.sat {
+  background: #f5f9ff;  /* 土曜：薄い青 */
+}
+
+/* ===============================
+   前月・翌月の文字サイズ統一（◇）
+================================ */
+.nav-link,
+.nav-separator {
+  font-size: 11px;
+  color: #000;
+  display: inline-block; /* 高さを揃えやすくするため */
+  vertical-align: middle; /* 矢印、ひし形、文字の上下中央を揃える */
+}
+
+.nav-separator {
+  padding: 0 5px; /* 前後のリンクとの間隔を調整 */
+}
+
+/* ===============================
+   レスポンシブ対応
+================================ */
+
+/* タブレット以下 */
+@media (max-width: 768px) {
+  .calendar {
+    grid-template-columns: repeat(2, 1fr); /* 縦長対策 */
+  }
+}
+
+/* スマホ */
+@media (max-width: 480px) {
+  .calendar {
+    grid-template-columns: 1fr; /* 1列表示 */
+  }
+}
+
+
+/* ===============================
+   フッターナビ（前月｜トップ｜次月）
+================================ */
+.footer {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.footer-nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* ナビリンク共通 */
+.nav-link {
+  font-size: 11px;
+  color: #000;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* 状態が変わっても色を固定 */
+.nav-link:visited,
+.nav-link:hover,
+.nav-link:active {
+  color: #000;
+}
+
+/* 前月・次月
+#prevLink,
+#nextLink {
+  visibility: hidden;
+}
+
+/* スマホでは少し詰める */
+@media (max-width: 480px) {
+  .footer-nav {
+    gap: 10px;
+  }
+}
+
+/* ===============================
+   画像差し替え用
+================================ */
+/* メン限画像 */
+.members-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+/* ===============================
+   日付表示エリア（区切り線を追加）
+================================ */
+.date {
+  font-weight: bold;
+  padding: 4px 8px;      /* 日付エリア内の余白 */
+  margin: -6px -6px 8px -6px; /* セルのpadding(6px)を打ち消して端まで色を塗る */
+  border-bottom: 1px solid #eee; /* タイトルとの間の区切り線 */
+}
+
+/* ===============================
+   曜日別背景色（日付エリアのみに適用）
+================================ */
+.date.sun {
+  background: #fff5f5;  /* 日曜：薄い赤 */
+
+}
+
+.date.sat {
+  background: #f5f9ff;  /* 土曜：薄い青 */
+
+}
+
+/* 既存の .comment などの余白調整（任意） */
+.comment {
+  margin-top: 4px;
+  padding: 0 2px;
+}
+
+
+/* ===============================
+   タイトルと画像でセットにする
+================================ */
+/* タイトルと画像のセットを囲む枠 */
+.schedule-item {
+  border: 1px solid #eee;   /* 薄いグレーの枠線 */
+  border-radius: 4px;       /* 角を少し丸める */
+  padding: 4px;             /* 枠内の余白 */
+  margin-bottom: 8px;       /* 次のセットとの間隔 */
+  background-color: #fff;   /* 背景を白にして見やすく */
+}
+
+/* 枠内のタイトル設定 */
+.comment {
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 4px;       /* 画像との間の隙間 */
+  line-height: 1.2;
+}
+
+/* 枠内の画像設定 */
+.schedule-item img {
+  width: 100%;
+  display: block;
+  border-radius: 2px;       /* 画像の角も少し丸める */
+}
+
+/* 最後のアイテムの余白は不要 */
+.schedule-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ===============================
+   予定がない日はグレー表示
+=============================== */
+/* .schedule-item を含まない .day をグレーにする */
+.day:not(:has(.schedule-item)) {
+  background-color: #f9f9f9; /* 薄いグレー */
+  color: #bbb;              /* 文字色も薄くする */
+  overflow: hidden;
+}
+
+/* 予定がない日の日付エリアも少し透過させる */
+.day:not(:has(.schedule-item)) .date {
+  opacity: 0.6;
+}
+
+/* ===============================
+   スマホUIの調整
+================================ */
+@media (max-width: 480px) {
+  .day {
+    min-height: auto;      /* 高さを内容に合わせる */
+    margin-bottom: 10px;   /* 日付ごとの間隔 */
+    padding: 10px;
+  }
+
+  /* 予定がない日は日付だけ表示してさらにコンパクトに */
+  .day:not(:has(.schedule-item)) {
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .schedule-item {
+    display: flex;         /* 横並び */
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .schedule-item a {
+    flex: 0 0 120px;      /* 画像の幅を固定 */
+  }
+
+  .comment {
+    flex: 1;              /* テキストを右側に */
+    margin-top: 0;
+    font-size: 13px;
+  }
+}
+
