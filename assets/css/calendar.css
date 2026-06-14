@@ -257,7 +257,7 @@ body::before {
   background: rgba(0,0,0,0.72);
 
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
 }
 
 /* JSで開いたときに付与 */
@@ -268,16 +268,20 @@ body::before {
 .modal-content {
   position: relative;
   width: min(640px, 100%);
+
+  /* 1件でも同じ高さから見えるようにする */
+  height: 62vh;
   max-height: 82vh;
-  overflow: auto;
+
+  overflow-y: auto;
 
   padding: 18px;
-  border-radius: 16px;
+  border-radius: 20px 20px 0 0;
 
   background: #fff;
   color: #222;
 
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.25);
 }
 
 .modal-close {
@@ -381,38 +385,20 @@ body::before {
     font-size: 9px;
   }
 
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 999;
+  .modal {
+    align-items: flex-end;
+    padding: 0 8px 0;
+  }
 
-  background: rgba(0, 0, 0, 0.7);
+  .modal-content {
+    width: 100%;
+    height: 58vh;
+    max-height: 82vh;
 
-  justify-content: center;
+    overflow-y: auto;
 
-  /* ここを調整 */
-  align-items: flex-start;
-
-  /* 上からの表示位置 */
-  padding-top: 72px;
-
-  box-sizing: border-box;
-}
-
-.modal-content {
-  width: min(600px, 92vw);
-
-  /* 画面からはみ出さない高さ */
-  max-height: calc(100dvh - 96px);
-
-  overflow-y: auto;
-
-  background: #fff;
-  border-radius: 16px;
-  padding: 16px;
-
-  box-sizing: border-box;
-}
+    border-radius: 18px 18px 0 0;
+    padding: 16px;
+  }
 
 }
