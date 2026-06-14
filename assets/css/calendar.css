@@ -20,7 +20,7 @@ body {
 /* 囲い枠 */
 .app-frame{
   min-height:100vh;
-  padding:0px;
+  padding:8px;
   background:#DCFF50;
 }
 
