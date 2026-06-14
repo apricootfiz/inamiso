@@ -268,6 +268,9 @@ function renderCalendar(dayMap) {
       calendar.appendChild(blank);
     }
   }
+  
+  renderStreamList(dayMap);
+  
 }
 
 
@@ -377,7 +380,7 @@ function openModal(dateKey, data) {
 
 	  const memoTextarea = document.createElement("textarea");
 	  memoTextarea.className = "memo-textarea";
-	  memoTextarea.placeholder = "＿φ(．．)";
+	  memoTextarea.placeholder = "＿φ(.. )";
 	  memoTextarea.value = localStorage.getItem(memoKey) || "";
 
 	  const saveButton = document.createElement("button");
@@ -465,3 +468,77 @@ window.addEventListener("keydown", e => {
     closeModal();
   }
 });
+
+/* ===============================
+   配信一覧用
+================================ */
+function renderStreamList(dayMap) {
+
+  const listEl = document.getElementById("streamList");
+
+  if (!listEl) return;
+
+  listEl.innerHTML = "";
+
+  const rows = [];
+
+  Object.entries(dayMap).forEach(([date, items]) => {
+
+    items.forEach(item => {
+
+      rows.push({
+        date,
+        title: item.comment || "",
+        videoId: item.videoId
+      });
+
+    });
+
+  });
+
+  // 新しい順
+  rows.sort((a, b) => b.date.localeCompare(a.date));
+
+  rows.forEach(row => {
+
+    const div = document.createElement("div");
+
+    div.className = "stream-row";
+
+    if (row.videoId) {
+
+      div.innerHTML = `
+        <a
+          href="https://www.youtube.com/watch?v=${row.videoId}"
+          target="_blank"
+          class="stream-link">
+
+          <span class="stream-date">
+            ${row.date}
+          </span>
+
+          <span class="stream-title">
+            ${row.title}
+          </span>
+
+        </a>
+      `;
+
+    } else {
+
+      div.innerHTML = `
+        <span class="stream-date">
+          ${row.date}
+        </span>
+
+        <span class="stream-title">
+          ${row.title}
+        </span>
+      `;
+
+    }
+
+    listEl.appendChild(div);
+
+  });
+}

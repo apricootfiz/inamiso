@@ -396,6 +396,46 @@ body::before {
   color: #666;
 }
 
+/* ===============================
+   配信一覧
+================================ */
+#streamListSection{
+  max-width:980px;
+  margin:24px auto;
+}
+
+#streamListSection h3{
+  margin-bottom:10px;
+}
+
+.stream-row{
+  padding:8px 0;
+  border-bottom:1px solid #eee;
+}
+
+.stream-link{
+  display:flex;
+  gap:12px;
+  text-decoration:none;
+  color:#222;
+}
+
+.stream-date{
+  flex:0 0 110px;
+  color:#666;
+  font-size:13px;
+}
+
+.stream-title{
+  flex:1;
+}
+
+
+
+
+
+
+
 
 /* ===============================
    スマホ調整
