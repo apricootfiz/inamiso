@@ -25,9 +25,14 @@ body {
 }
 
 .app-content{
-  margin:0;
+  max-width:1100px;
+  margin:0 auto;
+
   background:#fff;
+
   border-radius:24px;
+
+  padding:20px;
 }
 
 #streamListTitle {
