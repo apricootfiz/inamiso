@@ -35,8 +35,6 @@ function getMonthFromURL() {
 
 let currentDate = getMonthFromURL();
 
-  //const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
-
 
 /* ===============================
    Google Spreadsheet CSV URL
@@ -187,18 +185,6 @@ function renderCalendar(dayMap) {
 
   updateTitle();
   updateNavigation();
-
-  // 曜日ヘッダー
-  //  weekDays.forEach((dayName, index) => {
-  //    const header = document.createElement("div");
-  //    header.className = "weekday";
-
-  //    if (index === 0) header.classList.add("sun-text");
-  //    if (index === 6) header.classList.add("sat-text");
-
-  //    header.textContent = dayName;
-  //    calendar.appendChild(header);
-  //  });
 
   const firstDay = new Date(year, month, 1);
   const lastDate = new Date(year, month + 1, 0).getDate();
