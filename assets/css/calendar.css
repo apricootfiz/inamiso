@@ -381,15 +381,38 @@ body::before {
     font-size: 9px;
   }
 
-  .modal {
-    padding: 10px;
-    align-items: flex-end;
-  }
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
 
-  .modal-content {
-    width: 100%;
-    max-height: 86vh;
-    border-radius: 16px 16px 0 0;
-    padding: 16px;
-  }
+  background: rgba(0, 0, 0, 0.7);
+
+  justify-content: center;
+
+  /* ここを調整 */
+  align-items: flex-start;
+
+  /* 上からの表示位置 */
+  padding-top: 72px;
+
+  box-sizing: border-box;
+}
+
+.modal-content {
+  width: min(600px, 92vw);
+
+  /* 画面からはみ出さない高さ */
+  max-height: calc(100dvh - 96px);
+
+  overflow-y: auto;
+
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+
+  box-sizing: border-box;
+}
+
 }
