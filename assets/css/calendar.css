@@ -10,7 +10,7 @@
 body {
   font-family: sans-serif;
   margin: 0;
-  padding: 0 10px 24px;
+  padding: 0;
   position: relative;
   z-index: 0;
   background-color: #fff;
@@ -35,27 +35,11 @@ body {
   padding:20px;
 }
 
-
-/* 背景画像専用のレイヤー */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 250px;
-  z-index: -1;
-
-  background-image: url("../images/background.jpg");
-  background-repeat: repeat-x;
-  background-position: top;
-  background-size: 40%;
-  opacity: 0.2;
-}
-
 #streamListTitle {
   margin: 0 0 8px;
   font-size: 14px;
+  
+  border-bottom: 1px solid #eee;
 }
 
 /* ===============================
