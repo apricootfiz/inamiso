@@ -474,6 +474,10 @@ window.addEventListener("keydown", e => {
 ================================ */
 function renderStreamList(dayMap) {
 
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const monthPrefix = `${currentYear}-${currentMonth}`;
+
   const listEl = document.getElementById("streamList");
 
   if (!listEl) return;
@@ -483,6 +487,8 @@ function renderStreamList(dayMap) {
   const rows = [];
 
   Object.entries(dayMap).forEach(([date, items]) => {
+  
+    if (!date.startsWith(monthPrefix)) return;
 
     items.forEach(item => {
 
