@@ -36,12 +36,16 @@ body {
 }
 
 #streamListTitle {
+  margin: 0 0 12px;
   font-size: 14px;
 }
 
 /* 配信一覧の一番上に線 */
-#streamList {
-  border-top: 1px solid #ddd;
+#streamListTitle::after {
+  content: "";
+  display: block;
+  margin-top: 12px;
+  border-bottom: 1px solid #ddd;
 }
 
 /* ===============================
