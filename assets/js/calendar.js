@@ -539,6 +539,8 @@ function renderStreamList(dayMap) {
     } else {
 
 		  div.innerHTML = `
+		  
+		  <div class="stream-link no-link">
 		    <span class="stream-date">
 		      ${row.date}
 		    </span>
@@ -546,6 +548,7 @@ function renderStreamList(dayMap) {
 		    <span class="stream-title">
 		      ${row.title}
 		    </span>
+		  </div>
 		  `;
 
     }

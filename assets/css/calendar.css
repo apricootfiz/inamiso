@@ -428,6 +428,10 @@ body {
   color:#222;
 }
 
+.stream-link.no-link{
+  text-decoration:none;
+}
+
 .stream-date{
   flex:0 0 110px;
   color:#666;
