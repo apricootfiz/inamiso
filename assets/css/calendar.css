@@ -423,19 +423,13 @@ body::before {
 .stream-date{
   flex:0 0 110px;
   color:#666;
-  font-size:13px;
+  font-size:11px;
 }
 
 .stream-title{
+  font-size: 12px;
   flex:1;
 }
-
-
-
-
-
-
-
 
 /* ===============================
    スマホ調整
