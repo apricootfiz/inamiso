@@ -405,6 +405,10 @@ body {
   border-bottom:1px solid #eee;
 }
 
+#streamList .stream-row:first-child {
+  padding-top: 0px;
+}
+
 .stream-link{
   display:flex;
   gap:12px;
