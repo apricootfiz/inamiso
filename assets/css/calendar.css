@@ -80,6 +80,18 @@ body {
    カレンダー全体
    - スマホでも7列固定
 ================================ */
+.calendar-wrapper {
+  max-width: 980px;
+  margin: 0 auto;
+
+  border: 1px solid #ddd;
+  border-radius: 16px;
+
+  padding: 8px;
+
+  background: #fff;
+}
+
 .calendar {
   max-width: 980px;
   margin: 0 auto;
@@ -406,7 +418,7 @@ body {
 }
 
 #streamList .stream-row:first-child {
-  padding-top: 2px;
+  padding-top: 4px;
 }
 
 .stream-link{
