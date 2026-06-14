@@ -36,10 +36,10 @@ body {
 }
 
 #streamListTitle {
-  margin: 0 0 8px;
+  margin: 0 0 12px;
   font-size: 14px;
   
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #ddd;
 }
 
 /* ===============================
