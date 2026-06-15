@@ -321,8 +321,38 @@ function openSongModal(stream) {
 	  e.stopPropagation();
 	  console.log("再生リストに追加", song);
 	});
+	
+	
+	// ===============================================
+	// ＋ボタンの処理（再生リストに追加）
+	// ===============================================
+	addBtn.addEventListener("click", e => {
 
-	// ハートボタンを押した時の処理
+	  // ＋ボタンを押した時に、親の曲クリック再生が動かないようにする
+	  e.stopPropagation();
+
+	  // すでに再生リストに入っているか確認
+	  const exists = selectedList.some(item => item.id === song.id);
+
+	  // 未追加なら再生リストに追加
+	  if (!exists) {
+	    selectedList.push(song);
+	  }
+
+	  // 再生リストボタンなどの見た目を更新
+	  updateQueueButton?.();
+
+	  // 今、再生リスト画面を表示している場合は一覧も更新
+	  if (currentView === "queue") {
+	    renderList();
+	  }
+
+	});
+	
+	
+	// ===============================================
+	// ハートボタンの処理（お気に入りリスト）
+	// ===============================================
 	favBtn.addEventListener("click", e => {
 	
 		e.stopPropagation();
