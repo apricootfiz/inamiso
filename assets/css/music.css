@@ -53,6 +53,9 @@ body {
   flex: 1;
   min-height: 0;
   height: auto;
+  padding: 0 8px 12px;
+  box-sizing: border-box;
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -230,11 +233,13 @@ body {
   gap: 0;
   margin: 4px 8px 0;
   border-bottom: 1px solid #444;
+  box-sizing: border-box;
 }
 
 /* 各タブの通常表示を設定する */
 .view-tab {
   flex: 1;
+  min-width: 0;
   padding: 8px 4px;
   border: 1px solid #444;
   border-bottom: none;
@@ -266,8 +271,10 @@ body {
 /* サムネイル一覧はグリッドで表示する */
 #list.thumb-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* 曲一覧は縦並びで表示する */
@@ -275,10 +282,13 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* サムネイル行をクリック可能にする */
 .song-row {
+  min-width: 0;
   cursor: pointer;
 }
 
@@ -295,6 +305,7 @@ body {
 /* サムネイルカードの角丸と切り抜きを設定する */
 .thumb-card {
   position: relative;
+  min-width: 0;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -309,12 +320,15 @@ body {
 
 /* お気に入り・再生リストの曲行を表示する */
 .favorite-song-row {
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   padding: 10px;
   border-bottom: 1px solid #333;
+  overflow: hidden;
   cursor: pointer;
 }
 
@@ -329,6 +343,8 @@ body {
   font-size: 14px;
   font-weight: bold;
   color: #fff;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 /* アーティスト名を曲名より控えめに表示する */
@@ -336,6 +352,8 @@ body {
   margin-top: 3px;
   font-size: 12px;
   color: #aaa;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 /* =========================================
