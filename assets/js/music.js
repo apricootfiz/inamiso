@@ -96,7 +96,22 @@ function renderList() {
 	  streamMap.get(item.videoId).songs.push(item);
 	});
 
-list = [...streamMap.values()];
+	list = [...streamMap.values()];
+
+	list.sort((a, b) => {
+	  const da = new Date(a.date);
+	  const db = new Date(b.date);
+
+	  if (isNaN(da)) return 1;
+	  if (isNaN(db)) return -1;
+
+	  return db - da;
+	});
+
+
+
+
+
 
   list.forEach((item, index) => {
     const row = document.createElement("div");
