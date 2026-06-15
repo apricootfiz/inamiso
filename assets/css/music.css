@@ -241,20 +241,6 @@ body {
   border-bottom: 1px solid #333;
 }
 
-.header-row {
-  display: flex;
-  align-items: center;
-  padding: 2px 10px;
-  border-bottom: 1px solid #333;
-  font-weight: bold;
-  color: #ccc;
-}
-
-.header-row .col-check {
-  justify-content: flex-start;
-  padding-left: 2px;
-}
-
 /* =========================================
    ■ 曲リスト
 ========================================= */
@@ -552,6 +538,7 @@ body {
   margin: 6vh auto 0;
 
   overflow-y: auto;
+  verflow-x: hidden;
 
   background: #111;
   color: #fff;
@@ -654,34 +641,82 @@ body {
    ■ モーダル内のボタン調整（？）
 ========================================= */
 
+/* 曲ボタン */
 .modal-song-btn {
+  width: 100%;
+  box-sizing: border-box;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+
+  text-align: left;
+
+  background: #222;
+  color: white;
+
+  border: 1px solid #333;
+  border-radius: 8px;
+
+  padding: 8px;
+
+  cursor: pointer;
+  overflow: hidden;
 }
 
+/* 曲名・アーティスト側 */
 .modal-song-info {
   min-width: 0;
+  flex: 1;
 }
 
+/* 曲名 */
+.modal-song-name {
+  font-size: 13px;
+  font-weight: bold;
+
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* アーティスト */
+.modal-artist-name {
+  margin-top: 3px;
+
+  font-size: 11px;
+  color: #aaa;
+
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* ＋・♡ボタン側 */
 .modal-song-actions {
   display: flex;
   gap: 6px;
   flex-shrink: 0;
 }
 
+/* ＋・♡ボタン */
 .modal-add-btn,
 .modal-fav-btn {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   border-radius: 50%;
   border: 1px solid #444;
-  background: #111;
-  color: #fff;
-  font-size: 18px;
-}
 
+  background: #111;
+  color: white;
+
+  padding: 0;
+  cursor: pointer;
+}
 
 /* =========================================
    ■ モーダル内のお気に入りボタン
