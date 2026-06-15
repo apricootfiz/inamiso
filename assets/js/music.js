@@ -384,6 +384,8 @@ function setupSongActionButtons(root, song) {
     const active = toggleFavorite(song.id);
     favoriteButton.classList.toggle("active", active);
 
+    syncQueueAfterFavoriteChange(song, active);
+
     if (currentView === "favorite") {
       renderList();
     }
@@ -470,6 +472,14 @@ function syncQueueFromFavorites(songs) {
   if (currentView !== "favorite") return;
 
   queuedSongs = [...songs];
+}
+
+// お気に入り再生中に追加した曲を、再生リスト表示にもすぐ反映する
+function syncQueueAfterFavoriteChange(song, active) {
+  if (!active) return;
+  if (currentPlaybackView !== "favorite") return;
+
+  addToQueue(song);
 }
 
 // 指定した表示モードに対応する曲リストを返す
