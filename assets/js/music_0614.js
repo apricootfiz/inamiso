@@ -73,12 +73,13 @@ async function loadPlaylist() {
 // ===============================================
 // ■ 曲一覧表示（日付の新しい順）
 // ===============================================
-function renderListfunction renderList() {
+function renderList() {
   const container = document.getElementById("list");
   if (!container) return;
 
   container.innerHTML = "";
 
+  // ▼ 表示リスト切り替え
   let list;
 
   if (isQueueMode) {
@@ -105,32 +106,72 @@ function renderListfunction renderList() {
         : selectedList[currentIndex]?.id === item.id;
 
     row.innerHTML = `
-      <div class="thumb-card ${isPlayingRow ? "playing" : ""}">
-      
-        ${
-          isPlayingRow
-            ? `
-              <div class="playing-badge">
-                ▶
-              </div>
-            `
-            : ""
-        }
+      <div class="song-row-inner">
+        <div class="col-song">
+          <div class="song-name">
+            ${isPlayingRow ? `
+              <span class="play-icon">
+                <svg viewBox="0 -960 960 960" class="play-svg">
+                  <path d="M320-200v-560l440 280-440 280Zm80-280Zm0 134 210-134-210-134v268Z"/>
+                </svg>
+              </span>
+            ` : ""}
+            ${item.song}
+          </div>
+          <div class="stream-title">${item.streamTitle}</div>
+        </div>
 
-        <img
-          class="thumb-img"
-          src="https://img.youtube.com/vi/${item.videoId}/mqdefault.jpg"
-          loading="lazy"
-          alt="${item.song}"
-        >
-        
+        <div class="col-artist">
+          ${item.artist}
+        </div>
+
+        ${
+          isQueueMode
+            ? ""
+            : `
+        <div class="col-check">
+          <label class="check-wrap">
+            <input type="checkbox" class="song-checkbox" value="${item.id}">
+            <span class="check-icon">
+              <svg viewBox="0 0 24 24" class="check-svg">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+            </span>
+          </label>
+        </div>
+        `
+        }
       </div>
     `;
 
-    row.addEventListener("click", () => {
-//       openSongModal(item);
-      playNow(item.id);
-    });
+    // ▼ 再生リストモード：タップでスキップ
+    if (isQueueMode) {
+      row.addEventListener("click", () => {
+        currentIndex = index;
+        loadVideo(currentIndex);
+        renderList();
+      });
+    } else {
+      // ▼ 通常モード：既存挙動
+      row.addEventListener("click", e => {
+        if (e.target.closest(".check-wrap")) return;
+        playNow(item.id);
+      });
+
+      // ▼ チェック操作
+      const checkWrap = row.querySelector(".check-wrap");
+      const checkbox = row.querySelector(".song-checkbox");
+
+      checkWrap.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        checkbox.checked = !checkbox.checked;
+        saveSelection();
+        
+        updateQueueButton();
+      });
+    }
 
     row.dataset.search = [
       item.song,
@@ -142,6 +183,11 @@ function renderListfunction renderList() {
     container.appendChild(row);
   });
 
+  // ▼ チェック復元（通常モードのみ）
+  if (!isQueueMode) {
+    loadSelection();
+  }
+  
   updatePlayingRow();
 }
 

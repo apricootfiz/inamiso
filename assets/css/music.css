@@ -466,17 +466,6 @@ body {
   height: auto;
 }
 
-
-#playerContainer{
-  display:flex;
-  justify-content:center;
-}
-
-#player{
-  width:320px;
-  height:180px;
-}
-
 /* =========================================
    ■ PC用：左右2画面
 ========================================= */
@@ -499,4 +488,48 @@ body {
     height: 100vh;
     min-width: 0;
   }
+}
+
+
+/* =========================================
+   ■アプデ中■
+========================================= */
+
+#list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.song-row {
+  cursor: pointer;
+}
+
+.thumb-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.thumb-img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.thumb-card.playing {
+  outline: 3px solid #4da3ff;
+}
+
+.playing-badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  z-index: 2;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
 }
