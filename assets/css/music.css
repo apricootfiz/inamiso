@@ -663,3 +663,68 @@ body {
   font-size: 12px;
   color: #aaa;
 }
+
+
+/* =========================================
+   ■ モーダル内のボタン調整（？）
+========================================= */
+
+.modal-song-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.modal-song-info {
+  min-width: 0;
+}
+
+.modal-song-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.modal-add-btn,
+.modal-fav-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #444;
+  background: #111;
+  color: #fff;
+  font-size: 18px;
+}
+
+
+/* =========================================
+   ■ モーダル内のお気に入りボタン
+========================================= */
+.modal-fav-btn,
+.modal-add-btn {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #444;
+  border-radius: 50%;
+
+  background: #111;
+  cursor: pointer;
+}
+
+/* SVGサイズ */
+.modal-icon {
+  width: 20px;
+  height: 20px;
+
+  fill: #fff;
+}
+
+.modal-fav-btn.active .modal-icon {
+  fill: #ff4d7d;
+}
