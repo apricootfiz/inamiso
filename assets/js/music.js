@@ -465,6 +465,13 @@ function setQueueButtonState(button, added) {
   );
 }
 
+// お気に入りから再生を始めたとき、再生リストにも同じ曲を表示する
+function syncQueueFromFavorites(songs) {
+  if (currentView !== "favorite") return;
+
+  queuedSongs = [...songs];
+}
+
 // 指定した表示モードに対応する曲リストを返す
 function getSongsForView(view) {
   if (view === "favorite") {
@@ -581,6 +588,7 @@ function playSelected() {
   currentPlaybackView = currentView;
   playbackSearchKeyword = searchKeyword;
   playedSongIds = new Set();
+  syncQueueFromFavorites(songs);
   playQueue = createPlayQueue(songs);
   currentIndex = 0;
 
@@ -600,6 +608,7 @@ function playNow(songId) {
     currentPlaybackView = currentView;
     playbackSearchKeyword = searchKeyword;
     playedSongIds = new Set();
+    syncQueueFromFavorites(baseList);
     playQueue = createPlayQueue(baseList, clickedSong);
     currentIndex = 0;
 
