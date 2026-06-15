@@ -19,6 +19,7 @@ const state = {
   isLoop: false
 };
 
+let currentView = "all";
 let isQueueMode = false;
 let isChangingVideo = false;
 
@@ -70,6 +71,7 @@ async function loadPlaylist() {
     console.error("JSON読み込み失敗", e);
   }
 }
+
 
 // ===============================================
 // ■ 表示切り替えタブの初期化
@@ -496,10 +498,64 @@ function getSelectedList() {
 }
 
 // ===============================================
-// ■ 再生 / 停止ボタン
+// ■ 再生ボタン押下
+// 表示中のタブに応じて再生リストを作る
 // ===============================================
 function playSelected() {
-  if (state.isPlaying) {
+
+  // ===============================================
+  // お気に入りタブを表示中の場合
+  // お気に入り登録済みの曲を全部再生リストに入れて再生
+  // ===============================================
+  if (currentView === "favorite") {
+
+    const favorites = getFavorites();
+
+    selectedList = playlist.filter(song =>
+      favorites.includes(song.id)
+    );
+
+    currentIndex = 0;
+
+    if (selectedList.length === 0) {
+      alert("お気に入りがありません");
+      return;
+    }
+
+    playCurrent();
+
+    updateControls?.();
+    updateQueueButton?.();
+
+    return;
+  }
+
+  // ===============================================
+  // 再生リストタブを表示中の場合
+  // 今の再生リストをそのまま再生
+  // ===============================================
+  if (currentView === "queue") {
+
+    if (selectedList.length === 0) {
+      alert("再生リストが空です");
+      return;
+    }
+
+    currentIndex = 0;
+
+    playCurrent();
+
+    updateControls?.();
+    updateQueueButton?.();
+
+    return;
+  }
+
+  // ===============================================
+  // サムネ一覧タブの場合
+  // ===============================================
+
+    if (state.isPlaying) {
     stopVideo();
     return;
   }
@@ -519,7 +575,9 @@ function playSelected() {
     loadVideo(currentIndex);
     renderList();
   });
+
 }
+
 
 // ===============================================
 // ■ リスト行クリック再生
