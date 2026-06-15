@@ -81,19 +81,22 @@ function renderList() {
 
   let list;
 
-  if (isQueueMode) {
-    list = selectedList;
-  } else {
-    list = [...playlist].sort((a, b) => {
-      const da = new Date(a.date);
-      const db = new Date(b.date);
+	const streamMap = new Map();
 
-      if (isNaN(da)) return 1;
-      if (isNaN(db)) return -1;
+	playlist.forEach(item => {
+	  if (!streamMap.has(item.videoId)) {
+	    streamMap.set(item.videoId, {
+	      videoId: item.videoId,
+	      streamTitle: item.streamTitle,
+	      date: item.date,
+	      songs: []
+	    });
+	  }
 
-      return db - da;
-    });
-  }
+	  streamMap.get(item.videoId).songs.push(item);
+	});
+
+list = [...streamMap.values()];
 
   list.forEach((item, index) => {
     const row = document.createElement("div");
