@@ -748,3 +748,35 @@ body {
 .modal-fav-btn.active .modal-icon {
   fill: #ff4d7d;
 }
+
+/* =========================================
+   ■ 表示切り替えタブ
+========================================= */
+
+.view-tabs {
+  display: flex;
+  gap: 6px;
+  margin: 4px 8px 6px;
+}
+
+.view-tab {
+  flex: 1;
+
+  padding: 8px 4px;
+
+  border: 1px solid #444;
+  border-radius: 8px;
+
+  background: #1a1a1a;
+  color: #aaa;
+
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* 選択中のタブ */
+.view-tab.active {
+  background: #4da3ff;
+  border-color: #4da3ff;
+  color: #fff;
+}

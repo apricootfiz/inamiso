@@ -26,6 +26,7 @@ let isChangingVideo = false;
 // ■ 初期処理
 // ===============================================
 function init() {
+  setupViewTabs();
   loadPlaylist();
   setupSearchInput();
   updateControls();
@@ -71,6 +72,37 @@ async function loadPlaylist() {
 }
 
 // ===============================================
+// ■ 表示切り替えタブの初期化
+// ===============================================
+function setupViewTabs() {
+
+  const tabs = document.querySelectorAll(".view-tab");
+
+  tabs.forEach(tab => {
+
+    tab.addEventListener("click", () => {
+
+      // 押されたタブの表示モードを取得
+      currentView = tab.dataset.view;
+
+      // タブの見た目を更新
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      // 一覧を再描画
+      renderList();
+
+      // 件数表示も更新する場合
+      updateVisibleCount?.();
+
+    });
+
+  });
+
+}
+
+
+// ===============================================
 // ■ 曲一覧表示（日付の新しい順）
 // ===============================================
 function renderList() {
@@ -79,38 +111,27 @@ function renderList() {
 
   container.innerHTML = "";
 
-  let list;
+	let list = [];
 
+	// サムネ一覧
+	if (currentView === "all") {
+	  list = createStreamList(playlist);
+	}
 
-	const streamMap = new Map();
+	// お気に入り
+	if (currentView === "favorite") {
+	  const favorites = getFavorites();
+	  const favoriteSongs = playlist.filter(song =>
+	    favorites.includes(song.id)
+	  );
 
-	playlist.forEach(item => {
-	  if (!streamMap.has(item.videoId)) {
-	    streamMap.set(item.videoId, {
-	      videoId: item.videoId,
-	      streamTitle: item.streamTitle,
-	      date: item.date,
-	      songs: []
-	    });
-	  }
+	  list = createStreamList(favoriteSongs);
+	}
 
-	  streamMap.get(item.videoId).songs.push(item);
-	});
-
-	list = [...streamMap.values()];
-
-	// サムネを新しい順でソート
-	list.sort((a, b) => {
-	  const da = new Date(a.date);
-	  const db = new Date(b.date);
-
-	  if (isNaN(da)) return 1;
-	  if (isNaN(db)) return -1;
-
-	  return db - da;
-	});
-
-
+	// 再生リスト
+	if (currentView === "queue") {
+	  list = createStreamList(selectedList);
+	}
 
   list.forEach((item, index) => {
     const row = document.createElement("div");
@@ -148,6 +169,48 @@ function renderList() {
 
   updatePlayingRow();
 }
+
+// ===============================================
+// ■ 曲リストを配信単位にまとめる
+// 同じ videoId の曲を1つのサムネにまとめる
+// ===============================================
+function createStreamList(songList) {
+
+  const streamMap = new Map();
+
+  songList.forEach(song => {
+
+    if (!streamMap.has(song.videoId)) {
+
+      streamMap.set(song.videoId, {
+        videoId: song.videoId,
+        streamTitle: song.streamTitle,
+        date: song.date,
+        songs: []
+      });
+
+    }
+
+    streamMap.get(song.videoId).songs.push(song);
+
+  });
+
+  const streams = [...streamMap.values()];
+
+  // 新しい配信順に並べる
+  streams.sort((a, b) => {
+    const da = new Date(a.date);
+    const db = new Date(b.date);
+
+    if (isNaN(da)) return 1;
+    if (isNaN(db)) return -1;
+
+    return db - da;
+  });
+
+  return streams;
+}
+
 
 // ===============================================
 // ■ モーダル表示
