@@ -466,17 +466,6 @@ body {
   height: auto;
 }
 
-
-#playerContainer{
-  display:flex;
-  justify-content:center;
-}
-
-#player{
-  width:320px;
-  height:180px;
-}
-
 /* =========================================
    ■ PC用：左右2画面
 ========================================= */
