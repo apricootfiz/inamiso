@@ -103,7 +103,7 @@ function setupViewTabs() {
 
 
 // ===============================================
-// ■ 曲一覧表示（日付の新しい順）
+// ■ 曲一覧表示
 // ===============================================
 function renderList() {
   const container = document.getElementById("list");
@@ -111,64 +111,92 @@ function renderList() {
 
   container.innerHTML = "";
 
-	let list = [];
+  // ===============================================
+  // サムネ一覧
+  // ===============================================
+  if (currentView === "all") {
 
-	// サムネ一覧
-	if (currentView === "all") {
-	  list = createStreamList(playlist);
-	}
+    const streamList = createStreamList(playlist);
 
-	// お気に入り
-	if (currentView === "favorite") {
-	  const favorites = getFavorites();
-	  const favoriteSongs = playlist.filter(song =>
-	    favorites.includes(song.id)
-	  );
+    container.classList.add("thumb-list");
+    container.classList.remove("song-list");
 
-	  list = createStreamList(favoriteSongs);
-	}
+    streamList.forEach(stream => {
 
-	// 再生リスト
-	if (currentView === "queue") {
-	  list = createStreamList(selectedList);
-	}
+      const row = document.createElement("div");
+      row.className = "song-row";
 
-  list.forEach((item, index) => {
-    const row = document.createElement("div");
-    row.className = "song-row";
+      row.innerHTML = `
+        <div class="thumb-card">
+          <img
+            class="thumb-img"
+            src="https://img.youtube.com/vi/${stream.videoId}/mqdefault.jpg"
+            loading="lazy"
+            alt="${stream.streamTitle || ""}"
+          >
+        </div>
+      `;
 
-    const isPlayingRow =
-      isQueueMode
-        ? index === currentIndex
-        : selectedList[currentIndex]?.id === item.id;
+      row.addEventListener("click", () => {
+        openSongModal(stream);
+      });
 
-		row.innerHTML = `
-		  <div class="thumb-card ${isPlayingRow ? "playing" : ""}">
-		    <img
-		      class="thumb-img"
-		      src="https://img.youtube.com/vi/${item.videoId}/mqdefault.jpg"
-		      loading="lazy"
-		      alt="${item.streamTitle || ""}"
-		    >
-		  </div>
-		`;
+      container.appendChild(row);
 
-    row.addEventListener("click", () => {
-       openSongModal(item);
     });
 
-    row.dataset.search = [
-      item.song,
-      item.artist,
-      item.streamTitle,
-      item.keyword
-    ].join(" ").toLowerCase();
+    return;
+  }
+
+  // ===============================================
+  // お気に入り
+  // ===============================================
+  let songList = [];
+
+  if (currentView === "favorite") {
+    const favorites = getFavorites();
+
+    songList = playlist.filter(song =>
+      favorites.includes(song.id)
+    );
+  }
+
+  // ===============================================
+  // 再生リスト
+  // ===============================================
+  if (currentView === "queue") {
+    songList = selectedList;
+  }
+
+  container.classList.remove("thumb-list");
+  container.classList.add("song-list");
+
+  songList.forEach(song => {
+
+    const row = document.createElement("div");
+    row.className = "favorite-song-row";
+
+    row.innerHTML = `
+      <div class="favorite-song-info">
+        <div class="favorite-song-name">
+          ${song.song}
+        </div>
+
+        <div class="favorite-artist-name">
+          ${song.artist}
+        </div>
+      </div>
+    `;
+
+    row.addEventListener("click", () => {
+      playNow(song.id);
+    });
 
     container.appendChild(row);
-  });
 
-  updatePlayingRow();
+  });
 }
+
 
 // ===============================================
 // ■ 曲リストを配信単位にまとめる
