@@ -11,6 +11,9 @@ let playlist = [];
 // 再生ボタンで再生する曲の並び
 let playQueue = [];
 
+// 画面上の「再生リスト」タブに表示する曲の並び
+let queuedSongs = [];
+
 // playQueue の何番目を再生しているかを表す
 let currentIndex = 0;
 
@@ -28,6 +31,15 @@ let playlistMap = new Map();
 
 // 画面上の表示モード。all / favorite / queue のどれかが入る
 let currentView = "all";
+
+// 現在の再生を開始した表示モード。曲送り時の再取得に使う
+let currentPlaybackView = "all";
+
+// 再生開始時の検索文字。曲送り時も同じ絞り込み条件を使う
+let playbackSearchKeyword = "";
+
+// 現在の再生セッションで、すでに再生を始めた曲IDを記録する
+let playedSongIds = new Set();
 
 // 検索欄に入力されている文字
 let searchKeyword = "";
@@ -131,16 +143,7 @@ function setupSearchInput() {
 
 // 曲が検索キーワードに一致するかを判定する
 function matchesSearch(song) {
-  if (!searchKeyword) return true;
-
-  const searchableText = [
-    song.song,
-    song.artist,
-    song.streamTitle,
-    song.keyword
-  ].join(" ").toLowerCase();
-
-  return searchableText.includes(searchKeyword);
+  return matchesKeyword(song, searchKeyword);
 }
 
 // 一覧の件数表示を更新する
@@ -234,16 +237,7 @@ function renderSongList(container) {
 
 // 表示中のタブに対応する曲リストを返す
 function getSongsForCurrentView() {
-  if (currentView === "favorite") {
-    const favorites = getFavorites();
-    return playlist.filter(song => favorites.includes(song.id));
-  }
-
-  if (currentView === "queue") {
-    return playQueue;
-  }
-
-  return playlist;
+  return getSongsForView(currentView);
 }
 
 // 全曲データを、同じ videoId ごとの配信単位にまとめる
@@ -337,6 +331,7 @@ function createModalSongButton(song) {
   const addButton = button.querySelector(".modal-add-btn");
   const favoriteButton = button.querySelector(".modal-fav-btn");
 
+  setQueueButtonState(addButton, isInQueue(song.id));
   favoriteButton.classList.toggle("active", isFavorite(song.id));
 
   // 曲行そのものを押したら、その曲をすぐ再生する
@@ -348,7 +343,10 @@ function createModalSongButton(song) {
   // 追加ボタンは親のクリックを止めて、再生せずキューに追加する
   addButton.addEventListener("click", event => {
     event.stopPropagation();
-    addToQueue(song);
+
+    if (addToQueue(song)) {
+      setQueueButtonState(addButton, true);
+    }
   });
 
   // お気に入りボタンも親のクリックを止めて、保存状態だけ切り替える
@@ -413,15 +411,95 @@ function toggleFavorite(songId) {
 
 // 同じ曲を重複させずに再生リストへ追加する
 function addToQueue(song) {
-  const exists = playQueue.some(item => item.id === song.id);
-
-  if (!exists) {
-    playQueue.push(song);
+  if (isInQueue(song.id)) {
+    return false;
   }
+
+  queuedSongs.push(song);
 
   if (currentView === "queue") {
     renderList();
   }
+
+  return true;
+}
+
+// 指定した曲が再生リストに入っているかを返す
+function isInQueue(songId) {
+  return queuedSongs.some(item => item.id === songId);
+}
+
+// 再生リスト追加ボタンを、追加済みなら押せない見た目にする
+function setQueueButtonState(button, added) {
+  button.disabled = added;
+  button.classList.toggle("is-added", added);
+  button.setAttribute(
+    "aria-label",
+    added ? "再生リストに追加済み" : "再生リストに追加"
+  );
+}
+
+// 指定した表示モードに対応する曲リストを返す
+function getSongsForView(view) {
+  if (view === "favorite") {
+    const favorites = getFavorites();
+    return playlist.filter(song => favorites.includes(song.id));
+  }
+
+  if (view === "queue") {
+    return queuedSongs;
+  }
+
+  return playlist;
+}
+
+// 指定した検索文字に曲が一致するかを判定する
+function matchesKeyword(song, keyword) {
+  if (!keyword) return true;
+
+  const searchableText = [
+    song.song,
+    song.artist,
+    song.streamTitle,
+    song.keyword
+  ].join(" ").toLowerCase();
+
+  return searchableText.includes(keyword);
+}
+
+// 再生中の曲を保ったまま、お気に入り・再生リストを最新状態から取り直す
+function refreshPlaybackQueue() {
+  if (currentPlaybackView !== "favorite" && currentPlaybackView !== "queue") return;
+
+  const currentSong = playQueue[currentIndex];
+  if (!currentSong) return;
+
+  const latestSongs = getSongsForView(currentPlaybackView)
+    .filter(song => matchesKeyword(song, playbackSearchKeyword));
+
+  if (latestSongs.length === 0) {
+    playQueue = [currentSong];
+    currentIndex = 0;
+    return;
+  }
+
+  if (playerState.isShuffle) {
+    const remainingSongs = latestSongs.filter(song =>
+      song.id !== currentSong.id && !playedSongIds.has(song.id)
+    );
+
+    shuffleList(remainingSongs);
+    playQueue = [currentSong, ...remainingSongs];
+    currentIndex = 0;
+    return;
+  }
+
+  const remainingSongs = latestSongs.filter(song =>
+    song.id !== currentSong.id && !playedSongIds.has(song.id)
+  );
+
+  playQueue = [currentSong, ...remainingSongs];
+  currentIndex = 0;
 }
 
 // 再生順を作る。シャッフルONなら並び替え、開始曲があれば先頭に固定する
@@ -474,6 +552,9 @@ function playSelected() {
     return;
   }
 
+  currentPlaybackView = currentView;
+  playbackSearchKeyword = searchKeyword;
+  playedSongIds = new Set();
   playQueue = createPlayQueue(songs);
   currentIndex = 0;
 
@@ -490,6 +571,9 @@ function playNow(songId) {
     if (!clickedSong) return;
 
     const baseList = getSongsForCurrentView().filter(matchesSearch);
+    currentPlaybackView = currentView;
+    playbackSearchKeyword = searchKeyword;
+    playedSongIds = new Set();
     playQueue = createPlayQueue(baseList, clickedSong);
     currentIndex = 0;
 
@@ -529,6 +613,8 @@ function nextVideo() {
   isChangingVideo = true;
 
   try {
+    refreshPlaybackQueue();
+
     if (playQueue.length === 0) {
       stopVideo();
       return;
@@ -542,6 +628,19 @@ function nextVideo() {
     }
 
     if (playerState.isLoop) {
+      if (currentPlaybackView === "favorite" || currentPlaybackView === "queue") {
+        const currentSong = playQueue[currentIndex];
+        playedSongIds = new Set(currentSong ? [currentSong.id] : []);
+        refreshPlaybackQueue();
+
+        if (currentIndex + 1 < playQueue.length) {
+          currentIndex++;
+          loadVideo(currentIndex);
+          renderList();
+          return;
+        }
+      }
+
       currentIndex = 0;
       loadVideo(currentIndex);
       renderList();
@@ -572,8 +671,12 @@ function toggleShuffle() {
   const currentSong = playQueue[currentIndex];
   if (!currentSong) return;
 
-  playQueue = createPlayQueue(playQueue, currentSong);
-  currentIndex = 0;
+  if (currentPlaybackView === "favorite" || currentPlaybackView === "queue") {
+    refreshPlaybackQueue();
+  } else {
+    playQueue = createPlayQueue(playQueue, currentSong);
+    currentIndex = 0;
+  }
 
   renderList();
 }
@@ -636,6 +739,7 @@ function loadVideo(index) {
   if (!song) return;
 
   playerState.isPlaying = true;
+  playedSongIds.add(song.id);
   updateControls();
   clearEndCheck();
   updateNowPlaying(song);

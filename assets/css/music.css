@@ -467,6 +467,21 @@ body {
   cursor: pointer;
 }
 
+/* 再生リスト追加済みのボタンは押せない見た目にする */
+.modal-add-btn:disabled,
+.modal-add-btn.is-added {
+  border-color: #333;
+  background: #2a2a2a;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* 再生リスト追加済みのアイコンを暗めにする */
+.modal-add-btn:disabled .modal-icon,
+.modal-add-btn.is-added .modal-icon {
+  fill: #777;
+}
+
 /* モーダル内ボタンのSVGサイズを設定する */
 .modal-icon {
   width: 20px;
