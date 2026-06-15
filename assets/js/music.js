@@ -81,6 +81,7 @@ function renderList() {
 
   let list;
 
+
 	const streamMap = new Map();
 
 	playlist.forEach(item => {
@@ -98,6 +99,7 @@ function renderList() {
 
 	list = [...streamMap.values()];
 
+	// サムネを新しい順でソート
 	list.sort((a, b) => {
 	  const da = new Date(a.date);
 	  const db = new Date(b.date);
@@ -107,9 +109,6 @@ function renderList() {
 
 	  return db - da;
 	});
-
-
-
 
 
 
@@ -146,8 +145,7 @@ function renderList() {
     `;
 
     row.addEventListener("click", () => {
-//       openSongModal(item);
-      playNow(item.id);
+       openSongModal(item);
     });
 
     row.dataset.search = [
@@ -162,6 +160,80 @@ function renderList() {
 
   updatePlayingRow();
 }
+
+// ===============================================
+// ■ モーダル表示
+// ===============================================
+function openSongModal(stream) {
+
+  // モーダル部品取得
+  const modal = document.getElementById("songModal");
+  const thumb = document.getElementById("modalThumb");
+  const title = document.getElementById("modalStreamTitle");
+  const date = document.getElementById("modalDate");
+  const songList = document.getElementById("modalSongList");
+
+  if (!modal) return;
+
+  // サムネ
+  thumb.src =
+    `https://img.youtube.com/vi/${stream.videoId}/hqdefault.jpg`;
+
+  // 配信タイトル
+  title.innerText = stream.streamTitle || "";
+
+  // 配信日
+  date.innerText = stream.date || "";
+
+  // 曲一覧を初期化
+  songList.innerHTML = "";
+
+  // 曲を並べる
+  stream.songs.forEach(song => {
+
+    const btn = document.createElement("button");
+
+    btn.className = "modal-song-btn";
+
+    btn.innerHTML = `
+      <div class="modal-song-name">
+        ${song.song}
+      </div>
+
+      <div class="modal-artist-name">
+        ${song.artist}
+      </div>
+    `;
+
+    // 曲クリックで再生
+    btn.addEventListener("click", () => {
+
+      closeSongModal();
+
+      playNow(song.id);
+
+    });
+
+    songList.appendChild(btn);
+
+  });
+
+  // モーダル表示
+  modal.classList.remove("hidden");
+}
+
+// ===============================================
+// ■ モーダル閉じる
+// ===============================================
+function closeSongModal() {
+
+  document
+    .getElementById("songModal")
+    ?.classList.add("hidden");
+
+}
+
+
 
 // ===============================================
 // ■ 検索処理

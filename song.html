@@ -116,6 +116,53 @@
   </div>
 </div>
 
+<!-- =========================================
+     ■ 曲一覧モーダル
+========================================= -->
+<div id="songModal" class="song-modal hidden">
+
+  <!-- 背景クリックで閉じる -->
+  <div
+    class="song-modal-bg"
+    onclick="closeSongModal()">
+  </div>
+
+  <!-- モーダル本体 -->
+  <div class="song-modal-box">
+
+    <!-- 閉じるボタン -->
+    <button
+      class="song-modal-close"
+      onclick="closeSongModal()">
+      ×
+    </button>
+
+    <!-- サムネイル -->
+    <img
+      id="modalThumb"
+      class="modal-thumb"
+      alt="">
+
+    <!-- 配信タイトル -->
+    <div id="modalStreamTitle"
+         class="modal-stream-title">
+    </div>
+
+    <!-- 配信日 -->
+    <div id="modalDate"
+         class="modal-date">
+    </div>
+
+    <!-- 曲一覧 -->
+    <div id="modalSongList"
+         class="modal-song-list">
+    </div>
+
+  </div>
+
+</div>
+
+
 <script src="assets/js/music.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 

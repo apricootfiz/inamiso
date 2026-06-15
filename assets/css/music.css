@@ -533,3 +533,133 @@ body {
   border-radius: 4px;
   font-size: 12px;
 }
+
+/* =========================================
+   ■ 曲一覧モーダル
+========================================= */
+
+/* 非表示 */
+.song-modal.hidden {
+  display: none;
+}
+
+/* モーダル全体 */
+.song-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+
+/* 背景 */
+.song-modal-bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+/* モーダル本体 */
+.song-modal-box {
+  position: relative;
+
+  width: min(92vw, 520px);
+  max-height: 85vh;
+
+  margin: 6vh auto 0;
+
+  overflow-y: auto;
+
+  background: #111;
+  color: #fff;
+
+  padding: 14px;
+
+  border-radius: 14px;
+  box-sizing: border-box;
+}
+
+/* 閉じるボタン */
+.song-modal-close {
+  position: absolute;
+
+  top: 8px;
+  right: 10px;
+
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(0,0,0,0.8);
+  color: white;
+
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* モーダル内サムネ */
+.modal-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* 配信タイトル */
+.modal-stream-title {
+  margin-top: 12px;
+
+  font-size: 15px;
+  font-weight: bold;
+
+  line-height: 1.4;
+}
+
+/* 日付 */
+.modal-date {
+  margin-top: 4px;
+
+  color: #aaa;
+  font-size: 12px;
+}
+
+/* 曲一覧 */
+.modal-song-list {
+  margin-top: 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 曲ボタン */
+.modal-song-btn {
+  width: 100%;
+
+  text-align: left;
+
+  background: #222;
+  color: white;
+
+  border: 1px solid #333;
+  border-radius: 8px;
+
+  padding: 10px;
+
+  cursor: pointer;
+}
+
+/* 曲名 */
+.modal-song-name {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* アーティスト */
+.modal-artist-name {
+  margin-top: 4px;
+
+  font-size: 12px;
+  color: #aaa;
+}
