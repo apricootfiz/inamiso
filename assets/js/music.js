@@ -206,6 +206,7 @@ function openSongModal(stream) {
 	    </div>
 	  </div>
 
+	  // 再生ボタン表示
 	  <div class="modal-song-actions">
 	    <button class="modal-add-btn" type="button">
 		  <svg viewBox="0 -960 960 960" class="modal-icon">
@@ -213,6 +214,7 @@ function openSongModal(stream) {
 		  </svg>
 	    </button>
 
+	  // お気に入りボタン表示
 	    <button class="modal-fav-btn" type="button">
 		  <svg viewBox="0 -960 960 960" class="modal-icon">
 		    <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z"/>
@@ -224,6 +226,10 @@ function openSongModal(stream) {
 	const addBtn = btn.querySelector(".modal-add-btn");
 	const favBtn = btn.querySelector(".modal-fav-btn");
 
+	// モーダルを開いた時点で、お気に入り済みなら色を変える
+	if (isFavorite(song.id)) {
+	  favBtn.classList.add("active");
+	}
 
     // 曲クリックで再生
     btn.addEventListener("click", () => {
@@ -237,10 +243,16 @@ function openSongModal(stream) {
 	  console.log("再生リストに追加", song);
 	});
 
-	// ハートボタンで再生リスト追加
+	// ハートボタンを押した時の処理
 	favBtn.addEventListener("click", e => {
-	  e.stopPropagation();
-	  console.log("お気に入り登録", song);
+	
+		e.stopPropagation();
+		
+		// お気に入り追加・解除
+		const active = toggleFavorite(song.id);
+		
+		// 状態に合わせて色を切り替える
+		favBtn.classList.toggle("active", active);
 	});
 
     songList.appendChild(btn);
@@ -250,6 +262,61 @@ function openSongModal(stream) {
   // モーダル表示
   modal.classList.remove("hidden");
 }
+
+// ===============================================
+// ■ お気に入り一覧を取得
+// ===============================================
+function getFavorites() {
+  return JSON.parse(
+    localStorage.getItem("favorites") || "[]"
+  );
+}
+
+// ===============================================
+// ■ お気に入り一覧を保存
+// ===============================================
+function saveFavorites(favorites) {
+  localStorage.setItem(
+    "favorites",
+    JSON.stringify(favorites)
+  );
+}
+
+// ===============================================
+// ■ 指定した曲がお気に入り済みか判定
+// ===============================================
+function isFavorite(songId) {
+  const favorites = getFavorites();
+
+  return favorites.includes(songId);
+}
+
+// ===============================================
+// ■ お気に入り追加・解除
+// 戻り値 true  → お気に入り登録済み
+// 戻り値 false → お気に入り解除済み
+// ===============================================
+function toggleFavorite(songId) {
+  let favorites = getFavorites();
+
+  if (favorites.includes(songId)) {
+
+    favorites = favorites.filter(id => id !== songId);
+
+    saveFavorites(favorites);
+
+    return false;
+
+  } else {
+
+    favorites.push(songId);
+
+    saveFavorites(favorites);
+
+    return true;
+  }
+}
+
 
 // ===============================================
 // ■ モーダル閉じる
