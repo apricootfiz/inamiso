@@ -504,35 +504,54 @@ function getSelectedList() {
 function playSelected() {
 
   // ===============================================
+  // 再生中なら停止
+  // どのタブを表示していても、再生中に押したら停止
+  // ===============================================
+  if (state.isPlaying) {
+    stopVideo();
+    return;
+  }
+
+  // ===============================================
   // お気に入りタブを表示中の場合
-  // お気に入り登録済みの曲を全部再生リストに入れて再生
+  // お気に入りに入っている曲をまとめて再生リストにして再生
   // ===============================================
   if (currentView === "favorite") {
 
+    // 保存済みのお気に入りID一覧を取得
     const favorites = getFavorites();
 
-    selectedList = playlist.filter(song =>
+    // お気に入りIDに一致する曲だけ取り出す
+    const favoriteSongs = playlist.filter(song =>
       favorites.includes(song.id)
     );
 
-    currentIndex = 0;
-
-    if (selectedList.length === 0) {
+    // お気に入りが空なら再生しない
+    if (favoriteSongs.length === 0) {
       alert("お気に入りがありません");
       return;
     }
 
-    playCurrent();
+    // お気に入り曲を再生リストにする
+    // シャッフルONなら createPlayQueue の中で並び替えされる
+    selectedList = createPlayQueue(favoriteSongs);
 
-    updateControls?.();
-    updateQueueButton?.();
+    // 先頭から再生
+    currentIndex = 0;
+
+    // プレイヤー準備後に再生
+    waitForPlayerReady(() => {
+      updateQueueButton?.();
+      loadVideo(currentIndex);
+      renderList();
+    });
 
     return;
   }
 
   // ===============================================
   // 再生リストタブを表示中の場合
-  // 今の再生リストをそのまま再生
+  // 今の selectedList をそのまま再生
   // ===============================================
   if (currentView === "queue") {
 
@@ -543,23 +562,19 @@ function playSelected() {
 
     currentIndex = 0;
 
-    playCurrent();
-
-    updateControls?.();
-    updateQueueButton?.();
+    waitForPlayerReady(() => {
+      updateQueueButton?.();
+      loadVideo(currentIndex);
+      renderList();
+    });
 
     return;
   }
 
   // ===============================================
   // サムネ一覧タブの場合
+  // 既存のチェック選択から再生
   // ===============================================
-
-    if (state.isPlaying) {
-    stopVideo();
-    return;
-  }
-
   waitForPlayerReady(() => {
     const checkedList = getSelectedList();
 
@@ -571,13 +586,12 @@ function playSelected() {
     selectedList = createPlayQueue(checkedList);
     currentIndex = 0;
 
-    updateQueueButton();
+    updateQueueButton?.();
     loadVideo(currentIndex);
     renderList();
   });
 
 }
-
 
 // ===============================================
 // ■ リスト行クリック再生
