@@ -215,24 +215,45 @@ function renderSongList(container) {
   container.classList.add("song-list");
 
   songs.forEach(song => {
-    const row = document.createElement("div");
-    row.className = "favorite-song-row";
-
-    row.innerHTML = `
-      <div class="favorite-song-info">
-        <div class="favorite-song-name">${escapeHtml(song.song)}</div>
-        <div class="favorite-artist-name">${escapeHtml(song.artist)}</div>
-      </div>
-    `;
-
-    row.addEventListener("click", () => {
-      playNow(song.id);
-    });
-
-    container.appendChild(row);
+    container.appendChild(createSongListRow(song));
   });
 
   updateVisibleCount(songs.length, getSongsForCurrentView().length);
+}
+
+// お気に入り・再生リストに表示する1曲分の行を作る
+function createSongListRow(song) {
+  const row = document.createElement("div");
+  row.className = "favorite-song-row";
+
+  row.innerHTML = `
+    <div class="favorite-song-info">
+      <div class="favorite-song-name">${escapeHtml(song.song)}</div>
+      <div class="favorite-artist-name">${escapeHtml(song.artist)}</div>
+    </div>
+
+    <div class="modal-song-actions">
+      <button class="modal-add-btn" type="button" aria-label="再生リストに追加">
+        <svg viewBox="0 -960 960 960" class="modal-icon">
+          <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+        </svg>
+      </button>
+
+      <button class="modal-fav-btn" type="button" aria-label="お気に入り">
+        <svg viewBox="0 -960 960 960" class="modal-icon">
+          <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z"/>
+        </svg>
+      </button>
+    </div>
+  `;
+
+  setupSongActionButtons(row, song);
+
+  row.addEventListener("click", () => {
+    playNow(song.id);
+  });
+
+  return row;
 }
 
 // 表示中のタブに対応する曲リストを返す
@@ -328,11 +349,7 @@ function createModalSongButton(song) {
     </div>
   `;
 
-  const addButton = button.querySelector(".modal-add-btn");
-  const favoriteButton = button.querySelector(".modal-fav-btn");
-
-  setQueueButtonState(addButton, isInQueue(song.id));
-  favoriteButton.classList.toggle("active", isFavorite(song.id));
+  setupSongActionButtons(button, song);
 
   // 曲行そのものを押したら、その曲をすぐ再生する
   button.addEventListener("click", () => {
@@ -340,7 +357,19 @@ function createModalSongButton(song) {
     playNow(song.id);
   });
 
-  // 追加ボタンは親のクリックを止めて、再生せずキューに追加する
+  return button;
+}
+
+// 曲行にある「＋」「ハート」ボタンの状態とクリック処理を設定する
+function setupSongActionButtons(root, song) {
+  const addButton = root.querySelector(".modal-add-btn");
+  const favoriteButton = root.querySelector(".modal-fav-btn");
+
+  if (!addButton || !favoriteButton) return;
+
+  setQueueButtonState(addButton, isInQueue(song.id));
+  favoriteButton.classList.toggle("active", isFavorite(song.id));
+
   addButton.addEventListener("click", event => {
     event.stopPropagation();
 
@@ -349,7 +378,6 @@ function createModalSongButton(song) {
     }
   });
 
-  // お気に入りボタンも親のクリックを止めて、保存状態だけ切り替える
   favoriteButton.addEventListener("click", event => {
     event.stopPropagation();
 
@@ -360,8 +388,6 @@ function createModalSongButton(song) {
       renderList();
     }
   });
-
-  return button;
 }
 
 // モーダルを閉じる。HTML の onclick からも呼ばれる

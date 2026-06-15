@@ -300,9 +300,19 @@ body {
 
 /* お気に入り・再生リストの曲行を表示する */
 .favorite-song-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   padding: 10px;
   border-bottom: 1px solid #333;
   cursor: pointer;
+}
+
+/* お気に入り・再生リストの曲情報を残り幅いっぱいにする */
+.favorite-song-info {
+  min-width: 0;
+  flex: 1;
 }
 
 /* 曲名を強調する */
