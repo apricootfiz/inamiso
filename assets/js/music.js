@@ -73,7 +73,7 @@ async function loadPlaylist() {
 // ===============================================
 // ■ 曲一覧表示（日付の新しい順）
 // ===============================================
-function renderListfunction renderList() {
+function renderList() {
   const container = document.getElementById("list");
   if (!container) return;
 
