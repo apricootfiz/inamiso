@@ -8,6 +8,9 @@ let player;
 // playlist.json から読み込んだ全曲データを入れる
 let playlist = [];
 
+// 配信単位の一覧は playlist 読み込み後に一度だけ作り、表示時に使い回す
+let streamListCache = [];
+
 // 再生ボタンで再生する曲の並び
 let playQueue = [];
 
@@ -44,6 +47,15 @@ let playedSongIds = new Set();
 // 検索欄に入力されている文字
 let searchKeyword = "";
 
+// 検索入力中の連続描画を抑えるためのタイマー
+let searchRenderTimer = null;
+
+// 入力停止からこの時間だけ待って一覧を描画する
+const SEARCH_DEBOUNCE_MS = 200;
+
+// お気に入りIDは Set で保持し、曲ごとの判定を軽くする
+let favoriteIdSet = new Set();
+
 // 前へ・次への連打で処理が重ならないようにするためのフラグ
 let isChangingVideo = false;
 
@@ -61,6 +73,7 @@ const playerState = {
 
 // ページ読み込み後に、イベント設定とデータ読み込みを始める
 function init() {
+  loadFavoriteCache();
   setupViewTabs();
   setupSearchInput();
   loadPlaylist();
@@ -99,6 +112,7 @@ async function loadPlaylist() {
 
     // クリックされた曲IDから、対応する曲データをすぐ探せるようにする
     playlistMap = new Map(playlist.map(song => [String(song.id), song]));
+    streamListCache = createStreamList(playlist);
 
     renderList();
   } catch (error) {
@@ -138,11 +152,17 @@ function setupSearchInput() {
 
   input.addEventListener("input", event => {
     searchKeyword = event.target.value.trim().toLowerCase();
-    renderList();
+    scheduleSearchRender();
   });
 }
 
 // 曲が検索キーワードに一致するかを判定する
+// 入力のたびに描画せず、最後の入力から少し待って一覧を更新する
+function scheduleSearchRender() {
+  clearTimeout(searchRenderTimer);
+  searchRenderTimer = setTimeout(renderList, SEARCH_DEBOUNCE_MS);
+}
+
 function matchesSearch(song) {
   return matchesKeyword(song, searchKeyword);
 }
@@ -177,7 +197,7 @@ function renderList() {
 
 // 配信単位のサムネイル一覧を表示する
 function renderStreamList(container) {
-  const streamList = createStreamList(playlist)
+  const streamList = streamListCache
     .filter(stream => stream.songs.some(matchesSearch));
 
   container.classList.add("thumb-list");
@@ -205,7 +225,7 @@ function renderStreamList(container) {
     container.appendChild(row);
   });
 
-  updateVisibleCount(streamList.length, createStreamList(playlist).length);
+  updateVisibleCount(streamList.length, streamListCache.length);
 }
 
 // お気に入りまたは再生リストの曲一覧を表示する
@@ -414,30 +434,34 @@ function closeSongModal() {
 
 // localStorage からお気に入りの曲ID一覧を取り出す
 function getFavorites() {
-  return JSON.parse(localStorage.getItem("favorites") || "[]");
+  return [...favoriteIdSet];
 }
 
-// お気に入りの曲ID一覧を localStorage に保存する
+// localStorage のお気に入りを起動時に読み込み、以降の判定は Set を使う
+function loadFavoriteCache() {
+  favoriteIdSet = new Set(JSON.parse(localStorage.getItem("favorites") || "[]"));
+}
+
+// お気に入り保存時は localStorage と Set の両方を更新する
 function saveFavorites(favorites) {
+  favoriteIdSet = new Set(favorites);
   localStorage.setItem("favorites", JSON.stringify(favorites));
 }
 
 // 指定した曲がお気に入り済みかどうかを返す
 function isFavorite(songId) {
-  return getFavorites().includes(songId);
+  return favoriteIdSet.has(songId);
 }
 
 // お気に入りを追加または解除し、追加後の状態を返す
 function toggleFavorite(songId) {
-  let favorites = getFavorites();
-
-  if (favorites.includes(songId)) {
-    favorites = favorites.filter(id => id !== songId);
+  if (favoriteIdSet.has(songId)) {
+    const favorites = getFavorites().filter(id => id !== songId);
     saveFavorites(favorites);
     return false;
   }
 
-  favorites.push(songId);
+  const favorites = [...favoriteIdSet, songId];
   saveFavorites(favorites);
   return true;
 }
@@ -505,8 +529,7 @@ function syncQueueAfterFavoriteChange(song, active) {
 // 指定した表示モードに対応する曲リストを返す
 function getSongsForView(view) {
   if (view === "favorite") {
-    const favorites = getFavorites();
-    return playlist.filter(song => favorites.includes(song.id));
+    return playlist.filter(song => favoriteIdSet.has(song.id));
   }
 
   if (view === "queue") {
