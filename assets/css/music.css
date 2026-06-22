@@ -59,14 +59,13 @@ body {
   border: 1px solid #2f2f2f;
   border-radius: 6px;
   background: #000;
-  transition: width 0.18s ease, max-height 0.18s ease, opacity 0.18s ease;
+  transition: max-height 0.18s ease;
 }
 
 /* 折りたたみ中はYouTube表示だけを隠し、曲名と操作ボタンは残す */
 #playerArea.collapsed #playerFrame {
-  width: min(56vw, 220px);
-  max-height: 124px;
-  opacity: 0.9;
+  border-color: transparent;
+  max-height: 0;
 }
 
 /* 一覧側の領域を残りの高さに収める */
@@ -140,12 +139,6 @@ body {
   /* スマホ表示時のプレイヤー最大高さを制限する */
   #player {
     max-height: 220px;
-  }
-
-  /* スマホの折りたたみ時は操作しやすいミニプレイヤー幅を残す */
-  #playerArea.collapsed #playerFrame {
-    width: min(72vw, 260px);
-    max-height: 146px;
   }
 }
 
