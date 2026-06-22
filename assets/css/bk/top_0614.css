@@ -1,0 +1,109 @@
+/* ===============================
+   基本設定
+================================ */
+
+body {
+  font-family: sans-serif; /* シンプルで読みやすいフォント */
+  margin: 24px;            /* 画面端との余白 */
+  color: #222;             /* 基本の文字色 */
+}
+
+/* ===============================
+   タイトル・概要
+================================ */
+
+/* タイトル文字 */
+.title {
+  font-size: 20px;         /* 少し小さめの見出し */
+  margin-bottom: 4px;      /* 概要との間隔 */
+}
+
+/* タイトル下の説明文 */
+.description {
+  font-size: 9px;         /* 控えめな文字サイズ */
+  color: #666;             /* タイトルより薄い色 */
+  margin-bottom: 16px;     /* 月一覧との間隔 */
+}
+
+/* ===============================
+   年・月ツリー表示
+================================ */
+
+/* 年一覧の親リスト */
+.year-list {
+  list-style: none;        /* デフォルトの黒丸を消す */
+  padding-left: 0;         /* 左インデントをリセット */
+  font-size: 14px;
+}
+
+/* 年単位のリスト項目 */
+.year-item {
+  margin-top: 8px;         /* 年ごとの縦間隔 */
+}
+
+/* 月一覧のリスト */
+.month-list {
+  list-style: none;        /* 黒丸を消す */
+  padding-left: 20px;      /* 年から少しインデント */
+  margin-top: 4px;
+  position: relative;     /* 疑似要素の基準 */
+}
+
+/* 年から月へ伸びる縦線（│） */
+.month-list::before {
+  content: "";
+  position: absolute;
+  left: 6px;               /* 縦線の位置 */
+  top: 0;
+  bottom: 0;
+  width: 1px;              /* 線の太さ */
+  background: #ccc;        /* 薄いグレー */
+}
+
+/* 各月の行 */
+.month-item {
+  position: relative;     /* 横線配置用 */
+  padding-left: 16px;     /* テキストの左余白 */
+  margin: 2px 0;
+}
+
+/* 月の横線（├） */
+.month-item::before {
+  content: "";
+  position: absolute;
+  left: -14px;             /* 縦線からの距離 */
+  top: 50%;                /* 文字の中央に合わせる */
+  width: 14px;
+  height: 1px;
+  background: #ccc;
+}
+
+/* 最後の月だけ縦線を消して「└」に見せる */
+.month-item:last-child::after {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  bottom: 0;
+  width: 1px;
+  background: white;       /* 背景色で縦線を消す */
+}
+
+/* ===============================
+   月リンク表示
+================================ */
+
+/* 月リンクの基本スタイル */
+.month-item a {
+  color: #222;             /* 常に黒字 */
+  text-decoration: none;  /* 下線なし */
+  font-weight: normal;
+}
+
+/* 押下・訪問・ホバー後も色を変えない */
+.month-item a:visited,
+.month-item a:hover,
+.month-item a:active {
+  color: #222;
+  text-decoration: underline; /* ホバー時のみ下線（好みで削除可） */
+}

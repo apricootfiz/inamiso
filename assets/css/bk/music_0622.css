@@ -1,0 +1,491 @@
+/* =========================================
+   ■ 基本レイアウト
+========================================= */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  background: #111;
+  color: #eee;
+}
+
+/* アプリ全体 */
+#app {
+  display: flex;
+  flex-direction: column;
+
+  height: 100dvh;            /* 通常用 */
+  height: var(--app-height); /* iPhone対策（上書き） */
+
+  overflow: hidden;
+}
+
+
+/* =========================================
+   ■ PCレイアウト（2カラム）
+========================================= */
+@media (min-width: 1024px) {
+
+  #app {
+    display: flex;
+    height: 100vh;
+  }
+
+  /* 左：プレイヤー */
+  #playerArea {
+    flex: 1;
+    padding: 10px;
+    border-right: 1px solid #333;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    box-sizing: border-box;
+  }
+
+  /* 右：リスト */
+  #mainArea {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+  }
+
+  #list {
+    flex: 1;
+    overflow-y: auto;
+  }
+}
+
+
+/* =========================================
+   ■ プレイヤー
+========================================= */
+#player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+@media (max-width: 600px) {
+  #player {
+    max-height: 220px;
+  }
+}
+
+#playerContainer {
+  padding: 6px 10px 2px;
+}
+
+#nowPlaying {
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================
+   ■ コントロールボタン
+========================================= */
+.control-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* ボタン共通 */
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+}
+
+/* SVG共通 */
+.icon {
+  width: 28px;
+  height: 28px;
+  fill: #fff;
+}
+
+.icon-btn.active .icon {
+  fill: #4da3ff;
+}
+
+.icon-btn {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.icon-btn:focus {
+  outline: none;
+}
+
+/* ===============================
+   hover（PCのみ & 有効時のみ）
+=============================== */
+@media (hover: hover) and (pointer: fine) {
+  .icon-btn:not(:disabled):not(.disabled):hover .icon {
+    fill: #4da3ff;
+  }
+}
+
+/* ===============================
+   非活性
+=============================== */
+.icon-btn:disabled .icon,
+.icon-btn.disabled .icon {
+  fill: #888;
+  opacity: 0.5;
+}
+
+/* =========================================
+   ■ チェックボタン
+========================================= */
+.icon-btn-check {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.icon-check {
+  width: 22px;
+  height: 22px;
+  fill: #aaa;
+  justify-content: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .icon-btn-check:hover .icon-check {
+    fill: #4da3ff;
+  }
+}
+
+/* =========================================
+   ■ 再生ボタン
+========================================= */
+
+/* 停止アイコンはデフォルト非表示 */
+.icon-stop {
+  display: none;
+}
+
+/* 再生中：▶を隠して■を表示 */
+#playBtn.playing .icon-play {
+  display: none;
+}
+
+#playBtn.playing .icon-stop {
+  display: inline;
+}
+
+/* =========================================
+   ■ 再生リストボタン
+========================================= */
+.queue-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* =========================================
+   ■ 検索エリア
+========================================= */
+#searchArea {
+  margin: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#searchInput::placeholder {
+  font-size: 11px;
+}
+
+#searchInput {
+  flex: 2;
+  padding: 5px;
+  font-size: 16px;
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+#songCount {
+  font-size: 12px;
+  color: #666;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   ■ リストヘッダー（固定）
+========================================= */
+#listHeader {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #111;
+  border-bottom: 1px solid #333;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-bottom: 1px solid #333;
+  font-weight: bold;
+  color: #ccc;
+}
+
+.header-row .col-check {
+  justify-content: flex-start;
+  padding-left: 2px;
+}
+
+/* =========================================
+   ■ 曲リスト
+========================================= */
+
+/* 行 */
+.song-row {
+  border-bottom: 1px solid #333;
+  cursor: pointer;
+}
+
+.song-row:hover {
+  background: #222;
+}
+
+/* 行内部 */
+.song-row-inner {
+  display: flex;
+  align-items: center;
+  padding:4px;
+}
+
+/* カラム */
+.col-song {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+}
+
+.col-artist {
+  flex: 2;
+  padding-left: 10px;
+  font-size: 11px;
+  color: #aaa;
+}
+
+.col-check {
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+
+/* 曲名 */
+.song-name {
+  font-weight: bold;
+  font-size: 11px;
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 配信タイトル（PCのみ表示） */
+.stream-title {
+  font-size: 9px;
+  color: #999;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .stream-title {
+    display: block;
+  }
+}
+
+/* =========================================
+   ■ 再生中の行ハイライト
+========================================= */
+.song-row.playing {
+  background: #2a2a2a;
+}
+
+.song-row.playing .song-name {
+  color: #4da3ff;
+}
+
+.play-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
+}
+
+.play-svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   ■ 曲チェックボックス：押しやすいカスタム表示
+========================================= */
+
+/* タップ領域 */
+.check-wrap {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+
+/* 本物のcheckboxは見えなくする */
+.song-checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+
+/* 見た目用の四角 */
+.check-icon {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #777;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* チェックSVGは最初非表示 */
+.check-svg {
+  width: 16px;
+  height: 16px;
+  fill: #fff;
+  display: none;
+}
+
+/* チェック時 */
+.song-checkbox:checked + .check-icon {
+  background: #444;
+  border-color: #888;
+}
+
+.song-checkbox:checked + .check-icon .check-svg {
+  display: block;
+}
+
+/* ホバー時 */
+.check-wrap:hover .check-icon {
+  border-color: #4da3ff;
+}
+
+/* スマホではさらに押しやすく */
+@media (max-width: 600px) {
+  .col-check {
+    width: 30px;
+  }
+
+  .check-wrap {
+    width: 40px;
+    height: 40px;
+  }
+
+  .check-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* =========================================
+   ■ スマホ＆PC共通：リストだけスクロール化
+========================================= */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#playerArea {
+  flex-shrink: 0;
+}
+
+#mainArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#searchArea,
+#listHeader {
+  flex-shrink: 0;
+}
+
+#listContainer {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  height: auto;
+}
+
+/* =========================================
+   ■ PC用：左右2画面
+========================================= */
+@media (min-width: 1024px) {
+
+  #app {
+    flex-direction: row;
+  }
+
+  #playerArea {
+    flex: 1;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    box-sizing: border-box;
+  }
+
+  #mainArea {
+    flex: 1;
+    height: 100vh;
+    min-width: 0;
+  }
+}

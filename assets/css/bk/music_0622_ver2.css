@@ -1,0 +1,635 @@
+/* =========================================
+   基本レイアウト
+========================================= */
+
+/* ページ全体を画面内に固定して、アプリ内だけをスクロールさせる */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* 全体の色とフォントを設定する */
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  background: #111;
+  color: #eee;
+}
+
+/* アプリ全体を縦並びで画面いっぱいに表示する */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  height: var(--app-height);
+  overflow: hidden;
+}
+
+/* プレイヤー領域は縮めずに表示する */
+#playerArea {
+  flex-shrink: 0;
+  padding: 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #2b2b2b;
+  background: #101010;
+}
+
+/* YouTube iframe の外側だけを開閉し、iframe本体の幅は変えない */
+#playerFrame {
+  max-height: 70vh;
+  overflow: hidden;
+  border: 1px solid #2f2f2f;
+  border-radius: 6px;
+  background: #000;
+  transition: max-height 0.18s ease;
+}
+
+/* 折りたたみ中はYouTube表示だけを隠し、曲名と操作ボタンは残す */
+#playerArea.collapsed #playerFrame {
+  display: none;
+  border-color: transparent;
+  max-height: 0;
+}
+
+/* 一覧側の領域を残りの高さに収める */
+#mainArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* スクロール対象外の上部UIを固定する */
+#searchArea,
+.view-tabs {
+  flex-shrink: 0;
+}
+
+/* 曲一覧だけをスクロール可能にする */
+#listContainer {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  padding: 0 8px 12px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* PCではプレイヤーと一覧を左右2カラムにする */
+@media (min-width: 1024px) {
+  /* アプリ全体を横並びに切り替える */
+  #app {
+    flex-direction: row;
+    height: 100vh;
+  }
+
+  /* プレイヤー領域を左カラムとして固定する */
+  #playerArea {
+    flex: 1;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    box-sizing: border-box;
+    border-right: 1px solid #333;
+    border-bottom: none;
+  }
+
+  /* 一覧領域を右カラムとして表示する */
+  #mainArea {
+    flex: 1;
+    min-width: 0;
+    height: 100vh;
+  }
+}
+
+/* =========================================
+   プレイヤー
+========================================= */
+
+/* YouTubeプレイヤーを16:9で表示する */
+#player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+/* スマホではプレイヤーが縦に大きくなりすぎないようにする */
+@media (max-width: 600px) {
+  /* スマホ表示時のプレイヤー最大高さを制限する */
+  #player {
+    max-height: 220px;
+  }
+}
+
+/* プレイヤー周辺の余白を設定する */
+#playerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #181818;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 24%);
+}
+
+/* 曲名と折りたたみボタンを横並びにする */
+#playerHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 再生中の曲名を1行で省略表示する */
+#nowPlaying {
+  flex: 1;
+  min-width: 0;
+  font-weight: bold;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* YouTube表示の開閉ボタン */
+.player-toggle-btn {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid #333;
+  border-radius: 50%;
+  background: #171717;
+  color: #ccc;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* 折りたたみ中の開閉ボタンは下向きに見せる */
+#playerArea.collapsed .player-toggle-btn {
+  color: #4da3ff;
+}
+
+/* =========================================
+   操作ボタン
+========================================= */
+
+/* 再生操作ボタンを中央に並べる */
+.control-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding-top: 2px;
+}
+
+/* アイコンボタンの標準スタイルを設定する */
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* キーボードフォーカス時の標準アウトラインを消す */
+.icon-btn:focus {
+  outline: none;
+}
+
+/* 操作アイコンのサイズと色を設定する */
+.icon {
+  width: 28px;
+  height: 28px;
+  fill: #fff;
+}
+
+/* 有効化中のボタンを青で表示する */
+.icon-btn.active .icon {
+  fill: #4da3ff;
+}
+
+/* マウス操作できる環境だけホバー色を付ける */
+@media (hover: hover) and (pointer: fine) {
+  /* ホバー中の操作アイコンを青にする */
+  .icon-btn:not(:disabled):not(.disabled):hover .icon {
+    fill: #4da3ff;
+  }
+}
+
+/* 無効化されたボタンを薄く表示する */
+.icon-btn:disabled .icon,
+.icon-btn.disabled .icon {
+  fill: #888;
+  opacity: 0.5;
+}
+
+/* 停止アイコンは通常時は非表示にする */
+.icon-stop {
+  display: none;
+}
+
+/* 再生中は再生アイコンを隠す */
+#playBtn.playing .icon-play {
+  display: none;
+}
+
+/* 再生中は停止アイコンを表示する */
+#playBtn.playing .icon-stop {
+  display: inline;
+}
+
+/* =========================================
+   検索エリア
+========================================= */
+
+/* 検索欄と件数表示を横並びにする */
+#searchArea {
+  margin: 8px 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+/* 検索欄の入力スタイルを設定する */
+#searchInput {
+  flex: 1;
+  min-width: 0;
+  padding: 5px;
+  font-size: 16px;
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+/* プレースホルダーを少し小さく表示する */
+#searchInput::placeholder {
+  font-size: 11px;
+}
+
+/* 曲数表示を右側に収める */
+#songCount {
+  width: 52px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #666;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* =========================================
+   表示切り替えタブ
+========================================= */
+
+/* 表示モードのタブを横並びにする */
+.view-tabs {
+  display: flex;
+  gap: 0;
+  margin: 6px 8px 0;
+  border-bottom: 1px solid #2b2b2b;
+  box-sizing: border-box;
+}
+
+/* 音楽プレイヤーのナビゲーション風に、背景より下線を主役にする */
+.view-tab {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 4px 9px;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  background: transparent;
+  color: #8f8f8f;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* タブにマウスを乗せたときだけ少し明るくする */
+.view-tab:hover {
+  color: #ddd;
+}
+
+/* 選択中のタブは下線だけを強調してプレイヤーらしく見せる */
+.view-tab.active {
+  position: relative;
+  background: transparent;
+  color: #fff;
+}
+
+/* 選択中タブの下線 */
+.view-tab.active::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -1px;
+  height: 2px;
+  background: #4da3ff;
+}
+
+/* =========================================
+   一覧表示
+========================================= */
+
+/* サムネイル一覧はグリッドで表示する */
+#list.thumb-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding-top: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 曲一覧は縦並びで表示する */
+#list.song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* サムネイル行をクリック可能にする */
+.song-row {
+  min-width: 0;
+  cursor: pointer;
+}
+
+/* ホバーした行を少し明るくする */
+.song-row:hover {
+  background: #222;
+}
+
+/* 再生中の行を強調する */
+.song-row.playing {
+  background: #2a2a2a;
+}
+
+/* サムネイルカードの角丸と切り抜きを設定する */
+.thumb-card {
+  position: relative;
+  min-width: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* サムネイル画像を16:9で表示する */
+.thumb-img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* お気に入り・再生リストの曲行を表示する */
+.favorite-song-row {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 8px 8px 8px 10px;
+  border-bottom: 1px solid #252525;
+  background: #111;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* 曲行にマウスを乗せたときだけ、キューの選択候補として少し明るくする */
+.favorite-song-row:hover {
+  background: #181818;
+}
+
+/* 再生中の曲は背景を控えめに変えて現在位置を示す */
+.favorite-song-row.playing {
+  background: #171f28;
+}
+
+/* 再生中の曲は左側の細いラインでプレイヤーのキューらしく見せる */
+.favorite-song-row.playing::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  width: 3px;
+  background: #4da3ff;
+}
+
+/* お気に入り・再生リストの曲情報を残り幅いっぱいにする */
+.favorite-song-info {
+  min-width: 0;
+  flex: 1;
+}
+
+/* 曲名を強調する */
+.favorite-song-name {
+  font-size: 13px;
+  font-weight: bold;
+  color: #eee;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* 再生中の曲名はアクセントカラーにする */
+.favorite-song-row.playing .favorite-song-name {
+  color: #4da3ff;
+}
+
+/* アーティスト名を曲名より控えめに表示する */
+.favorite-artist-name {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #aaa;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   曲一覧モーダル
+========================================= */
+
+/* hidden指定されたモーダルを非表示にする */
+.song-modal.hidden {
+  display: none;
+}
+
+/* モーダル全体を画面に固定する */
+.song-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+
+/* 背景を暗くする */
+.song-modal-bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+/* モーダル本体のサイズと見た目を設定する */
+.song-modal-box {
+  position: relative;
+  width: min(92vw, 520px);
+  max-height: 85vh;
+  margin: 6vh auto 0;
+  padding: 14px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #111;
+  color: #fff;
+  border-radius: 14px;
+  box-sizing: border-box;
+}
+
+/* 閉じるボタンを右上に配置する */
+.song-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* モーダル内のサムネイルを表示する */
+.modal-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* 配信タイトルを表示する */
+.modal-stream-title {
+  margin-top: 12px;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+/* 配信日を表示する */
+.modal-date {
+  margin-top: 4px;
+  color: #aaa;
+  font-size: 12px;
+}
+
+/* モーダル内の曲リストを縦に並べる */
+.modal-song-list {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* モーダル内の曲行をボタン風に表示する */
+.modal-song-btn {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  overflow: hidden;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #222;
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* 曲情報エリアを残り幅いっぱいにする */
+.modal-song-info {
+  min-width: 0;
+  flex: 1;
+}
+
+/* モーダル内の曲名を折り返し可能にする */
+.modal-song-name {
+  font-size: 13px;
+  font-weight: bold;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* モーダル内のアーティスト名を控えめに表示する */
+.modal-artist-name {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #aaa;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* 追加・お気に入りボタンを横並びにする */
+.modal-song-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* 追加・お気に入りボタンを丸型にする */
+.modal-add-btn,
+.modal-fav-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid #444;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* 再生リスト追加済みのボタンは押せない見た目にする */
+.modal-add-btn:disabled,
+.modal-add-btn.is-added {
+  border-color: #333;
+  background: #2a2a2a;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* 再生リスト追加済みのアイコンを暗めにする */
+.modal-add-btn:disabled .modal-icon,
+.modal-add-btn.is-added .modal-icon {
+  fill: #777;
+}
+
+/* モーダル内ボタンのSVGサイズを設定する */
+.modal-icon {
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+}
+
+/* お気に入り済みのハートをピンクにする */
+.modal-fav-btn.active .modal-icon {
+  fill: #ff4d7d;
+}
