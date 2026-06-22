@@ -774,6 +774,9 @@ function updatePlayerCollapseButton() {
   );
 }
 
+// HTML の onclick から確実に呼べるように window に公開する
+window.togglePlayerCollapse = togglePlayerCollapse;
+
 
 // ===============================================
 // YouTube プレイヤー

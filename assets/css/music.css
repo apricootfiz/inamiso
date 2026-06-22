@@ -33,14 +33,16 @@ body {
   flex-shrink: 0;
 }
 
-/* 折りたたみ中はYouTube表示だけを隠し、曲名と操作ボタンは残す */
-#playerArea.collapsed #player {
-  display: block;
-  height: 0;
-  max-height: 0;
-  min-height: 0;
-  margin: 0;
+/* YouTube iframe の外側だけを開閉し、iframe本体の幅は変えない */
+#playerFrame {
+  max-height: 70vh;
   overflow: hidden;
+  transition: max-height 0.18s ease;
+}
+
+/* 折りたたみ中はYouTube表示だけを隠し、曲名と操作ボタンは残す */
+#playerArea.collapsed #playerFrame {
+  max-height: 0;
 }
 
 /* 一覧側の領域を残りの高さに収める */
@@ -104,7 +106,6 @@ body {
 #player {
   width: 100%;
   aspect-ratio: 16 / 9;
-  transition: height 0.18s ease, margin 0.18s ease;
 }
 
 /* スマホではプレイヤーが縦に大きくなりすぎないようにする */

@@ -18,7 +18,7 @@
 <!-- ▼ 固定エリア -->
 <div id="app">
 
-  <div id="playerArea">
+  <div id="playerArea" class="collapsed">
 	  <div id="playerContainer">
 	    <div id="playerHeader">
 	      <div id="nowPlaying"></div>
@@ -27,12 +27,14 @@
 	        class="player-toggle-btn"
 	        type="button"
 	        onclick="togglePlayerCollapse()"
-	        aria-expanded="true"
-	        aria-controls="player">
-	        △
+	        aria-expanded="false"
+	        aria-controls="playerFrame">
+	        ▽
 	      </button>
 	    </div>
-	    <div id="player"></div>
+	    <div id="playerFrame">
+	      <div id="player"></div>
+	    </div>
 	  </div>
 	  
 	  <div class="control-row">
