@@ -39,6 +39,8 @@ body {
 
 /* YouTube iframe の外側だけを開閉し、iframe本体の幅は変えない */
 #playerFrame {
+  width: 92%;
+  align-self: center;
   max-height: 70vh;
   overflow: hidden;
   border: 1px solid #2f2f2f;
@@ -71,6 +73,7 @@ body {
 
 /* 曲一覧だけをスクロール可能にする */
 #listContainer {
+  order: 3;
   flex: 1;
   min-height: 0;
   height: auto;
@@ -114,6 +117,7 @@ body {
 
 /* YouTubeプレイヤーを16:9で表示する */
 #player {
+  display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
 }
@@ -248,17 +252,21 @@ body {
 
 /* 検索欄と件数表示を横並びにする */
 #searchArea {
-  margin: 8px 8px 0;
+  order: 2;
+  width: min(100% - 16px, 760px);
+  margin: 10px auto 0;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   box-sizing: border-box;
 }
 
 /* 検索欄の入力スタイルを設定する */
 #searchInput {
-  flex: 1;
+  flex: 1 1 520px;
   min-width: 0;
+  max-width: 620px;
   padding: 5px;
   font-size: 16px;
   background: #222;
@@ -273,11 +281,11 @@ body {
 
 /* 曲数表示を右側に収める */
 #songCount {
-  width: 52px;
+  width: 58px;
   padding: 4px 10px;
   font-size: 12px;
   color: #666;
-  text-align: right;
+  text-align: center;
   white-space: nowrap;
 }
 
@@ -287,6 +295,7 @@ body {
 
 /* 表示モードのタブを横並びにする */
 .view-tabs {
+  order: 1;
   display: flex;
   gap: 0;
   margin: 6px 8px 0;
