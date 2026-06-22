@@ -267,6 +267,7 @@ function renderSongList(container) {
 function createSongListRow(song) {
   const row = document.createElement("div");
   row.className = "favorite-song-row";
+  row.dataset.songId = String(song.id);
   row.classList.toggle("playing", isCurrentSong(song.id));
 
   row.innerHTML = `
@@ -308,6 +309,24 @@ function isCurrentSong(songId) {
 }
 
 // 表示中のタブに対応する曲リストを返す
+// 曲移動時は一覧全体を作り直さず、再生中表示だけを付け替える
+function updatePlayingRowState() {
+  document.querySelectorAll(".favorite-song-row.playing").forEach(row => {
+    row.classList.remove("playing");
+  });
+
+  if (!playerState.isPlaying) return;
+
+  const currentSong = playQueue[currentIndex];
+  if (!currentSong) return;
+
+  document
+    .querySelectorAll(`.favorite-song-row[data-song-id="${currentSong.id}"]`)
+    .forEach(row => {
+      row.classList.add("playing");
+    });
+}
+
 function getSongsForCurrentView() {
   return getSongsForView(currentView);
 }
@@ -708,7 +727,7 @@ function playSelected() {
 
   waitForPlayerReady(() => {
     loadVideo(currentIndex);
-    renderList();
+    updatePlayingRowState();
   });
 }
 
@@ -727,7 +746,7 @@ function playNow(songId) {
     currentIndex = 0;
 
     loadVideo(currentIndex);
-    renderList();
+    updatePlayingRowState();
   });
 }
 
@@ -747,7 +766,7 @@ function prevVideo() {
     }
 
     loadVideo(currentIndex);
-    renderList();
+    updatePlayingRowState();
   } finally {
     setTimeout(() => {
       isChangingVideo = false;
@@ -772,7 +791,7 @@ function nextVideo() {
     if (currentIndex + 1 < playQueue.length) {
       currentIndex++;
       loadVideo(currentIndex);
-      renderList();
+      updatePlayingRowState();
       return;
     }
 
@@ -785,14 +804,14 @@ function nextVideo() {
         if (currentIndex + 1 < playQueue.length) {
           currentIndex++;
           loadVideo(currentIndex);
-          renderList();
+          updatePlayingRowState();
           return;
         }
       }
 
       currentIndex = 0;
       loadVideo(currentIndex);
-      renderList();
+      updatePlayingRowState();
       return;
     }
 
@@ -827,7 +846,7 @@ function toggleShuffle() {
     currentIndex = 0;
   }
 
-  renderList();
+  updatePlayingRowState();
 }
 
 // 再生・シャッフル・ループボタンの見た目を、現在の状態に合わせる
@@ -943,6 +962,7 @@ function stopVideo() {
 
   playerState.isPlaying = false;
   updateControls();
+  updatePlayingRowState();
 
   const nowPlaying = document.getElementById("nowPlaying");
   if (nowPlaying) {
