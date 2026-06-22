@@ -454,12 +454,22 @@ function addToQueue(song) {
   }
 
   queuedSongs.push(song);
+  addToActivePlaybackQueue(song);
 
   if (currentView === "queue") {
     renderList();
   }
 
   return true;
+}
+
+// 再生中に＋追加された曲を、今の再生元に関係なく次曲候補へ入れる
+function addToActivePlaybackQueue(song) {
+  if (!playerState.isPlaying) return;
+  if (playedSongIds.has(song.id)) return;
+  if (playQueue.some(item => item.id === song.id)) return;
+
+  playQueue.splice(currentIndex + 1, 0, song);
 }
 
 // 指定した曲が再生リストに入っているかを返す
@@ -527,6 +537,12 @@ function refreshPlaybackQueue() {
   const currentSong = playQueue[currentIndex];
   if (!currentSong) return;
 
+  const manuallyQueuedSongs = playQueue.filter(song =>
+    song.id !== currentSong.id
+    && !playedSongIds.has(song.id)
+    && queuedSongs.some(queuedSong => queuedSong.id === song.id)
+  );
+
   const latestSongs = getSongsForView(currentPlaybackView)
     .filter(song => matchesKeyword(song, playbackSearchKeyword));
 
@@ -537,7 +553,10 @@ function refreshPlaybackQueue() {
   }
 
   if (playerState.isShuffle) {
-    const remainingSongs = latestSongs.filter(song =>
+    const remainingSongs = mergeUniqueSongs([
+      ...latestSongs,
+      ...manuallyQueuedSongs
+    ]).filter(song =>
       song.id !== currentSong.id && !playedSongIds.has(song.id)
     );
 
@@ -547,12 +566,28 @@ function refreshPlaybackQueue() {
     return;
   }
 
-  const remainingSongs = latestSongs.filter(song =>
+  const remainingSongs = mergeUniqueSongs([
+    ...latestSongs,
+    ...manuallyQueuedSongs
+  ]).filter(song =>
     song.id !== currentSong.id && !playedSongIds.has(song.id)
   );
 
   playQueue = [currentSong, ...remainingSongs];
   currentIndex = 0;
+}
+
+// IDが同じ曲を1つにまとめ、先に出てきた順番を残す
+function mergeUniqueSongs(songs) {
+  const songMap = new Map();
+
+  songs.forEach(song => {
+    if (!songMap.has(song.id)) {
+      songMap.set(song.id, song);
+    }
+  });
+
+  return [...songMap.values()];
 }
 
 // 再生順を作る。シャッフルONなら並び替え、開始曲があれば先頭に固定する
