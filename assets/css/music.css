@@ -64,9 +64,8 @@ body {
 
 /* 折りたたみ中はYouTube表示だけを隠し、曲名と操作ボタンは残す */
 #playerArea.collapsed #playerFrame {
-  width: min(56vw, 220px);
-  max-height: 124px;
-  opacity: 0.9;
+  border-color: transparent;
+  max-height: 0;
 }
 
 /* 一覧側の領域を残りの高さに収める */
