@@ -79,6 +79,7 @@ function init() {
   loadFavoriteCache();
   setupViewTabs();
   setupSearchInput();
+  setupSearchToggle();
   loadPlaylist();
   updatePlayerCollapseButton();
   updateControls();
@@ -168,6 +169,36 @@ function setupSearchInput() {
 
 // 曲が検索キーワードに一致するかを判定する
 // 入力のたびに描画せず、最後の入力から少し待って一覧を更新する
+// 虫眼鏡ボタンで検索欄を開閉する
+function setupSearchToggle() {
+  const button = document.getElementById("searchToggleBtn");
+  const searchArea = document.getElementById("searchArea");
+  const input = document.getElementById("searchInput");
+
+  if (!button || !searchArea || !input) return;
+
+  button.addEventListener("click", () => {
+    const willOpen = !searchArea.classList.contains("is-open");
+
+    searchArea.classList.toggle("is-open", willOpen);
+    button.classList.toggle("active", willOpen);
+    button.setAttribute("aria-expanded", String(willOpen));
+    button.setAttribute("aria-label", willOpen ? "Close search" : "Open search");
+
+    if (willOpen) {
+      input.focus();
+      return;
+    }
+
+    // 閉じた検索欄の条件で絞り込み続けないよう、閉じる時は検索を解除する
+    if (searchKeyword) {
+      input.value = "";
+      searchKeyword = "";
+      renderList();
+    }
+  });
+}
+
 function scheduleSearchRender() {
   clearTimeout(searchRenderTimer);
   searchRenderTimer = setTimeout(renderList, SEARCH_DEBOUNCE_MS);

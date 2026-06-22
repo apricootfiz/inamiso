@@ -255,11 +255,16 @@ body {
   order: 2;
   width: min(100% - 16px, 760px);
   margin: 10px auto 0;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   gap: 10px;
   box-sizing: border-box;
+}
+
+/* 検索ボタンを押したときだけ検索欄を表示する */
+#searchArea.is-open {
+  display: flex;
 }
 
 /* 検索欄の入力スタイルを設定する */
@@ -319,8 +324,38 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* タブ列右端に置く検索の開閉ボタン */
+.search-toggle-btn {
+  width: 44px;
+  flex: 0 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  background: transparent;
+  color: #8f8f8f;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 検索ボタン内のSVGサイズと色をタブのトーンに合わせる */
+.search-toggle-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+/* 検索欄を開いている間だけアイコンを明るくする */
+.search-toggle-btn.active {
+  color: #fff;
+}
+
 /* タブにマウスを乗せたときだけ少し明るくする */
-.view-tab:hover {
+.view-tab:hover,
+.search-toggle-btn:hover {
   color: #ddd;
 }
 
