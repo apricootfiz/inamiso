@@ -31,17 +31,26 @@ body {
 /* プレイヤー領域は縮めずに表示する */
 #playerArea {
   flex-shrink: 0;
+  padding: 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #2b2b2b;
+  background: #101010;
 }
 
 /* YouTube iframe の外側だけを開閉し、iframe本体の幅は変えない */
 #playerFrame {
   max-height: 70vh;
   overflow: hidden;
+  border: 1px solid #2f2f2f;
+  border-radius: 6px;
+  background: #000;
   transition: max-height 0.18s ease;
 }
 
 /* 折りたたみ中はYouTube表示だけを隠し、曲名と操作ボタンは残す */
 #playerArea.collapsed #playerFrame {
+  display: none;
+  border-color: transparent;
   max-height: 0;
 }
 
@@ -88,6 +97,7 @@ body {
     height: 100vh;
     box-sizing: border-box;
     border-right: 1px solid #333;
+    border-bottom: none;
   }
 
   /* 一覧領域を右カラムとして表示する */
@@ -118,7 +128,15 @@ body {
 
 /* プレイヤー周辺の余白を設定する */
 #playerContainer {
-  padding: 6px 10px 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #181818;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 24%);
 }
 
 /* 曲名と折りたたみボタンを横並びにする */
@@ -126,7 +144,6 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
 }
 
 /* 再生中の曲名を1行で省略表示する */
@@ -171,6 +188,7 @@ body {
   justify-content: center;
   align-items: center;
   position: relative;
+  padding-top: 2px;
 }
 
 /* アイコンボタンの標準スタイルを設定する */
