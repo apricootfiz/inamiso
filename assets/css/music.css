@@ -37,6 +37,16 @@ body {
   background: #101010;
 }
 
+/* アプリ名をプレイヤー上部に固定表示する */
+.app-title {
+  margin: 0 0 8px;
+  color: #f2f2f2;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-align: center;
+}
+
 /* YouTube iframe の外側だけを開閉し、iframe本体の幅は変えない */
 #playerFrame {
   width: 92%;
@@ -254,7 +264,7 @@ body {
 #searchArea {
   order: 2;
   width: min(100% - 16px, 760px);
-  margin: 10px auto 0;
+  margin: 10px auto;
   display: none;
   align-items: center;
   justify-content: center;
@@ -277,6 +287,13 @@ body {
   background: #222;
   color: #fff;
   border: 1px solid #444;
+}
+
+/* 検索欄フォーカス時のブラウザ標準色を白枠にそろえる */
+#searchInput:focus {
+  outline: none;
+  border-color: #fff;
+  box-shadow: 0 0 0 1px #fff;
 }
 
 /* プレースホルダーを少し小さく表示する */
