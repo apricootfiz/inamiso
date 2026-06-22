@@ -52,7 +52,7 @@ body {
 
 /* YouTube iframe の外側だけを開閉し、iframe本体の幅は変えない */
 #playerFrame {
-  width: 92%;
+  width: 84%;
   align-self: center;
   max-height: 70vh;
   overflow: hidden;
@@ -64,7 +64,6 @@ body {
 
 /* 折りたたみ中はYouTube表示だけを隠し、曲名と操作ボタンは残す */
 #playerArea.collapsed #playerFrame {
-  display: none;
   border-color: transparent;
   max-height: 0;
 }
