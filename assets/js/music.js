@@ -225,6 +225,7 @@ function renderSongList(container) {
 function createSongListRow(song) {
   const row = document.createElement("div");
   row.className = "favorite-song-row";
+  row.classList.toggle("playing", isCurrentSong(song.id));
 
   row.innerHTML = `
     <div class="favorite-song-info">
@@ -254,6 +255,14 @@ function createSongListRow(song) {
   });
 
   return row;
+}
+
+// 現在再生中の曲かどうかを判定する
+function isCurrentSong(songId) {
+  if (!playerState.isPlaying) return false;
+
+  const currentSong = playQueue[currentIndex];
+  return currentSong?.id === songId;
 }
 
 // 表示中のタブに対応する曲リストを返す

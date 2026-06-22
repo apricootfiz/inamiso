@@ -235,37 +235,48 @@ body {
 .view-tabs {
   display: flex;
   gap: 0;
-  margin: 4px 8px 0;
-  border-bottom: 1px solid #444;
+  margin: 6px 8px 0;
+  border-bottom: 1px solid #2b2b2b;
   box-sizing: border-box;
 }
 
-/* 各タブの通常表示を設定する */
+/* 音楽プレイヤーのナビゲーション風に、背景より下線を主役にする */
 .view-tab {
   flex: 1;
   min-width: 0;
-  padding: 8px 4px;
-  border: 1px solid #444;
-  border-bottom: none;
+  padding: 10px 4px 9px;
+  border: none;
   border-radius: 0;
-  margin: 0 0 -1px -1px;
-  background: #1a1a1a;
-  color: #aaa;
+  margin: 0;
+  background: transparent;
+  color: #8f8f8f;
   font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* 先頭タブの左端だけ親枠に合わせる */
-.view-tab:first-child {
-  margin-left: 0;
+/* タブにマウスを乗せたときだけ少し明るくする */
+.view-tab:hover {
+  color: #ddd;
 }
 
-/* 選択中のタブを強調する */
+/* 選択中のタブは下線だけを強調してプレイヤーらしく見せる */
 .view-tab.active {
-  background: #111;
-  border-color: #444;
-  border-bottom: 1px solid #111;
+  position: relative;
+  background: transparent;
   color: #fff;
+}
+
+/* 選択中タブの下線 */
+.view-tab.active::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -1px;
+  height: 2px;
+  background: #4da3ff;
 }
 
 /* =========================================
@@ -325,16 +336,39 @@ body {
 
 /* お気に入り・再生リストの曲行を表示する */
 .favorite-song-row {
+  position: relative;
   width: 100%;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  padding: 8px;
-  border-bottom: 1px solid #333;
+  padding: 8px 8px 8px 10px;
+  border-bottom: 1px solid #252525;
+  background: #111;
   overflow: hidden;
   cursor: pointer;
+}
+
+/* 曲行にマウスを乗せたときだけ、キューの選択候補として少し明るくする */
+.favorite-song-row:hover {
+  background: #181818;
+}
+
+/* 再生中の曲は背景を控えめに変えて現在位置を示す */
+.favorite-song-row.playing {
+  background: #171f28;
+}
+
+/* 再生中の曲は左側の細いラインでプレイヤーのキューらしく見せる */
+.favorite-song-row.playing::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  width: 3px;
+  background: #4da3ff;
 }
 
 /* お気に入り・再生リストの曲情報を残り幅いっぱいにする */
@@ -347,9 +381,14 @@ body {
 .favorite-song-name {
   font-size: 13px;
   font-weight: bold;
-  color: #fff;
+  color: #eee;
   white-space: normal;
   overflow-wrap: anywhere;
+}
+
+/* 再生中の曲名はアクセントカラーにする */
+.favorite-song-row.playing .favorite-song-name {
+  color: #4da3ff;
 }
 
 /* アーティスト名を曲名より控えめに表示する */
