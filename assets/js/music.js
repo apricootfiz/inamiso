@@ -756,6 +756,8 @@ function playSelected() {
   playQueue = createPlayQueue(songs);
   currentIndex = 0;
 
+  openPlayerForPlayback();
+
   waitForPlayerReady(() => {
     loadVideo(currentIndex);
     updatePlayingRowState();
@@ -764,6 +766,8 @@ function playSelected() {
 
 // 曲行をクリックしたとき、その曲から再生を始める
 function playNow(songId) {
+  openPlayerForPlayback();
+
   waitForPlayerReady(() => {
     const clickedSong = playlistMap.get(String(songId));
     if (!clickedSong) return;
@@ -902,6 +906,15 @@ function togglePlayerCollapse() {
 }
 
 // 折りたたみボタンの表示とアクセシビリティ情報を現在状態に合わせる
+// 初回再生時は iframe を表示してから YouTube に再生指示を送る
+function openPlayerForPlayback() {
+  const playerArea = document.getElementById("playerArea");
+  if (!playerArea || !playerArea.classList.contains("collapsed")) return;
+
+  playerArea.classList.remove("collapsed");
+  updatePlayerCollapseButton();
+}
+
 function updatePlayerCollapseButton() {
   const playerArea = document.getElementById("playerArea");
   const button = document.getElementById("playerToggleBtn");
