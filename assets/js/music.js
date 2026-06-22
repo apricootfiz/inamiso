@@ -17,6 +17,9 @@ let playQueue = [];
 // 画面上の「再生リスト」タブに表示する曲の並び
 let queuedSongs = [];
 
+// 再生リストの重複判定用。配列検索を避けるため queuedSongs と同期する
+let queuedSongIdSet = new Set();
+
 // playQueue の何番目を再生しているかを表す
 let currentIndex = 0;
 
@@ -98,17 +101,24 @@ async function loadPlaylist() {
   try {
     const raw = await fetch("assets/data/playlist.json").then(response => response.json());
 
-    playlist = raw.map((item, index) => ({
-      id: index,
-      date: item.date || "",
-      streamTitle: item.streamTitle || "",
-      videoId: item.videoId || "",
-      song: item.song || "",
-      artist: item.artist || "",
-      keyword: item.keyword || "",
-      start: item.start ?? 0,
-      end: item.end ?? null
-    }));
+    playlist = raw.map((item, index) => {
+      const song = {
+        id: index,
+        date: item.date || "",
+        streamTitle: item.streamTitle || "",
+        videoId: item.videoId || "",
+        song: item.song || "",
+        artist: item.artist || "",
+        keyword: item.keyword || "",
+        start: item.start ?? 0,
+        end: item.end ?? null
+      };
+
+      // 検索時の文字列結合を避けるため、読み込み時に検索用テキストを作る
+      song.searchText = createSongSearchText(song);
+
+      return song;
+    });
 
     // クリックされた曲IDから、対応する曲データをすぐ探せるようにする
     playlistMap = new Map(playlist.map(song => [String(song.id), song]));
@@ -203,6 +213,9 @@ function renderStreamList(container) {
   container.classList.add("thumb-list");
   container.classList.remove("song-list");
 
+  // 画面への追加は最後に1回だけ行い、DOM更新回数を抑える
+  const fragment = document.createDocumentFragment();
+
   streamList.forEach(stream => {
     const row = document.createElement("div");
     row.className = "song-row";
@@ -222,24 +235,32 @@ function renderStreamList(container) {
       openSongModal(stream);
     });
 
-    container.appendChild(row);
+    fragment.appendChild(row);
   });
+
+  container.appendChild(fragment);
 
   updateVisibleCount(streamList.length, streamListCache.length);
 }
 
 // お気に入りまたは再生リストの曲一覧を表示する
 function renderSongList(container) {
-  const songs = getSongsForCurrentView().filter(matchesSearch);
+  const baseSongs = getSongsForCurrentView();
+  const songs = baseSongs.filter(matchesSearch);
 
   container.classList.remove("thumb-list");
   container.classList.add("song-list");
 
+  // 画面への追加は最後に1回だけ行い、DOM更新回数を抑える
+  const fragment = document.createDocumentFragment();
+
   songs.forEach(song => {
-    container.appendChild(createSongListRow(song));
+    fragment.appendChild(createSongListRow(song));
   });
 
-  updateVisibleCount(songs.length, getSongsForCurrentView().length);
+  container.appendChild(fragment);
+
+  updateVisibleCount(songs.length, baseSongs.length);
 }
 
 // お気に入り・再生リストに表示する1曲分の行を作る
@@ -344,11 +365,16 @@ function openSongModal(stream) {
   date.innerText = stream.date || "";
   songList.innerHTML = "";
 
+  // モーダル内の曲行もまとめて追加し、表示時の再計算を抑える
+  const fragment = document.createDocumentFragment();
+
   stream.songs
     .filter(matchesSearch)
     .forEach(song => {
-      songList.appendChild(createModalSongButton(song));
+      fragment.appendChild(createModalSongButton(song));
     });
+
+  songList.appendChild(fragment);
 
   modal.classList.remove("hidden");
 }
@@ -478,6 +504,7 @@ function addToQueue(song) {
   }
 
   queuedSongs.push(song);
+  queuedSongIdSet.add(song.id);
   addToActivePlaybackQueue(song);
 
   if (currentView === "queue") {
@@ -498,7 +525,7 @@ function addToActivePlaybackQueue(song) {
 
 // 指定した曲が再生リストに入っているかを返す
 function isInQueue(songId) {
-  return queuedSongs.some(item => item.id === songId);
+  return queuedSongIdSet.has(songId);
 }
 
 // 再生リスト追加ボタンを、追加済みなら押せない見た目にする
@@ -516,6 +543,7 @@ function syncQueueFromFavorites(songs) {
   if (currentView !== "favorite") return;
 
   queuedSongs = [...songs];
+  syncQueuedSongIdSet();
 }
 
 // お気に入り再生中に追加した曲を、再生リスト表示にもすぐ反映する
@@ -524,6 +552,11 @@ function syncQueueAfterFavoriteChange(song, active) {
   if (currentPlaybackView !== "favorite") return;
 
   addToQueue(song);
+}
+
+// queuedSongs をまとめて差し替えた後、ID Set も同じ内容にそろえる
+function syncQueuedSongIdSet() {
+  queuedSongIdSet = new Set(queuedSongs.map(song => song.id));
 }
 
 // 指定した表示モードに対応する曲リストを返す
@@ -543,14 +576,17 @@ function getSongsForView(view) {
 function matchesKeyword(song, keyword) {
   if (!keyword) return true;
 
-  const searchableText = [
+  return song.searchText.includes(keyword);
+}
+
+// 検索対象の項目を1つの小文字文字列にまとめる
+function createSongSearchText(song) {
+  return [
     song.song,
     song.artist,
     song.streamTitle,
     song.keyword
   ].join(" ").toLowerCase();
-
-  return searchableText.includes(keyword);
 }
 
 // 再生中の曲を保ったまま、お気に入り・再生リストを最新状態から取り直す
@@ -563,7 +599,7 @@ function refreshPlaybackQueue() {
   const manuallyQueuedSongs = playQueue.filter(song =>
     song.id !== currentSong.id
     && !playedSongIds.has(song.id)
-    && queuedSongs.some(queuedSong => queuedSong.id === song.id)
+    && queuedSongIdSet.has(song.id)
   );
 
   const latestSongs = getSongsForView(currentPlaybackView)
