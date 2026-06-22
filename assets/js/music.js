@@ -243,7 +243,7 @@ function renderStreamList(container) {
   updateVisibleCount(streamList.length, streamListCache.length);
 }
 
-// お気に入りまたは再生リストの曲一覧を表示する
+// お気に入りまたは再生リストの曲一覧を表示
 function renderSongList(container) {
   const baseSongs = getSongsForCurrentView();
   const songs = baseSongs.filter(matchesSearch);
