@@ -31,8 +31,6 @@ body {
 /* プレイヤー領域は縮めずに表示する */
 #playerArea {
   flex-shrink: 0;
-  border-bottom: 1px solid #222;
-  background: #101010;
 }
 
 /* 一覧側の領域を残りの高さに収める */
@@ -100,39 +98,25 @@ body {
 
 /* スマホではプレイヤーが縦に大きくなりすぎないようにする */
 @media (max-width: 600px) {
-  /* スマホではYouTubeを中央寄せのミニプレイヤーとして表示する */
+  /* スマホ表示時のプレイヤー最大高さを制限する */
   #player {
-    width: min(64vw, 240px);
-    margin: 0 auto;
+    max-height: 220px;
   }
 }
 
 /* プレイヤー周辺の余白を設定する */
 #playerContainer {
-  padding: 6px 10px 4px;
+  padding: 6px 10px 2px;
 }
 
 /* 再生中の曲名を1行で省略表示する */
 #nowPlaying {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: bold;
   font-size: 12px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-/* 再生中タイトルをプレイヤーバーらしく控えめに表示する */
-@media (max-width: 600px) {
-  #nowPlaying {
-    margin: 0 0 5px;
-    padding: 4px 8px;
-    border: 1px solid #252525;
-    background: #151515;
-    color: #ddd;
-    font-size: 11px;
-    box-sizing: border-box;
-  }
 }
 
 /* =========================================
@@ -146,14 +130,6 @@ body {
   justify-content: center;
   align-items: center;
   position: relative;
-}
-
-/* スマホでは操作列を詰めて一覧の高さを確保する */
-@media (max-width: 600px) {
-  .control-row {
-    gap: 6px;
-    padding-bottom: 4px;
-  }
 }
 
 /* アイコンボタンの標準スタイルを設定する */
@@ -175,14 +151,6 @@ body {
   width: 28px;
   height: 28px;
   fill: #fff;
-}
-
-/* スマホでは操作アイコンを少し小さくする */
-@media (max-width: 600px) {
-  .icon {
-    width: 24px;
-    height: 24px;
-  }
 }
 
 /* 有効化中のボタンを青で表示する */
