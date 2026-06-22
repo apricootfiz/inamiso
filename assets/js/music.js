@@ -64,6 +64,7 @@ function init() {
   setupViewTabs();
   setupSearchInput();
   loadPlaylist();
+  updatePlayerCollapseButton();
   updateControls();
 }
 
@@ -745,6 +746,32 @@ function updateControls() {
 
   document.getElementById("loopBtn")
     ?.classList.toggle("active", playerState.isLoop);
+}
+
+// YouTube表示部分を開閉する。再生操作と曲名表示は残す
+function togglePlayerCollapse() {
+  const playerArea = document.getElementById("playerArea");
+  if (!playerArea) return;
+
+  playerArea.classList.toggle("collapsed");
+  updatePlayerCollapseButton();
+}
+
+// 折りたたみボタンの表示とアクセシビリティ情報を現在状態に合わせる
+function updatePlayerCollapseButton() {
+  const playerArea = document.getElementById("playerArea");
+  const button = document.getElementById("playerToggleBtn");
+
+  if (!playerArea || !button) return;
+
+  const collapsed = playerArea.classList.contains("collapsed");
+
+  button.textContent = collapsed ? "▽" : "△";
+  button.setAttribute("aria-expanded", String(!collapsed));
+  button.setAttribute(
+    "aria-label",
+    collapsed ? "プレイヤーを表示" : "プレイヤーを折りたたむ"
+  );
 }
 
 

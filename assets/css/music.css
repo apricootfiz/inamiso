@@ -33,6 +33,16 @@ body {
   flex-shrink: 0;
 }
 
+/* 折りたたみ中はYouTube表示だけを隠し、曲名と操作ボタンは残す */
+#playerArea.collapsed #player {
+  display: block;
+  height: 0;
+  max-height: 0;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
 /* 一覧側の領域を残りの高さに収める */
 #mainArea {
   flex: 1;
@@ -94,6 +104,7 @@ body {
 #player {
   width: 100%;
   aspect-ratio: 16 / 9;
+  transition: height 0.18s ease, margin 0.18s ease;
 }
 
 /* スマホではプレイヤーが縦に大きくなりすぎないようにする */
@@ -109,14 +120,43 @@ body {
   padding: 6px 10px 2px;
 }
 
+/* 曲名と折りたたみボタンを横並びにする */
+#playerHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
 /* 再生中の曲名を1行で省略表示する */
 #nowPlaying {
-  margin-bottom: 8px;
+  flex: 1;
+  min-width: 0;
   font-weight: bold;
   font-size: 12px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+/* YouTube表示の開閉ボタン */
+.player-toggle-btn {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid #333;
+  border-radius: 50%;
+  background: #171717;
+  color: #ccc;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* 折りたたみ中の開閉ボタンは下向きに見せる */
+#playerArea.collapsed .player-toggle-btn {
+  color: #4da3ff;
 }
 
 /* =========================================
